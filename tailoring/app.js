@@ -35,7 +35,7 @@ const measureSets={
 function garmentGroup(k){if(!k)return'blouse';if(/blouse/.test(k))return'blouse';if(/shirt|school/.test(k))return'shirt';if(/trouser|palazzo|short/.test(k))return'trousers';if(/kurta|sherwani/.test(k))return'kurta';if(/skirt|petticoat|veshti|saree|fall-pico/.test(k))return'skirt';if(/alter/.test(k))return'alteration';return'dress'}
 function root(){return $('#app')}
 function toast(t){const d=document.createElement('div');d.className='toast';d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),2200)}
-function shell(content){return '<div class="app"><aside class="side" id="side"><div><div class="brand">✂ SK Tailoring</div><small>SHOP WORKSPACE</small></div><nav class="nav">'+navBtn('dashboard','▦ Dashboard')+navBtn('new','＋ New Order')+navBtn('orders','▤ Work Orders')+navBtn('backup','⚙ Backup')+'</nav><div class="made">Made for your daily craft.</div></aside><main class="main"><div class="mobileTop"><button class="pill" id="menuBtn">☰ Menu</button><b>✂ SK Tailoring</b></div><div class="topline"><div class="eyebrow">SK SECURE TECH / TAILORING</div><div class="status">● Online · Saved on this device</div></div>'+content+'<div class="copyright">Device version v19 · orders save in this browser. Export a backup before clearing browser data.</div></main></div>'}
+function shell(content){return '<div class="app"><aside class="side" id="side"><div><div class="brand">✂ SK Tailoring</div><small>SHOP WORKSPACE</small></div><nav class="nav">'+navBtn('dashboard','▦ Dashboard')+navBtn('new','＋ New Order')+navBtn('orders','▤ Work Orders')+navBtn('backup','⚙ Backup')+'</nav><div class="made">Made for your daily craft.</div></aside><main class="main"><div class="mobileTop"><button class="pill" id="menuBtn">☰ Menu</button><b>✂ SK Tailoring</b></div><div class="topline"><div class="eyebrow">SK SECURE TECH / TAILORING</div><div class="status">● Online · Saved on this device</div></div>'+content+'<div class="copyright">Device version v20 · orders save in this browser. Export a backup before clearing browser data.</div></main></div>'}
 function navBtn(p,label){return '<button data-nav="'+p+'" class="'+(page===p?'active':'')+'">'+label+'</button>'}
 function bindShell(){ $$('[data-nav]').forEach(b=>b.onclick=()=>{page=b.dataset.nav;if(page==='new'){step=1;draft=freshDraft();saveDraft()}render()}); const m=$('#menuBtn');if(m)m.onclick=()=>$('#side').classList.toggle('open') }
 function dashSVG(type){
@@ -49,23 +49,64 @@ function dashSVG(type){
  return '<svg '+common+'><path d="M224 154h27l22-58h73l26 58h30v40H224Z" fill="#6b88b5"/><path d="M258 154h116" stroke="#fff" stroke-width="8"/><circle cx="275" cy="194" r="20" fill="#394a62"/><circle cx="365" cy="194" r="20" fill="#394a62"/><path d="M278 96h68v58h-90Z" fill="#fafafa"/><path d="M292 114h40" stroke="#6b88b5" stroke-width="7"/></svg>'
 }
 function garmentSVG(k){
- const c1='#0d7f83',c2='#d8a43a',bg='#fbf5ea';let body='';
- if(/alter/.test(k))body='<circle cx="98" cy="86" r="28" fill="none" stroke="'+c1+'" stroke-width="9"/><circle cx="162" cy="86" r="28" fill="none" stroke="'+c1+'" stroke-width="9"/><path d="m116 105 74 72m-74-71 72-75" stroke="'+c1+'" stroke-width="9" stroke-linecap="round"/>';
- else if(/trouser|palazzo/.test(k))body='<path d="M94 44h72l-4 54-12 88h-38l-9-75-8 75H62l18-88Z" fill="'+c1+'"/>';
- else if(/short/.test(k))body='<path d="M82 58h96l-6 95-40-4-6-48-7 48-42 4Z" fill="'+c1+'"/>';
- else if(/saree|veshti|petticoat/.test(k))body='<path d="M78 42h84l22 144H56Z" fill="'+(k.includes('veshti')?'#f4eee3':c1)+'"/><path d="M92 42c35 30 49 65 55 145" fill="none" stroke="'+c2+'" stroke-width="8"/><path d="M64 166h112" stroke="'+c2+'" stroke-width="8"/>';
- else if(/waistcoat|suit/.test(k))body='<path d="M84 58 110 42l18 30 18-30 28 16 6 116h-50l-4-60-4 60H74Z" fill="#304e68"/><path d="m111 43 17 37 18-37" fill="#f6f2e8"/>';
- else if(/shirt/.test(k)&&!/school/.test(k))body='<path d="M74 62 104 43l24 16 24-16 34 19-17 35-15-11v95H101V86L87 98Z" fill="'+c1+'"/><path d="M128 59v119M111 54l17 17 17-17" stroke="#e7f5f1" stroke-width="4"/>';
- else if(/kurta|sherwani/.test(k))body='<path d="M78 54 106 42h44l28 12 10 36-25 8-2 89H94l-2-89-25-8Z" fill="'+(k.includes('sherwani')?'#eee3c4': '#eee9dd')+'" stroke="'+c1+'" stroke-width="3"/><path d="M128 42v92" stroke="'+c2+'" stroke-width="5"/>';
- else if(/blouse/.test(k))body='<path d="M78 72 103 50h50l25 22 14 33-26 11-10-20v63H99V96l-10 20-26-11Z" fill="'+c1+'"/><path d="M112 50c4 18 26 23 33 0" fill="'+bg+'"/><path d="M99 145h57" stroke="'+c2+'" stroke-width="7"/>';
- else if(/school/.test(k))body='<path d="M78 58 106 42h44l28 16 9 34-23 8-8-18v86H99V82l-8 18-23-8Z" fill="#d8eef3"/><path d="M83 120h88" stroke="#315f87" stroke-width="7"/><path d="M96 168h64l20 18H76Z" fill="#315f87"/>';
- else if(/night/.test(k))body='<path d="M70 62 103 43h50l35 19-18 32-14-9v49H100V85l-13 9Z" fill="#7389b8"/><path d="M98 140h58l12 46h-30l-10-31-10 31H88Z" fill="#4f689c"/>';
- else if(/lehenga|pavadai|frock|gown|anarkali|western|girl-gown/.test(k))body='<path d="M98 45h60l14 55-17 8-8-30-8 45 48 64H69l47-64-8-45-9 30-17-8Z" fill="'+(/pattu|lehenga/.test(k)?c2:c1)+'"/><path d="M94 157h68" stroke="#efe2b5" stroke-width="7"/><circle cx="128" cy="88" r="5" fill="#fff"/>';
- else if(/skirt-top/.test(k))body='<path d="M94 47h68l12 55-18 6-9-27-4 37H112l-4-37-9 27-18-6Z" fill="'+c1+'"/><path d="M102 119h52l28 67H74Z" fill="'+c2+'"/>';
- else if(/salwar|churidar/.test(k))body='<path d="M80 50 108 39h40l28 11 13 37-24 9-10-23 5 72H95l5-72-10 23-24-9Z" fill="'+c1+'"/><path d="M103 148h24l-8 39H89Zm30 0h25l17 39h-30Z" fill="#315f87"/>';
- else body='<path d="M78 58 106 42h44l28 16 9 34-23 8-8-18v86H99V82l-8 18-23-8Z" fill="'+c1+'"/>';
+ const palettes=[['#0d7f83','#d8a43a'],['#315f87','#d6a24a'],['#8a4f7d','#c99a43'],['#4f7f5b','#d0a042'],['#8b5b42','#3f8790']];
+ let hash=0;for(let i=0;i<k.length;i++)hash=(hash*31+k.charCodeAt(i))>>>0;
+ const pal=palettes[hash%palettes.length],c1=pal[0],c2=pal[1],bg='#fbf5ea';
+ let body='';
+ if(/alter/.test(k)){
+  body='<circle cx="91" cy="82" r="27" fill="none" stroke="'+c1+'" stroke-width="9"/><circle cx="162" cy="82" r="27" fill="none" stroke="'+c2+'" stroke-width="9"/><path d="m111 102 77 75m-77-74 77-76" stroke="#5d554d" stroke-width="9" stroke-linecap="round"/><path d="M50 177c31-21 62-21 93 0" fill="none" stroke="'+c1+'" stroke-width="5" stroke-dasharray="7 6"/>';
+ }else if(k==='designer-blouse'){
+  body='<path d="M70 75 101 49h55l31 26 12 31-29 12-11-24v67H96V94l-11 24-29-12Z" fill="'+c1+'"/><path d="M108 49 129 76 150 49" fill="'+bg+'" stroke="'+c2+'" stroke-width="5"/><path d="M101 115c18-13 39-13 57 0M101 139c18-13 39-13 57 0" fill="none" stroke="'+c2+'" stroke-width="5"/>';
+ }else if(/blouse/.test(k)){
+  body='<path d="M78 72 103 50h50l25 22 14 33-26 11-10-20v63H99V96l-10 20-26-11Z" fill="'+c1+'"/><path d="M112 50c4 18 26 23 33 0" fill="'+bg+'"/><path d="M99 145h57" stroke="'+c2+'" stroke-width="7"/>';
+ }else if(k==='saree'){
+  body='<path d="M98 45h51l16 38-16 19 37 84H72l31-83-17-22Z" fill="'+c1+'"/><path d="M105 47c54 33 63 79 51 139" fill="none" stroke="'+c2+'" stroke-width="10"/><path d="M80 170h98" stroke="#f4e2ad" stroke-width="7"/>';
+ }else if(k==='fall-pico'){
+  body='<path d="M55 70h132v88H55Z" rx="12" fill="'+c1+'"/><path d="M55 130h132" stroke="'+c2+'" stroke-width="10"/><circle cx="176" cy="177" r="24" fill="none" stroke="'+c2+'" stroke-width="9"/><path d="M152 183 66 40" stroke="#665c52" stroke-width="6" stroke-linecap="round"/>';
+ }else if(/veshti/.test(k)){
+  body='<path d="M88 48h80l13 139H73Z" fill="#f4eee3" stroke="#d9d1c6" stroke-width="2"/><path d="M95 48v139M156 48v139" stroke="'+c2+'" stroke-width="7"/><path d="M76 169h102" stroke="'+c2+'" stroke-width="8"/>';
+ }else if(k==='petticoat'){
+  body='<path d="M92 50h69l28 136H63Z" fill="#eee4d7" stroke="'+c1+'" stroke-width="3"/><path d="M90 63h73M70 169h112" stroke="'+c2+'" stroke-width="6"/>';
+ }else if(k==='palazzo'){
+  body='<path d="M85 50h82l9 136h-49l-4-80-6 80H68Z" fill="'+c1+'"/><path d="M86 61h80" stroke="'+c2+'" stroke-width="7"/>';
+ }else if(/trouser/.test(k)){
+  body='<path d="M94 44h72l-4 54-12 88h-38l-9-75-8 75H62l18-88Z" fill="'+c1+'"/><path d="M96 59h68" stroke="'+c2+'" stroke-width="5"/>';
+ }else if(/short/.test(k)){
+  body='<path d="M82 58h96l-6 95-40-4-6-48-7 48-42 4Z" fill="'+c1+'"/><path d="M84 72h91" stroke="'+c2+'" stroke-width="6"/>';
+ }else if(k==='lehenga-skirt'){
+  body='<path d="M100 48h58l37 138H63Z" fill="'+c1+'"/><path d="M82 162h94M91 126h76" stroke="'+c2+'" stroke-width="7"/><circle cx="107" cy="95" r="5" fill="#f8e9bc"/><circle cx="151" cy="111" r="5" fill="#f8e9bc"/>';
+ }else if(/lehenga/.test(k)||k==='pattu-pavadai'){
+  body='<path d="M95 48h65l11 49-20 8-7-24-5 31h-25l-4-31-8 24-20-8Z" fill="'+c1+'"/><path d="M103 112h48l41 74H64Z" fill="'+c2+'"/><path d="M75 169h105" stroke="#f5e3af" stroke-width="7"/><circle cx="126" cy="139" r="5" fill="#fff4cd"/>';
+ }else if(/waistcoat|suit/.test(k)){
+  body='<path d="M84 58 110 42l18 30 18-30 28 16 6 116h-50l-4-60-4 60H74Z" fill="'+c1+'"/><path d="m111 43 17 37 18-37" fill="#f6f2e8"/><circle cx="129" cy="102" r="4" fill="'+c2+'"/><circle cx="129" cy="122" r="4" fill="'+c2+'"/>';
+ }else if(/school/.test(k)){
+  body='<path d="M75 61 105 43h46l31 18 8 31-25 9-9-20v76H99V81l-9 20-25-9Z" fill="#d8eef3"/><path d="M101 115h55" stroke="#315f87" stroke-width="7"/><path d="M98 158h60l23 28H75Z" fill="#315f87"/><path d="M118 45h20v25h-20Z" fill="#fff"/>';
+ }else if(/night/.test(k)){
+  body='<path d="M70 62 103 43h50l35 19-18 32-14-9v49H100V85l-13 9Z" fill="'+c1+'"/><path d="M98 140h58l12 46h-30l-10-31-10 31H88Z" fill="'+c2+'"/><path d="M110 64h37" stroke="#f1e8cc" stroke-width="5"/>';
+ }else if(k==='kurta-set'||k==='boy-kurta-set'){
+  body='<path d="M76 55 105 42h45l29 13 11 35-25 9-10-23 3 78H96l3-78-10 23-25-9Z" fill="#eee9dd" stroke="'+c1+'" stroke-width="3"/><path d="M126 44v89" stroke="'+c2+'" stroke-width="5"/><path d="M103 157h22l-7 30H89Zm29 0h22l17 30h-30Z" fill="'+c1+'"/>';
+ }else if(/kurta|sherwani/.test(k)){
+  body='<path d="M78 54 106 42h44l28 12 10 36-25 8-2 89H94l-2-89-25-8Z" fill="'+(k.includes('sherwani')?'#eee3c4':'#eee9dd')+'" stroke="'+c1+'" stroke-width="3"/><path d="M128 42v92" stroke="'+c2+'" stroke-width="5"/><circle cx="137" cy="70" r="4" fill="'+c2+'"/><circle cx="137" cy="90" r="4" fill="'+c2+'"/>';
+ }else if(/shirt/.test(k)){
+  body='<path d="M74 62 104 43l24 16 24-16 34 19-17 35-15-11v95H101V86L87 98Z" fill="'+c1+'"/><path d="M128 59v119M111 54l17 17 17-17" stroke="#e7f5f1" stroke-width="4"/><path d="M105 101h18v17h-18Z" fill="'+c2+'"/>';
+ }else if(/salwar|churidar/.test(k)){
+  body='<path d="M80 50 108 39h40l28 11 13 37-24 9-10-23 5 72H95l5-72-10 23-24-9Z" fill="'+c1+'"/><path d="M103 148h24l-8 39H89Zm30 0h25l17 39h-30Z" fill="'+(k.includes('churidar')?c2:'#315f87')+'"/><path d="M106 91h48" stroke="'+c2+'" stroke-width="5"/>';
+ }else if(/frock/.test(k)){
+  body='<path d="M91 54 108 39h41l18 15 23 31-25 15-14-21-5 33 34 65H76l35-65-6-33-13 21-25-15Z" fill="'+c1+'"/><circle cx="95" cy="70" r="17" fill="'+c2+'" opacity=".55"/><circle cx="166" cy="70" r="17" fill="'+c2+'" opacity=".55"/><path d="M85 158h82" stroke="'+c2+'" stroke-width="7"/>';
+ }else if(/girl-gown|gown/.test(k)){
+  body='<path d="M97 43h61l11 52-18 8-9-29-4 38 53 75H64l54-75-5-38-9 29-18-8Z" fill="'+c1+'"/><path d="M79 170h98" stroke="'+c2+'" stroke-width="8"/><path d="M112 48c8 14 25 14 33 0" fill="'+bg+'"/>';
+ }else if(k==='anarkali'){
+  body='<path d="M97 43h61l13 55-20 8-9-29-5 40 59 70H59l59-70-5-40-9 29-20-8Z" fill="'+c1+'"/><path d="M80 151h96M73 169h110" stroke="'+c2+'" stroke-width="6"/>';
+ }else if(k==='western'){
+  body='<path d="M96 48h62l15 43-20 9-10-24-4 33 38 61H77l40-61-5-33-10 24-20-9Z" fill="'+c1+'"/><path d="M91 154h73" stroke="'+c2+'" stroke-width="8"/>';
+ }else if(k==='skirt-top'){
+  body='<path d="M94 47h68l12 55-18 6-9-27-4 37H112l-4-37-9 27-18-6Z" fill="'+c1+'"/><path d="M102 119h52l28 67H74Z" fill="'+c2+'"/>';
+ }else{
+  body='<path d="M78 58 106 42h44l28 16 9 34-23 8-8-18v86H99V82l-8 18-23-8Z" fill="'+c1+'"/><path d="M100 137h56" stroke="'+c2+'" stroke-width="6"/>';
+ }
  return '<svg viewBox="0 0 240 220" xmlns="http://www.w3.org/2000/svg"><rect width="240" height="220" rx="18" fill="'+bg+'"/><circle cx="128" cy="29" r="12" fill="#8f704f"/><path d="M128 40v18" stroke="#8f704f" stroke-width="5"/>'+body+'</svg>'
 }
+
 function styleSVG(kind,val){
  let neck='M105 46c10 16 34 16 44 0', sleeveL=30, sleeveR=30;
  if(/V neck/i.test(val))neck='M105 46l22 28 22-28';
@@ -161,7 +202,7 @@ async function handlePhotos(e){const fs=[...e.target.files].slice(0,3-(draft.pho
 function compressImage(file){return new Promise(res=>{const rd=new FileReader();rd.onload=()=>{const img=new Image();img.onload=()=>{const s=Math.min(1,800/img.width);const c=document.createElement('canvas');c.width=Math.round(img.width*s);c.height=Math.round(img.height*s);c.getContext('2d').drawImage(img,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',.72))};img.src=rd.result};rd.readAsDataURL(file)})}
 function voiceToText(){const R=window.SpeechRecognition||window.webkitSpeechRecognition;if(!R){toast('Voice-to-text not supported in this browser');return}const r=new R();r.lang='ta-IN';r.interimResults=false;r.onresult=e=>{draft.designNotes=(draft.designNotes?draft.designNotes+' ':'')+e.results[0][0].transcript;saveDraft();render()};r.onerror=()=>toast('Voice recognition failed');r.start();toast('Listening…')}
 let recorder=null,chunks=[];async function recordAudio(){if(recorder&&recorder.state==='recording'){recorder.stop();return}try{const stream=await navigator.mediaDevices.getUserMedia({audio:true});recorder=new MediaRecorder(stream);chunks=[];recorder.ondataavailable=e=>chunks.push(e.data);recorder.onstop=()=>{draft.voiceNote='Audio note recorded ('+Math.round(chunks.reduce((a,b)=>a+b.size,0)/1024)+' KB)';stream.getTracks().forEach(t=>t.stop());saveDraft();render()};recorder.start();$('#voiceState').textContent='Recording… tap Record audio again to stop'}catch(e){toast('Microphone permission is required')}}
-function exportBackup(){const blob=new Blob([JSON.stringify({version:19,exported:new Date().toISOString(),orders},null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='SK-Tailoring-backup-'+today()+'.json';a.click();URL.revokeObjectURL(a.href)}
+function exportBackup(){const blob=new Blob([JSON.stringify({version:20,exported:new Date().toISOString(),orders},null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='SK-Tailoring-backup-'+today()+'.json';a.click();URL.revokeObjectURL(a.href)}
 $('#restoreInput').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const j=JSON.parse(r.result);if(!Array.isArray(j.orders))throw 0;orders=j.orders;saveOrders();toast('Backup restored');page='dashboard';render()}catch(err){toast('Invalid backup file')}};r.readAsText(f)});
 if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
 render();
