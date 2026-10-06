@@ -764,3 +764,94 @@ html,body{max-width:100%;overflow-x:hidden}
   .dataRow>div:first-child{grid-column:1/-1}
   .financeGrid,.reportGrid{grid-template-columns:1fr 1fr}
 }
+
+
+/* v26 simplified dashboard + obvious active filters */
+.statusTiles{
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  grid-auto-rows:minmax(112px,1fr);
+}
+.statusTile{
+  height:auto;
+  min-height:112px;
+  max-height:132px;
+}
+.moduleGrid{
+  grid-template-columns:repeat(6,minmax(0,1fr));
+}
+.moduleSection{
+  padding:9px 11px;
+}
+.moduleTitle span{
+  color:#5f7775;
+}
+.orderFilters{
+  gap:7px;
+  margin:8px 0 12px;
+  flex-wrap:wrap;
+}
+.orderFilters .pill{
+  border:1px solid #dbe5df;
+  background:#edf1ee;
+  color:#5f6f6e;
+  font-weight:750;
+  transition:.15s ease;
+}
+.orderFilters .pill:hover{
+  border-color:#8ebfba;
+  background:#e4f1ef;
+}
+.orderFilters .pill.active,
+.orderFilters .pill[aria-pressed="true"]{
+  background:#0b7778;
+  border-color:#0b7778;
+  color:#fff;
+  box-shadow:0 4px 12px rgba(11,119,120,.22);
+}
+.orderFilters .pill.active::before{
+  content:"✓ ";
+  font-weight:900;
+}
+.moduleHead .sub b{
+  color:#0b7778;
+}
+@media(min-width:1101px){
+  .page-dashboard .dashWorkspace{
+    grid-template-rows:minmax(230px,1fr) auto auto;
+  }
+  .page-dashboard .statusTiles{
+    align-content:stretch;
+  }
+  .page-dashboard .statusTile{
+    max-height:none;
+  }
+}
+@media(max-width:1100px){
+  .statusTiles{
+    grid-template-columns:repeat(3,minmax(0,1fr));
+  }
+  .moduleGrid{
+    grid-template-columns:repeat(3,minmax(0,1fr));
+  }
+}
+@media(max-width:640px){
+  .statusTiles{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:8px;
+  }
+  .statusTile{
+    min-height:118px;
+    max-height:none;
+  }
+  .moduleGrid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+  .orderFilters{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+  .orderFilters .pill{
+    width:100%;
+    text-align:center;
+  }
+}
