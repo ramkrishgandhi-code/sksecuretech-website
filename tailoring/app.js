@@ -7,7 +7,7 @@ const today=()=>new Date().toISOString().slice(0,10);
 const money=n=>'RM '+Number(n||0).toFixed(2);
 const esc=s=>String(s??'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
 let orders=loadOrders();
-let page='dashboard', step=1, cat='women', activeMeasure='Bust / மார்பு';
+let page='dashboard', step=1, cat='women', activeMeasure='Bust / மார்பு', measureTab='Body';
 let draft=loadDraft();
 if(!draft) draft=freshDraft();
 function freshDraft(){return{customer:'',phone:'',garment:null,category:'women',designNotes:'',photos:[],voiceNote:'',style:{sleeve:'Short',neck:'Round',opening:'Back hooks',lining:'No lining',padding:'No pad',aari:'None',fit:'Regular',notes:''},measurements:{},stitching:'',aariCharge:'',advance:'',delivery:'',status:'New',created:today()}}
@@ -35,7 +35,7 @@ const measureSets={
 function garmentGroup(k){if(!k)return'blouse';if(/blouse/.test(k))return'blouse';if(/shirt|school/.test(k))return'shirt';if(/trouser|palazzo|short/.test(k))return'trousers';if(/kurta|sherwani/.test(k))return'kurta';if(/skirt|petticoat|veshti|saree|fall-pico/.test(k))return'skirt';if(/alter/.test(k))return'alteration';return'dress'}
 function root(){return $('#app')}
 function toast(t){const d=document.createElement('div');d.className='toast';d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),2200)}
-function shell(content){return '<div class="app"><aside class="side" id="side"><div><div class="brand">✂ SK Tailoring</div><small>SHOP WORKSPACE</small></div><nav class="nav">'+navBtn('dashboard','▦ Dashboard')+navBtn('new','＋ New Order')+navBtn('orders','▤ Work Orders')+navBtn('backup','⚙ Backup')+'</nav><div class="made">Made for your daily craft.</div></aside><main class="main"><div class="mobileTop"><button class="pill" id="menuBtn">☰ Menu</button><b>✂ SK Tailoring</b></div><div class="topline"><div class="eyebrow">SK SECURE TECH / TAILORING</div><div class="status">● Online · Saved on this device</div></div>'+content+'<div class="copyright">Device version v23 · orders save in this browser. Export a backup before clearing browser data.</div></main></div>'}
+function shell(content){return '<div class="app"><aside class="side" id="side"><div><div class="brand">✂ SK Tailoring</div><small>SHOP WORKSPACE</small></div><nav class="nav">'+navBtn('dashboard','▦ Dashboard')+navBtn('new','＋ New Order')+navBtn('orders','▤ Work Orders')+navBtn('backup','⚙ Backup')+'</nav><div class="made">Made for your daily craft.</div></aside><main class="main page-'+page+'"><div class="mobileTop"><button class="pill" id="menuBtn">☰ Menu</button><b>✂ SK Tailoring</b></div><div class="topline"><div class="eyebrow">SK SECURE TECH / TAILORING</div><div class="status">● Online · Saved on this device</div></div>'+content+'<div class="copyright">Device version v24 · orders save in this browser. Export a backup before clearing browser data.</div></main></div>'}
 function navBtn(p,label){return '<button data-nav="'+p+'" class="'+(page===p?'active':'')+'">'+label+'</button>'}
 function bindShell(){ $$('[data-nav]').forEach(b=>b.onclick=()=>{page=b.dataset.nav;if(page==='new'){step=1;draft=freshDraft();saveDraft()}const s=$('#side');if(s)s.classList.remove('open');render()}); const m=$('#menuBtn');if(m)m.onclick=()=>$('#side').classList.toggle('open') }
 function dashSVG(type){
@@ -137,8 +137,36 @@ function measureSVG(group,field){
 function render(){let c=page==='dashboard'?dashboard():page==='new'?newOrder():page==='orders'?workOrders():backup();root().innerHTML=shell(c);bindShell();bindPage()}
 function dashboard(){
  const open=orders.filter(o=>o.status!=='Delivered').length, queue=orders.filter(o=>o.status==='In Progress').length, ready=orders.filter(o=>o.status==='Ready').length, due=orders.filter(o=>o.delivery===today()&&o.status!=='Delivered').length, over=orders.filter(o=>o.delivery&&o.delivery<today()&&o.status!=='Delivered').length,del=orders.filter(o=>o.status==='Delivered').length;
- const cards=[['new','New order','＋','புதிய ஆர்டர் →','c1'],['open','Open orders',open,'All orders awaiting collection →','c2'],['queue','Work queue',queue,'Production still unfinished →','c3'],['ready','Completed / ready',ready,'Stitching and Aari completed →','c4'],['due','Due today',due,'Collection date is today →','c5'],['over', 'Overdue',over,'Collection date has passed →','c6'],['delivered','Delivered',del,'Orders already collected →','c7']];
- return '<h1 class="h1">Your shop at a glance</h1><p class="sub">வேலை நிலையைத் தொட்டு ஆர்டர்களைப் பாருங்கள் · '+today()+'</p><div class="heroGrid">'+cards.map(x=>'<div class="dashCard '+x[4]+'" data-dash="'+x[0]+'"><h3>'+x[1]+'</h3><div class="count">'+x[2]+'</div><p>'+x[3]+'</p><div class="art">'+dashSVG(x[0])+'</div></div>').join('')+'</div><div class="quick"><button class="pill" data-filter="all">All work orders →</button><button class="pill" data-filter="pending">Pending work →</button><button class="pill" data-filter="progress">Work in progress →</button></div><section class="panel"><h2 class="sectionTitle">Next collections</h2>'+nextCollections()+'</section>'
+ const cards=[
+  ['new','New order','＋','Create order','c1'],
+  ['open','Open orders',open,'Awaiting collection','c2'],
+  ['queue','Work queue',queue,'In production','c3'],
+  ['ready','Ready',ready,'Completed','c4'],
+  ['due','Due today',due,'Collect today','c5'],
+  ['over','Overdue',over,'Past collection','c6'],
+  ['delivered','Delivered',del,'Collected','c7']
+ ];
+ const modules=[
+  ['new','＋','New Order','Live'],
+  ['orders','▤','Work Orders','Live'],
+  ['planned','👤','Customers','Planned'],
+  ['planned','RM','Accounts','Planned'],
+  ['planned','✓','Payments','Planned'],
+  ['planned','↗','Expenses','Planned'],
+  ['planned','▥','Reports','Planned'],
+  ['backup','⚙','Backup','Live']
+ ];
+ return '<div class="dashHeader"><div><h1 class="h1">Your shop at a glance</h1><p class="sub">Daily tailoring workspace · '+today()+'</p></div><div class="dashLegend">One-screen dashboard</div></div>'+
+ '<div class="dashWorkspace">'+
+  '<section class="statusTiles">'+cards.map(x=>'<button class="statusTile '+x[4]+'" data-dash="'+x[0]+'"><div class="tileText"><span class="tileLabel">'+x[1]+'</span><strong>'+x[2]+'</strong><small>'+x[3]+'</small></div><div class="tileArt">'+dashSVG(x[0])+'</div></button>').join('')+'</section>'+
+  '<section class="moduleSection"><div class="moduleTitle"><b>Business modules</b><span>Space reserved for the modules already planned</span></div><div class="moduleGrid">'+modules.map(m=>m[0]==='planned'?'<button class="moduleTile planned" data-module="'+m[2]+'"><span class="moduleIcon">'+m[1]+'</span><b>'+m[2]+'</b><small>'+m[3]+'</small></button>':'<button class="moduleTile" data-nav="'+m[0]+'"><span class="moduleIcon">'+m[1]+'</span><b>'+m[2]+'</b><small>'+m[3]+'</small></button>').join('')+'</div></section>'+
+  '<section class="nextBar"><div><span class="miniLabel">NEXT COLLECTIONS</span><b>Upcoming customer handovers</b></div><div class="nextBarOrders">'+nextCollectionsCompact()+'</div><button class="miniAction" data-nav="orders">View all →</button></section>'+
+ '</div>'
+}
+function nextCollectionsCompact(){
+ const list=orders.filter(o=>o.status!=='Delivered'&&o.delivery).sort((a,b)=>a.delivery.localeCompare(b.delivery)).slice(0,2);
+ if(!list.length)return'<span class="nextEmpty">No upcoming collections</span>';
+ return list.map(o=>'<button class="nextChip" data-open="'+o.id+'"><b>'+esc(o.customer)+'</b><span>'+esc(titleFor(o.garment))+' · '+esc(o.delivery)+'</span></button>').join('')
 }
 function nextCollections(){const list=orders.filter(o=>o.status!=='Delivered'&&o.delivery).sort((a,b)=>a.delivery.localeCompare(b.delivery)).slice(0,5);if(!list.length)return'<div class="empty"><div><div style="font-size:30px">✂</div><h3>No orders yet</h3><p>Create your first customer order to get started.</p></div></div>';return'<div class="orders">'+list.map(orderCard).join('')+'</div>'}
 function newOrder(){
@@ -161,9 +189,26 @@ function styleStep(){
 function styleCard(kind,val,on){return '<button class="styleCard '+(on?'active':'')+'" data-style="'+kind+'" data-value="'+val+'">'+styleSVG(kind,val)+'<div>'+val+'</div></button>'}
 function sel(k,arr){return '<select id="'+k+'">'+arr.map(v=>'<option '+(draft.style[k]===v?'selected':'')+'>'+v+'</option>').join('')+'</select>'}
 function titleFor(k){for(const group of Object.values(cats)){const f=group.find(x=>x[0]===k);if(f)return f[1]}return 'Garment'}
+function measureSection(field){
+ const s=String(field||'').toLowerCase();
+ if(/neck|கழுத்து/.test(s))return'Neck';
+ if(/sleeve|bicep|cuff|armhole/.test(s))return'Sleeve';
+ return'Body'
+}
+function fieldsForMeasureTab(group,tab){
+ const all=measureSets[group]||[];
+ const f=all.filter(x=>measureSection(x)===tab);
+ return f.length?f:(tab==='Body'?all:[])
+}
 function measureStep(){
- const group=garmentGroup(draft.garment);const fields=measureSets[group];if(!fields.includes(activeMeasure))activeMeasure=fields[0];
- return '<h2 class="sectionTitle">'+titleFor(draft.garment)+' measurements</h2><p class="sub">Measurement values stay exactly as you enter them. The selected design is only a visual reference; the technical diagram highlights the measurement area.</p><div class="measureTabs"><button class="active">▣ Body</button><button>◩ Sleeve</button><button>⌁ Neck</button></div><div class="measureLayout"><div><div class="measureList">'+fields.map(f=>'<div class="field"><label>'+f+'</label><input class="measureInput" data-measure="'+f+'" inputmode="decimal" value="'+esc(draft.measurements[f]||'')+'" /></div>').join('')+'</div><button class="pill" id="extraMeasure" style="margin-top:12px">＋ Add extra measurement</button></div><aside class="diagram"><div class="measureRefTitle"><span>Selected design</span><b>'+titleFor(draft.garment)+'</b></div><div class="garmentRef">'+selectedDesignVisual(draft.garment||'blouse')+'</div><div class="activeMeasureTitle"><span>Measuring now</span><b>'+activeMeasure+'</b></div><div id="measureDiagram">'+measureSVG(group,activeMeasure)+'</div><div class="hint">Technical guide only · your saved measurement values do not change when the reference image changes.</div><div class="numPad" id="numPad">'+['7','8','9','4','5','6','1','2','3','.','0','⌫','¼','½','¾'].map(n=>'<button data-num="'+n+'">'+n+'</button>').join('')+'</div></aside></div>'
+ const group=garmentGroup(draft.garment);
+ const available=['Body','Sleeve','Neck'].filter(t=>fieldsForMeasureTab(group,t).length);
+ if(!available.includes(measureTab))measureTab=available[0]||'Body';
+ const fields=fieldsForMeasureTab(group,measureTab);
+ if(!fields.includes(activeMeasure))activeMeasure=fields[0]||'';
+ return '<div class="measureHead"><div><h2 class="sectionTitle">'+titleFor(draft.garment)+' measurements</h2><p class="sub">Only the selected measurement group is shown, so the page stays compact.</p></div><div class="measureTabs">'+['Body','Sleeve','Neck'].map(t=>{const n=fieldsForMeasureTab(group,t).length;return'<button '+(!n?'disabled':'')+' class="'+(measureTab===t?'active':'')+'" data-measuretab="'+t+'">'+(t==='Body'?'▣ ':t==='Sleeve'?'◩ ':'⌁ ')+t+(n?' · '+n:'')+'</button>'}).join('')+'</div></div>'+
+ '<div class="measureLayout compactMeasure"><div class="measureEntry"><div class="measureList compactFields">'+fields.map(f=>'<div class="field"><label>'+f+'</label><input class="measureInput" data-measure="'+f+'" inputmode="decimal" value="'+esc(draft.measurements[f]||'')+'" /></div>').join('')+'</div><button class="pill compactAdd" id="extraMeasure">＋ Extra measurement</button></div>'+
+ '<aside class="diagram compactDiagram"><div class="compactVisualTop"><div><div class="measureRefTitle"><span>Selected design</span><b>'+titleFor(draft.garment)+'</b></div><div class="garmentRef">'+selectedDesignVisual(draft.garment||'blouse')+'</div></div><div><div class="activeMeasureTitle"><span>Measuring now</span><b>'+activeMeasure+'</b></div><div id="measureDiagram">'+measureSVG(group,activeMeasure)+'</div></div></div><div class="numPad compactPad">'+['7','8','9','4','5','6','1','2','3','.','0','⌫','¼','½','¾'].map(n=>'<button data-num="'+n+'">'+n+'</button>').join('')+'</div></aside></div>'
 }
 function chargesStep(){const total=Number(draft.stitching||0)+Number(draft.aariCharge||0), paid=Number(draft.advance||0), bal=Math.max(0,total-paid);return '<h2 class="sectionTitle">Charges + Dates / கட்டணம் + தேதி</h2><div class="form2"><div class="field"><label>Stitching charge (RM)</label><input id="stitching" inputmode="decimal" value="'+esc(draft.stitching)+'" /></div><div class="field"><label>Aari / extra charge (RM)</label><input id="aariCharge" inputmode="decimal" value="'+esc(draft.aariCharge)+'" /></div><div class="field"><label>Advance / paid (RM)</label><input id="advance" inputmode="decimal" value="'+esc(draft.advance)+'" /></div><div class="field"><label>Delivery date *</label><input id="delivery" type="date" value="'+esc(draft.delivery)+'" /></div></div><div class="panel" style="margin-top:16px;background:#edf8f6"><div class="row"><span>Total</span><b>'+money(total)+'</b></div><div class="row"><span>Paid</span><b>'+money(paid)+'</b></div><div class="row"><span>Balance</span><b class="money">'+money(bal)+'</b></div></div>'}
 function reviewStep(){const total=Number(draft.stitching||0)+Number(draft.aariCharge||0), paid=Number(draft.advance||0);return '<h2 class="sectionTitle">Review order / சரிபார்ப்பு</h2><div class="summary"><div class="row"><span>Customer</span><b>'+esc(draft.customer)+'</b></div><div class="row"><span>Phone</span><b>'+esc(draft.phone||'—')+'</b></div><div class="row"><span>Dress</span><b>'+esc(titleFor(draft.garment))+'</b></div><div class="row"><span>Style</span><b>'+esc(draft.style.sleeve)+' · '+esc(draft.style.neck)+'</b></div><div class="row"><span>Measurements</span><b>'+Object.keys(draft.measurements).filter(k=>draft.measurements[k]).length+' saved</b></div><div class="row"><span>Delivery</span><b>'+esc(draft.delivery)+'</b></div><div class="row"><span>Total</span><b>'+money(total)+'</b></div><div class="row"><span>Paid</span><b>'+money(paid)+'</b></div><div class="row"><span>Balance</span><b class="money">'+money(total-paid)+'</b></div></div>'}
@@ -172,8 +217,9 @@ function orderCard(o){const total=Number(o.stitching||0)+Number(o.aariCharge||0)
 function backup(){return '<h1 class="h1">Backup</h1><p class="sub">Keep a copy before clearing browser data.</p><section class="panel"><div class="quick"><button class="btn primary" id="exportBtn">Export backup JSON</button><button class="btn secondary" id="restoreBtn">Restore backup</button></div><p>'+orders.length+' order(s) currently saved on this device.</p></section>'}
 function bindPage(){
  if(page==='dashboard'){
-  $$('[data-dash]').forEach(b=>b.onclick=()=>{const t=b.dataset.dash;if(t==='new'){page='new';step=1;draft=freshDraft()}else{page='orders'}render()});
-  $$('[data-filter]').forEach(b=>b.onclick=()=>{page='orders';render();setTimeout(()=>{const val=b.dataset.filter;filterOrders(val==='progress'?'In Progress':val==='pending'?'New':'all')},0)})
+  $('[data-dash]').forEach(b=>b.onclick=()=>{const t=b.dataset.dash;if(t==='new'){page='new';step=1;draft=freshDraft()}else{page='orders'}render()});
+  $('[data-module]').forEach(b=>b.onclick=()=>toast(b.dataset.module+' module is reserved for the next build'));
+  $('[data-open]').forEach(b=>b.onclick=()=>openOrder(b.dataset.open));
  }
  if(page==='new')bindNew();
  if(page==='orders'){
@@ -188,7 +234,7 @@ function bindNew(){
  const back=$('#backBtn'),next=$('#nextBtn');back.onclick=()=>{if(step>1){captureStep();step--;render()}else{page='dashboard';render()}};next.onclick=()=>{captureStep();if(!validateStep())return;if(step<6){step++;render()}else saveOrder()};
  if(step===2){$$('[data-cat]').forEach(b=>b.onclick=()=>{captureStep();cat=b.dataset.cat;draft.category=cat;render()});$$('[data-garment]').forEach(b=>b.onclick=()=>{draft.garment=b.dataset.garment;saveDraft();render()});$('#photoInput').onchange=handlePhotos;$('#voiceBtn').onclick=voiceToText;$('#recordBtn').onclick=recordAudio}
  if(step===3)$$('[data-style]').forEach(b=>b.onclick=()=>{draft.style[b.dataset.style]=b.dataset.value;saveDraft();render()});
- if(step===4){$$('.measureInput').forEach(i=>{i.onfocus=()=>{activeMeasure=i.dataset.measure;$('#measureDiagram').innerHTML=measureSVG(garmentGroup(draft.garment),activeMeasure)};i.oninput=()=>{draft.measurements[i.dataset.measure]=i.value;saveDraft()}});let focus=null;$$('.measureInput').forEach(i=>i.addEventListener('focus',()=>focus=i));$$('[data-num]').forEach(b=>b.onclick=()=>{if(!focus){focus=$('.measureInput');focus.focus()}let v=focus.value,n=b.dataset.num;if(n==='⌫')v=v.slice(0,-1);else if(['¼','½','¾'].includes(n))v+=n;else v+=n;focus.value=v;draft.measurements[focus.dataset.measure]=v;saveDraft()});$('#extraMeasure').onclick=()=>{const name=prompt('Extra measurement name');if(name){measureSets[garmentGroup(draft.garment)].push(name);render()}}}
+ if(step===4){$('[data-measuretab]').forEach(b=>b.onclick=()=>{if(b.disabled)return;measureTab=b.dataset.measuretab;const fs=fieldsForMeasureTab(garmentGroup(draft.garment),measureTab);activeMeasure=fs[0]||'';render()});$('.measureInput').forEach(i=>{i.onfocus=()=>{activeMeasure=i.dataset.measure;const d=$('#measureDiagram');if(d)d.innerHTML=measureSVG(garmentGroup(draft.garment),activeMeasure);const t=$('.activeMeasureTitle b');if(t)t.textContent=activeMeasure};i.oninput=()=>{draft.measurements[i.dataset.measure]=i.value;saveDraft()}});let focus=null;$('.measureInput').forEach(i=>i.addEventListener('focus',()=>focus=i));$('[data-num]').forEach(b=>b.onclick=()=>{if(!focus){focus=$('.measureInput');if(!focus)return;focus.focus()}let v=focus.value,n=b.dataset.num;if(n==='⌫')v=v.slice(0,-1);else v+=n;focus.value=v;draft.measurements[focus.dataset.measure]=v;saveDraft()});$('#extraMeasure').onclick=()=>{const name=prompt('Extra measurement name');if(name){measureSets[garmentGroup(draft.garment)].push(name);render()}}}
 }
 function captureStep(){
  if(step===1){draft.customer=$('#customer')?.value.trim()||draft.customer;draft.phone=$('#phone')?.value.trim()||draft.phone}
@@ -206,7 +252,7 @@ async function handlePhotos(e){const fs=[...e.target.files].slice(0,3-(draft.pho
 function compressImage(file){return new Promise(res=>{const rd=new FileReader();rd.onload=()=>{const img=new Image();img.onload=()=>{const s=Math.min(1,800/img.width);const c=document.createElement('canvas');c.width=Math.round(img.width*s);c.height=Math.round(img.height*s);c.getContext('2d').drawImage(img,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',.72))};img.src=rd.result};rd.readAsDataURL(file)})}
 function voiceToText(){const R=window.SpeechRecognition||window.webkitSpeechRecognition;if(!R){toast('Voice-to-text not supported in this browser');return}const r=new R();r.lang='ta-IN';r.interimResults=false;r.onresult=e=>{draft.designNotes=(draft.designNotes?draft.designNotes+' ':'')+e.results[0][0].transcript;saveDraft();render()};r.onerror=()=>toast('Voice recognition failed');r.start();toast('Listening…')}
 let recorder=null,chunks=[];async function recordAudio(){if(recorder&&recorder.state==='recording'){recorder.stop();return}try{const stream=await navigator.mediaDevices.getUserMedia({audio:true});recorder=new MediaRecorder(stream);chunks=[];recorder.ondataavailable=e=>chunks.push(e.data);recorder.onstop=()=>{draft.voiceNote='Audio note recorded ('+Math.round(chunks.reduce((a,b)=>a+b.size,0)/1024)+' KB)';stream.getTracks().forEach(t=>t.stop());saveDraft();render()};recorder.start();$('#voiceState').textContent='Recording… tap Record audio again to stop'}catch(e){toast('Microphone permission is required')}}
-function exportBackup(){const blob=new Blob([JSON.stringify({version:23,exported:new Date().toISOString(),orders},null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='SK-Tailoring-backup-'+today()+'.json';a.click();URL.revokeObjectURL(a.href)}
+function exportBackup(){const blob=new Blob([JSON.stringify({version:24,exported:new Date().toISOString(),orders},null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='SK-Tailoring-backup-'+today()+'.json';a.click();URL.revokeObjectURL(a.href)}
 $('#restoreInput').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const j=JSON.parse(r.result);if(!Array.isArray(j.orders))throw 0;orders=j.orders;saveOrders();toast('Backup restored');page='dashboard';render()}catch(err){toast('Invalid backup file')}};r.readAsText(f)});
 if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
 render();
