@@ -1970,3 +1970,57 @@ html,body{max-width:100%;overflow-x:hidden}
     grid-template-columns:1fr;
   }
 }
+
+
+/* v32 customer search visibility fix */
+.page-new .orderStep1{
+  max-height:none!important;
+  overflow:visible!important;
+}
+.customerStepV31{
+  overflow:visible!important;
+}
+.customerLookup{
+  overflow:visible!important;
+}
+.customerSuggestions{
+  position:static!important;
+  margin-top:6px;
+  max-height:190px;
+  overflow:auto;
+  box-shadow:none;
+  border:1px solid #dce7e2;
+  background:#fff;
+}
+.customerSuggestions[hidden]{
+  display:none!important;
+}
+.customerMatchHint{
+  display:flex;
+  flex-direction:column;
+  gap:3px;
+  padding:10px;
+  border:1px solid #dbe7e2;
+  border-radius:10px;
+  background:#fff;
+}
+.customerMatchHint span{
+  font-size:8px;
+  color:#6f8280;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+}
+.customerMatchHint b{
+  font-size:11px;
+}
+.customerMatchHint small{
+  font-size:9px;
+  color:#718482;
+}
+.customerMatchHint em{
+  margin-top:3px;
+  font-size:8px;
+  color:#0b7778;
+  font-style:normal;
+  font-weight:700;
+}
