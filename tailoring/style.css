@@ -2457,3 +2457,142 @@ html,body{max-width:100%;overflow-x:hidden}
   .referenceDetails summary{align-items:flex-start;flex-direction:column;gap:2px}
   .reviewStyleSummary{max-width:62%;font-size:9px}
 }
+
+
+/* v36 approved-preview alignment */
+.dressV36{display:grid;gap:10px}
+.dressTopV36{display:flex;align-items:flex-end;justify-content:space-between;gap:14px}
+.dressToolsV36{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+.garmentSearchBox{
+  min-width:190px;display:flex;align-items:center;gap:6px;border:1px solid #d7e2dd;
+  background:#fff;border-radius:10px;padding:7px 10px;color:#0b7778
+}
+.garmentSearchBox input{border:0;outline:0;background:transparent;min-width:0;width:100%;font-size:10px}
+.previewGallery{
+  display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:8px!important
+}
+.previewGallery .garmentVisualCard{
+  min-width:0!important;background:#fff;border-radius:13px!important;padding:7px!important;
+  box-shadow:0 3px 12px rgba(16,75,76,.05)
+}
+.previewGallery .garmentVisualArt{height:145px!important;border-radius:10px!important;overflow:hidden}
+.previewGallery .garmentVisualArt svg{width:100%;height:100%;display:block}
+.previewGallery .garmentVisualLabel{padding:7px 3px 2px!important}
+.previewGallery .garmentVisualLabel b{font-size:10px!important}
+.previewGallery .garmentVisualLabel span{font-size:8px!important}
+.emptySearch{padding:30px;text-align:center;color:#70817e}
+
+/* Style screen close to approved preview */
+.styleV34,.styleV35,.styleV36{gap:9px}
+.styleHero{
+  grid-template-columns:270px minmax(0,1fr)!important;
+  background:#fff!important;border:1px solid #d9e5df!important;padding:9px!important
+}
+.styleHeroArt{height:260px!important;background:#fff8ee!important}
+.styleHeroInfo{align-self:center}
+.styleGroupsV34{grid-template-columns:1fr!important}
+.visualOptionGroup{padding:9px!important;background:#fff!important}
+.visualOptionGridV34{
+  display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:7px!important
+}
+.styleGarmentThumb{height:120px;overflow:hidden;border-radius:9px;background:#fff8ee}
+.styleGarmentThumb svg{width:100%;height:100%;display:block}
+.visualOptionGridV34 .visualOption svg{height:100%!important}
+.visualOptionGridV34 .visualOption>div:last-of-type{font-size:9px!important;padding-top:5px}
+.visualOption.active::after{content:"✓ SELECTED"!important;top:5px!important;left:5px!important}
+.styleV34 .styleSelectGrid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+
+/* Measurement screen: fields + large live garment */
+.measureV34{gap:10px}
+.measureHeadV34{align-items:flex-end}
+.measureLayoutV34{grid-template-columns:minmax(0,.95fr) minmax(430px,1.05fr)!important}
+.measurePreviewV34{
+  grid-column:2;grid-row:1;position:sticky!important;top:8px!important;background:#fff!important
+}
+.measureEntryV34{grid-column:1;grid-row:1}
+.measurePreviewV34 .liveGarmentCanvas{height:430px!important;background:#fff8ee;border-radius:12px}
+.measureViewTabs{display:flex;gap:5px;margin-bottom:7px}
+.measureViewTabs button{
+  border:1px solid #cfe0da;border-radius:8px;background:#f3f8f5;padding:6px 10px;font-size:8px;color:#365d5b
+}
+.measureViewTabs button.active{background:#0b8587;color:#fff;border-color:#0b8587}
+.measureOverlay,.garmentBase{position:absolute;inset:0;width:100%;height:100%}
+.liveGarmentCanvas{position:relative;overflow:hidden}
+.measureLiveLabel{
+  display:flex;justify-content:space-between;gap:8px;align-items:center;
+  margin-top:7px;padding:8px 10px;border-radius:9px;background:#eef8f6
+}
+.measureLiveLabel span{font-size:8px;color:#607977}.measureLiveLabel b{font-size:12px}
+.measureListV34{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+.measureFieldCard input{font-size:12px!important}
+
+/* Charges like preview */
+.chargesV36{display:grid;gap:12px}
+.chargesHead{display:flex;justify-content:space-between;align-items:flex-end;gap:12px}
+.chargeTotalHero{
+  min-width:150px;border-radius:14px;background:#e8f7f4;border:1px solid #cfe5df;padding:10px 14px;text-align:right
+}
+.chargeTotalHero span{display:block;font-size:8px;color:#65807d}
+.chargeTotalHero b{display:block;font-size:22px;color:#0b5f63;margin-top:3px}
+.chargeFieldsV36{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;
+  border:1px solid #dde7e2;border-radius:15px;background:#fff;padding:11px
+}
+.chargeBalanceCard{
+  border-radius:11px;background:#fff3d9;border:1px solid #f0ddab;padding:9px 11px;display:grid;align-content:center
+}
+.chargeBalanceCard span{font-size:8px;color:#7d6a42}.chargeBalanceCard b{font-size:18px}.chargeBalanceCard small{font-size:8px}
+.chargeNotes{grid-column:span 2}
+
+/* Review visual */
+.reviewWorkspace{align-items:stretch!important}
+.reviewMoney{background:#fff!important}
+.reviewGarment{height:250px!important;background:#fff8ee;border-radius:12px;overflow:hidden}
+.reviewGarment svg{width:100%;height:100%}
+
+/* Sidebar preview alignment */
+.side .nav [data-nav="customers"]{display:block}
+
+@media(max-width:1050px){
+  .previewGallery{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+  .measureLayoutV34{grid-template-columns:1fr 1fr!important}
+  .measurePreviewV34 .liveGarmentCanvas{height:360px!important}
+}
+@media(max-width:900px){
+  .dressTopV36{display:grid;gap:8px}
+  .dressToolsV36{justify-content:stretch}
+  .garmentSearchBox{flex:1;min-width:100%}
+  .previewGallery{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .previewGallery .garmentVisualArt{height:185px!important}
+  .styleHero{grid-template-columns:1fr!important}
+  .styleHeroArt{height:310px!important}
+  .visualOptionGridV34{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .styleGarmentThumb{height:150px}
+  .styleV34 .styleSelectGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .measureLayoutV34{grid-template-columns:1fr!important}
+  .measurePreviewV34,.measureEntryV34{grid-column:1!important;grid-row:auto!important}
+  .measurePreviewV34{order:2;position:static!important}
+  .measureEntryV34{order:1}
+  .measurePreviewV34 .liveGarmentCanvas{height:400px!important}
+  .chargeFieldsV36{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .chargeNotes{grid-column:span 2}
+}
+@media(max-width:640px){
+  .previewGallery .garmentVisualArt{height:155px!important}
+  .previewGallery .garmentVisualLabel b{font-size:11px!important}
+  .categoryVisualTabs{width:100%;grid-template-columns:repeat(4,minmax(0,1fr))!important}
+  .styleHeroArt{height:280px!important}
+  .styleGarmentThumb{height:120px}
+  .measurePreviewV34 .liveGarmentCanvas{height:330px!important}
+  .measureListV34{grid-template-columns:1fr 1fr!important}
+  .chargesHead{display:grid}
+  .chargeTotalHero{text-align:left}
+  .chargeFieldsV36{grid-template-columns:1fr 1fr}
+}
+@media(max-width:430px){
+  .previewGallery .garmentVisualArt{height:138px!important}
+  .styleHeroArt{height:245px!important}
+  .styleGarmentThumb{height:105px}
+  .measurePreviewV34 .liveGarmentCanvas{height:290px!important}
+  .measureFieldCard span{font-size:8px!important}
+}
