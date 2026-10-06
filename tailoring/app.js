@@ -310,7 +310,7 @@ function liveMeasureSVG(k,measurements={},activeField=''){
  return '<div class="liveMeasureSvg"><div class="liveGarmentCanvas">'+base.replace('<svg ','<svg class="garmentBase" ')+'<svg class="measureOverlay" viewBox="0 0 240 220" xmlns="http://www.w3.org/2000/svg"><style>.dim{stroke:#E05A4F;stroke-width:4;fill:none;stroke-linecap:round}.arrow{fill:#E05A4F}</style>'+guide+'</svg></div><div class="measureLiveLabel"><span>'+label+'</span><b>'+value+'</b></div><small>Visual preview only — final cutting follows tailor measurements.</small></div>'
 }
 
-function installGlobalRouter()function installGlobalRouter(){
+function installGlobalRouter(){
  if(window.__skTailoringRouterInstalled)return;
  window.__skTailoringRouterInstalled=true;
  document.addEventListener('click',e=>{
@@ -449,7 +449,7 @@ function measureStep(){
  '<aside class="dynamicPreviewPanel"><div class="dynamicPreviewHead"><div><span class="miniLabel">LIVE MEASUREMENT PREVIEW</span><b>'+esc(titleFor(g))+'</b></div><span class="activeMeasurementChip">'+esc(activeMeasure||'Select a field')+'</span></div><div id="measureDiagram">'+liveMeasureSVG(g,draft.measurements,activeMeasure)+'</div><div class="keypadArea"><div class="numPad standardPad">'+['7','8','9','4','5','6','1','2','3','.','0','⌫'].map(n=>'<button type="button" data-num="'+n+'">'+n+'</button>').join('')+'</div><div class="fractionBar">'+['¼','½','¾'].map(n=>'<button type="button" data-num="'+n+'">'+n+'</button>').join('')+'</div></div></aside></div></div>'
 }
 
-function chargesStep()function chargesStep(){
+function chargesStep(){
  const total=Number(draft.stitching||0)+Number(draft.aariCharge||0),paid=Number(draft.advance||0),bal=Math.max(0,total-paid);
  return '<div class="chargesWorkspace"><div><h2 class="sectionTitle">Charges + Dates / கட்டணம் + தேதி</h2><p class="sub">Enter charges and collection date. Totals update immediately.</p><div class="chargeFields"><div class="field"><label>Stitching charge (RM)</label><input id="stitching" inputmode="decimal" value="'+esc(draft.stitching)+'" /></div><div class="field"><label>Aari / extra charge (RM)</label><input id="aariCharge" inputmode="decimal" value="'+esc(draft.aariCharge)+'" /></div><div class="field"><label>Advance / paid (RM)</label><input id="advance" inputmode="decimal" value="'+esc(draft.advance)+'" /></div><div class="field"><label>Delivery date *</label><input id="delivery" type="date" value="'+esc(draft.delivery)+'" /></div></div></div><aside class="chargeSummary"><div><span>Total</span><b id="chargeTotal">'+money(total)+'</b></div><div><span>Paid</span><b id="chargePaid">'+money(paid)+'</b></div><div class="balanceBox"><span>Balance</span><b id="chargeBalance">'+money(bal)+'</b></div><small id="chargeWarning"></small></aside></div>'
 }
