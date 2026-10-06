@@ -39,7 +39,7 @@ const measureSets={
 function garmentGroup(k){if(!k)return'blouse';if(/blouse/.test(k))return'blouse';if(/shirt|school/.test(k))return'shirt';if(/trouser|palazzo|short/.test(k))return'trousers';if(/kurta|sherwani/.test(k))return'kurta';if(/skirt|petticoat|veshti|saree|fall-pico/.test(k))return'skirt';if(/alter/.test(k))return'alteration';return'dress'}
 function root(){return $('#app')}
 function toast(t){const d=document.createElement('div');d.className='toast';d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),2200)}
-function shell(content){return '<div class="app"><aside class="side" id="side"><div><div class="brand">✂ SK Tailoring</div><small>SHOP WORKSPACE</small></div><nav class="nav">'+navBtn('dashboard','▦ Dashboard')+navBtn('new','＋ New Order')+navBtn('orders','▤ Work Orders')+navBtn('backup','⚙ Backup')+'</nav><div class="made">Made for your daily craft.</div></aside><main class="main page-'+page+'"><div class="mobileTop"><button class="pill" id="menuBtn">☰ Menu</button><b>✂ SK Tailoring</b></div><div class="topline"><div class="eyebrow">SK SECURE TECH / TAILORING</div><div class="status">● Online · Saved on this device</div></div>'+content+'<div class="copyright">Device version v30 · orders save in this browser. Export a backup before clearing browser data.</div></main></div>'}
+function shell(content){return '<div class="app"><aside class="side" id="side"><div><div class="brand">✂ SK Tailoring</div><small>SHOP WORKSPACE</small></div><nav class="nav">'+navBtn('dashboard','▦ Dashboard')+navBtn('new','＋ New Order')+navBtn('orders','▤ Work Orders')+navBtn('backup','⚙ Backup')+'</nav><div class="made">Made for your daily craft.</div></aside><main class="main page-'+page+'"><div class="mobileTop"><button class="pill" id="menuBtn">☰ Menu</button><b>✂ SK Tailoring</b></div><div class="topline"><div class="eyebrow">SK SECURE TECH / TAILORING</div><div class="status">● Online · Saved on this device</div></div>'+content+'<div class="copyright">Device version v31 · orders save in this browser. Export a backup before clearing browser data.</div></main></div>'}
 function navBtn(p,label){return '<button data-nav="'+p+'" class="'+(page===p?'active':'')+'">'+label+'</button>'}
 function bindShell(){ $$('[data-nav]').forEach(b=>b.onclick=()=>{page=b.dataset.nav;if(page==='new'){editingOrderId=null;step=1;draft=freshDraft();saveDraft()}const s=$('#side');if(s)s.classList.remove('open');render()}); const m=$('#menuBtn');if(m)m.onclick=()=>$('#side').classList.toggle('open') }
 function dashSVG(type){
@@ -191,7 +191,47 @@ function newOrder(){
  return '<div class="orderFlowHead"><div><h1 class="h1">'+(editingOrderId?'Edit tailoring order':'New tailoring order')+'</h1><p class="sub">Design first · டிசைன் தேர்வு செய்து பிறகு அளவுகள்</p></div>'+(editingOrderId?'<span class="editBadge">Editing existing order</span>':'')+'</div><div class="steps">'+steps.map((s,i)=>'<div class="step '+(step===i+1?'active':'')+'">'+s+'</div>').join('')+'</div><section class="panel orderStep orderStep'+step+'">'+stepContent()+'</section><div class="actions orderActions"><button class="btn secondary" id="backBtn">← Back</button><button class="btn primary" id="nextBtn">'+(step===6?(editingOrderId?'Update Order':'Confirm & Save'):'Continue →')+'</button></div>'
 }
 function stepContent(){if(step===1)return customerStep();if(step===2)return dressStep();if(step===3)return styleStep();if(step===4)return measureStep();if(step===5)return chargesStep();return reviewStep()}
-function customerStep(){return '<h2 class="sectionTitle">Customer / வாடிக்கையாளர்</h2><div class="form2"><div class="field"><label>Customer name *</label><input id="customer" value="'+esc(draft.customer)+'" placeholder="Name" /></div><div class="field"><label>Phone</label><input id="phone" inputmode="tel" value="'+esc(draft.phone)+'" placeholder="Phone number" /></div></div><p class="sub" style="margin-top:15px">Previous customer can be selected later from saved orders; this device keeps local order history.</p>'}
+function normText(v){return String(v||'').trim().toLowerCase()}
+function customerDirectory(){
+ const map=new Map();
+ orders.forEach(o=>{
+  const name=String(o.customer||'').trim();if(!name)return;
+  const phone=String(o.phone||'').trim();
+  const key=normText(name)+'|'+phone.replace(/\D/g,'');
+  if(!map.has(key))map.set(key,{key,name,phone,orders:[],last:''});
+  const c=map.get(key);c.orders.push(o);
+  const d=o.delivery||o.created||'';if(d>c.last)c.last=d
+ });
+ return [...map.values()].sort((a,b)=>(b.last||'').localeCompare(a.last||'')||a.name.localeCompare(b.name))
+}
+function customerMatches(q){
+ const s=normText(q), digits=String(q||'').replace(/\D/g,'');
+ const all=customerDirectory();
+ if(!s&&!digits)return all.slice(0,6);
+ return all.filter(c=>normText(c.name).includes(s)||(digits&&c.phone.replace(/\D/g,'').includes(digits))).slice(0,8)
+}
+function matchingCustomerHistory(name,phone){
+ const n=normText(name),p=String(phone||'').replace(/\D/g,'');
+ if(!n)return[];
+ return orders.filter(o=>normText(o.customer)===n&&(!p||String(o.phone||'').replace(/\D/g,'')===p))
+  .sort((a,b)=>String(b.delivery||b.created||'').localeCompare(String(a.delivery||a.created||'')))
+}
+function customerSuggestionHTML(list){
+ if(!list.length)return '<div class="customerNoMatch">No previous customer found</div>';
+ return list.map((c,i)=>{
+  const last=c.orders.slice().sort((a,b)=>String(b.delivery||b.created||'').localeCompare(String(a.delivery||a.created||'')))[0];
+  return '<button type="button" class="customerSuggestion" data-customer-key="'+esc(c.key)+'"><span class="customerInitial">'+esc(c.name.charAt(0).toUpperCase())+'</span><span class="customerSuggestionMain"><b>'+esc(c.name)+'</b><small>'+esc(c.phone||'No phone')+'</small></span><span class="customerSuggestionMeta"><b>'+c.orders.length+' order'+(c.orders.length===1?'':'s')+'</b><small>'+esc(last?titleFor(last.garment):'')+'</small></span></button>'
+ }).join('')
+}
+function customerHistoryHTML(name,phone){
+ const list=matchingCustomerHistory(name,phone).slice(0,4);
+ if(!list.length)return '<div class="customerHistoryEmpty">No previous orders for this customer.</div>';
+ return '<div class="customerHistoryList">'+list.map(o=>'<div class="customerHistoryRow"><div><b>'+esc(titleFor(o.garment))+'</b><small>'+esc(o.delivery||o.created||'No date')+'</small></div><span class="badge">'+esc(o.status||'New')+'</span><div><span>Paid</span><b>'+money(o.advance||0)+'</b></div></div>').join('')+'</div>'
+}
+function customerStep(){
+ const hist=customerHistoryHTML(draft.customer,draft.phone);
+ return '<div class="customerStepV31"><div class="customerEntry"><h2 class="sectionTitle">Customer / வாடிக்கையாளர்</h2><p class="sub">Type a previous customer name or phone to search saved order history.</p><div class="form2"><div class="field customerLookup"><label>Customer name *</label><input id="customer" autocomplete="off" value="'+esc(draft.customer)+'" placeholder="Start typing name" /><div id="customerSuggestions" class="customerSuggestions" hidden></div></div><div class="field"><label>Phone</label><input id="phone" inputmode="tel" autocomplete="off" value="'+esc(draft.phone)+'" placeholder="Phone number" /></div></div></div><aside class="previousCustomerPanel"><div class="previousCustomerHead"><div><span class="miniLabel">PREVIOUS CUSTOMER</span><h3>Order history</h3></div><span id="historyCount" class="historyCount">'+matchingCustomerHistory(draft.customer,draft.phone).length+' saved</span></div><div id="customerHistory">'+hist+'</div></aside></div>'
+}
 function dressStep(){
  const garments=cats[cat];
  return '<div class="dressWorkspace"><section class="dressPicker"><div class="stepSectionHead"><div><h2 class="sectionTitle">Choose dress / உடை தேர்வு</h2><p class="sub">Select a category, then choose the garment.</p></div><div class="tabs compactTabs">'+Object.keys(cats).map(k=>'<button type="button" class="tab '+(cat===k?'active':'')+'" data-cat="'+k+'">'+catLabels[k]+'</button>').join('')+'</div></div><div class="garmentViewport"><div class="garmentGridCompact">'+garments.map(([k,en,ta])=>'<button type="button" class="garmentCompact '+(draft.garment===k?'active':'')+'" data-garment="'+k+'"><div class="garmentThumb">'+garmentSVG(k)+'</div><div class="garmentName"><b>'+en+'</b><span>'+ta+'</span></div>'+(draft.garment===k?'<i>✓</i>':'')+'</button>').join('')+'</div></div></section>'+
@@ -343,6 +383,28 @@ function bindNew(){
   }
  }
 
+ if(step===1){
+  const customer=$('#customer'),phone=$('#phone'),box=$('#customerSuggestions'),history=$('#customerHistory'),count=$('#historyCount');
+  const showSuggestions=()=>{
+   const list=customerMatches(customer.value);
+   box.innerHTML=customerSuggestionHTML(list);
+   box.hidden=false
+  };
+  const refreshHistory=()=>{
+   const list=matchingCustomerHistory(customer.value,phone.value);
+   history.innerHTML=customerHistoryHTML(customer.value,phone.value);
+   count.textContent=list.length+' saved'
+  };
+  customer.addEventListener('focus',showSuggestions);
+  customer.addEventListener('input',()=>{draft.customer=customer.value.trim();saveDraft();showSuggestions();refreshHistory()});
+  phone.addEventListener('input',()=>{draft.phone=phone.value.trim();saveDraft();refreshHistory()});
+  box.addEventListener('click',e=>{
+   const btn=e.target.closest('[data-customer-key]');if(!btn)return;
+   const c=customerDirectory().find(x=>x.key===btn.dataset.customerKey);if(!c)return;
+   customer.value=c.name;phone.value=c.phone;draft.customer=c.name;draft.phone=c.phone;saveDraft();box.hidden=true;refreshHistory()
+  });
+  document.addEventListener('click',e=>{if(!e.target.closest('.customerLookup'))box.hidden=true},{once:true,capture:true})
+ }
  if(step===2){
   $('#photoInput').onchange=handlePhotos;
   $('#voiceBtn').onclick=voiceToText;
@@ -397,7 +459,7 @@ function compressImage(file){return new Promise(res=>{const rd=new FileReader();
 function voiceToText(){const R=window.SpeechRecognition||window.webkitSpeechRecognition;if(!R){toast('Voice-to-text not supported in this browser');return}const r=new R();r.lang='ta-IN';r.interimResults=false;r.onresult=e=>{draft.designNotes=(draft.designNotes?draft.designNotes+' ':'')+e.results[0][0].transcript;saveDraft();render()};r.onerror=()=>toast('Voice recognition failed');r.start();toast('Listening…')}
 let recorder=null,chunks=[];async function recordAudio(){if(recorder&&recorder.state==='recording'){recorder.stop();return}try{const stream=await navigator.mediaDevices.getUserMedia({audio:true});recorder=new MediaRecorder(stream);chunks=[];recorder.ondataavailable=e=>chunks.push(e.data);recorder.onstop=()=>{draft.voiceNote='Audio note recorded ('+Math.round(chunks.reduce((a,b)=>a+b.size,0)/1024)+' KB)';stream.getTracks().forEach(t=>t.stop());saveDraft();render()};recorder.start();$('#voiceState').textContent='Recording… tap Record audio again to stop'}catch(e){toast('Microphone permission is required')}}
 function exportBackup(){
- const blob=new Blob([JSON.stringify({version:30,exported:new Date().toISOString(),orders,expenses},null,2)],{type:'application/json'}),a=document.createElement('a');
+ const blob=new Blob([JSON.stringify({version:31,exported:new Date().toISOString(),orders,expenses},null,2)],{type:'application/json'}),a=document.createElement('a');
  a.href=URL.createObjectURL(blob);a.download='SK-Tailoring-backup-'+today()+'.json';a.click();URL.revokeObjectURL(a.href)
 }
 $('#restoreInput').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const j=JSON.parse(r.result);if(!Array.isArray(j.orders))throw 0;orders=j.orders;expenses=Array.isArray(j.expenses)?j.expenses:[];saveOrders();saveExpenses();toast('Backup restored');page='dashboard';render()}catch(err){toast('Invalid backup file')}};r.readAsText(f)});
