@@ -39,7 +39,7 @@ const measureSets={
 function garmentGroup(k){if(!k)return'blouse';if(/blouse/.test(k))return'blouse';if(/shirt|school/.test(k))return'shirt';if(/trouser|palazzo|short/.test(k))return'trousers';if(/kurta|sherwani/.test(k))return'kurta';if(/skirt|petticoat|veshti|saree|fall-pico/.test(k))return'skirt';if(/alter/.test(k))return'alteration';return'dress'}
 function root(){return $('#app')}
 function toast(t){const d=document.createElement('div');d.className='toast';d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),2200)}
-function shell(content){return '<div class="app"><aside class="side" id="side"><div><div class="brand">✂ SK Tailoring</div><small>SHOP WORKSPACE</small></div><nav class="nav">'+navBtn('dashboard','▦ Dashboard')+navBtn('new','＋ New Order')+navBtn('orders','▤ Work Orders')+navBtn('backup','⚙ Backup')+'</nav><div class="made">Made for your daily craft.</div></aside><main class="main page-'+page+'"><div class="mobileTop"><button class="pill" id="menuBtn">☰ Menu</button><b>✂ SK Tailoring</b></div><div class="topline"><div class="eyebrow">SK SECURE TECH / TAILORING</div><div class="status">● Online · Saved on this device</div></div>'+content+'<div class="copyright">Device version v28 · orders save in this browser. Export a backup before clearing browser data.</div></main></div>'}
+function shell(content){return '<div class="app"><aside class="side" id="side"><div><div class="brand">✂ SK Tailoring</div><small>SHOP WORKSPACE</small></div><nav class="nav">'+navBtn('dashboard','▦ Dashboard')+navBtn('new','＋ New Order')+navBtn('orders','▤ Work Orders')+navBtn('backup','⚙ Backup')+'</nav><div class="made">Made for your daily craft.</div></aside><main class="main page-'+page+'"><div class="mobileTop"><button class="pill" id="menuBtn">☰ Menu</button><b>✂ SK Tailoring</b></div><div class="topline"><div class="eyebrow">SK SECURE TECH / TAILORING</div><div class="status">● Online · Saved on this device</div></div>'+content+'<div class="copyright">Device version v29 · orders save in this browser. Export a backup before clearing browser data.</div></main></div>'}
 function navBtn(p,label){return '<button data-nav="'+p+'" class="'+(page===p?'active':'')+'">'+label+'</button>'}
 function bindShell(){ $('[data-nav]').forEach(b=>b.onclick=()=>{page=b.dataset.nav;if(page==='new'){editingOrderId=null;step=1;draft=freshDraft();saveDraft()}const s=$('#side');if(s)s.classList.remove('open');render()}); const m=$('#menuBtn');if(m)m.onclick=()=>$('#side').classList.toggle('open') }
 function dashSVG(type){
@@ -179,7 +179,7 @@ function stepContent(){if(step===1)return customerStep();if(step===2)return dres
 function customerStep(){return '<h2 class="sectionTitle">Customer / வாடிக்கையாளர்</h2><div class="form2"><div class="field"><label>Customer name *</label><input id="customer" value="'+esc(draft.customer)+'" placeholder="Name" /></div><div class="field"><label>Phone</label><input id="phone" inputmode="tel" value="'+esc(draft.phone)+'" placeholder="Phone number" /></div></div><p class="sub" style="margin-top:15px">Previous customer can be selected later from saved orders; this device keeps local order history.</p>'}
 function dressStep(){
  const garments=cats[cat];
- return '<div class="dressWorkspace"><section class="dressPicker"><div class="stepSectionHead"><div><h2 class="sectionTitle">Choose dress / உடை தேர்வு</h2><p class="sub">Select a category, then choose the garment.</p></div><div class="tabs compactTabs">'+Object.keys(cats).map(k=>'<button class="tab '+(cat===k?'active':'')+'" data-cat="'+k+'">'+catLabels[k]+'</button>').join('')+'</div></div><div class="garmentViewport"><div class="garmentGridCompact">'+garments.map(([k,en,ta])=>'<button class="garmentCompact '+(draft.garment===k?'active':'')+'" data-garment="'+k+'"><div class="garmentThumb">'+garmentSVG(k)+'</div><div class="garmentName"><b>'+en+'</b><span>'+ta+'</span></div>'+(draft.garment===k?'<i>✓</i>':'')+'</button>').join('')+'</div></div></section>'+
+ return '<div class="dressWorkspace"><section class="dressPicker"><div class="stepSectionHead"><div><h2 class="sectionTitle">Choose dress / உடை தேர்வு</h2><p class="sub">Select a category, then choose the garment.</p></div><div class="tabs compactTabs">'+Object.keys(cats).map(k=>'<button type="button" class="tab '+(cat===k?'active':'')+'" data-cat="'+k+'">'+catLabels[k]+'</button>').join('')+'</div></div><div class="garmentViewport"><div class="garmentGridCompact">'+garments.map(([k,en,ta])=>'<button type="button" class="garmentCompact '+(draft.garment===k?'active':'')+'" data-garment="'+k+'"><div class="garmentThumb">'+garmentSVG(k)+'</div><div class="garmentName"><b>'+en+'</b><span>'+ta+'</span></div>'+(draft.garment===k?'<i>✓</i>':'')+'</button>').join('')+'</div></div></section>'+
  '<aside class="designRefPanel"><div class="designRefTop"><div><span class="miniLabel">CUSTOMER DESIGN</span><h3>Reference & instructions</h3></div>'+(draft.garment?'<span class="selectedGarmentPill">'+esc(titleFor(draft.garment))+'</span>':'')+'</div><div class="field"><label>Design photo (up to 3)</label><input id="photoInput" type="file" accept="image/*" multiple /></div><div class="photos compactPhotos" id="photoPreview">'+(draft.photos||[]).map((p,i)=>'<div class="photoWrap"><img src="'+p+'" alt="design" /><button type="button" data-photo-remove="'+i+'">×</button></div>').join('')+'</div><div class="field"><label>Requested design / alteration instructions</label><textarea id="designNotes" rows="4">'+esc(draft.designNotes)+'</textarea></div><div class="voiceBox compactVoice"><b>🎙 Voice instructions</b><div class="quick"><button class="pill" id="voiceBtn">Voice → text</button><button class="pill" id="recordBtn">Record audio</button></div><small id="voiceState">'+esc(draft.voiceNote||'')+'</small></div></aside></div>'
 }
 function selectedDesignVisual(g){
@@ -192,7 +192,7 @@ function styleStep(){
  '<div class="styleColumns"><section class="stylePane"><h3>Sleeves</h3><div class="styleGridCompact">'+sleeves.map(v=>styleCard('sleeve',v,draft.style.sleeve===v)).join('')+'</div></section><section class="stylePane"><h3>'+(shirt?'Collar / Neck':'Neck')+'</h3><div class="styleGridCompact">'+necks.map(v=>styleCard('neck',v,draft.style.neck===v)).join('')+'</div></section></div>'+
  '<div class="styleOptionsGrid"><div class="field"><label>Opening</label>'+sel('opening',['Back hooks','Front hooks','Zip','No opening'])+'</div><div class="field"><label>Lining / உள்ளணி</label>'+sel('lining',['No lining','Cotton lining','Full lining'])+'</div><div class="field"><label>Padding / பேட்</label>'+sel('padding',['No pad','Pad'])+'</div><div class="field"><label>Aari / embroidery work</label>'+sel('aari',['None','Light','Medium','Heavy'])+'</div><div class="field"><label>Fit</label>'+sel('fit',['Regular','Slim','Comfort'])+'</div><div class="field notesField"><label>Style / fabric / colour notes</label><textarea id="styleNotes" rows="2">'+esc(draft.style.notes)+'</textarea></div></div></div>'
 }
-function styleCard(kind,val,on){return '<button class="styleCard '+(on?'active':'')+'" data-style="'+kind+'" data-value="'+val+'">'+styleSVG(kind,val)+'<div>'+val+'</div></button>'}
+function styleCard(kind,val,on){return '<button type="button" class="styleCard '+(on?'active':'')+'" data-style="'+kind+'" data-value="'+val+'">'+styleSVG(kind,val)+'<div>'+val+'</div></button>'}
 function sel(k,arr){return '<select id="'+k+'">'+arr.map(v=>'<option '+(draft.style[k]===v?'selected':'')+'>'+v+'</option>').join('')+'</select>'}
 function titleFor(k){for(const group of Object.values(cats)){const f=group.find(x=>x[0]===k);if(f)return f[1]}return 'Garment'}
 function measureSection(field){
@@ -212,9 +212,9 @@ function measureStep(){
  if(!available.includes(measureTab))measureTab=available[0]||'Body';
  const fields=fieldsForMeasureTab(group,measureTab);
  if(!fields.includes(activeMeasure))activeMeasure=fields[0]||'';
- return '<div class="measureHead"><div><h2 class="sectionTitle">'+titleFor(draft.garment)+' measurements</h2><p class="sub">Enter only the selected group. Values are saved exactly as entered.</p></div><div class="measureTabs">'+['Body','Sleeve','Neck'].map(t=>{const n=fieldsForMeasureTab(group,t).length;return'<button '+(!n?'disabled':'')+' class="'+(measureTab===t?'active':'')+'" data-measuretab="'+t+'">'+(t==='Body'?'▣ ':t==='Sleeve'?'◩ ':'⌁ ')+t+(n?' · '+n:'')+'</button>'}).join('')+'</div></div>'+
+ return '<div class="measureHead"><div><h2 class="sectionTitle">'+titleFor(draft.garment)+' measurements</h2><p class="sub">Enter only the selected group. Values are saved exactly as entered.</p></div><div class="measureTabs">'+['Body','Sleeve','Neck'].map(t=>{const n=fieldsForMeasureTab(group,t).length;return'<button type="button" '+(!n?'disabled':'')+' class="'+(measureTab===t?'active':'')+'" data-measuretab="'+t+'">'+(t==='Body'?'▣ ':t==='Sleeve'?'◩ ':'⌁ ')+t+(n?' · '+n:'')+'</button>'}).join('')+'</div></div>'+
  '<div class="measureWorkspace"><section class="measureEntry"><div class="measureList compactFields">'+fields.map(f=>'<div class="field"><label>'+f+'</label><input class="measureInput" data-measure="'+f+'" inputmode="decimal" value="'+esc(draft.measurements[f]||'')+'" /></div>').join('')+'</div><button class="pill compactAdd" id="extraMeasure">＋ Extra measurement</button></section>'+
- '<aside class="measureTool"><div class="measureVisuals"><div class="measureVisualCard"><div class="measureRefTitle"><span>Selected design</span><b>'+titleFor(draft.garment)+'</b></div><div class="garmentRef">'+selectedDesignVisual(draft.garment||'blouse')+'</div></div><div class="measureVisualCard"><div class="activeMeasureTitle"><span>Measuring now</span><b>'+activeMeasure+'</b></div><div id="measureDiagram">'+measureSVG(group,activeMeasure)+'</div></div></div><div class="keypadArea"><div class="numPad standardPad">'+['7','8','9','4','5','6','1','2','3','.','0','⌫'].map(n=>'<button data-num="'+n+'">'+n+'</button>').join('')+'</div><div class="fractionBar">'+['¼','½','¾'].map(n=>'<button data-num="'+n+'">'+n+'</button>').join('')+'</div></div></aside></div>'
+ '<aside class="measureTool"><div class="measureVisuals"><div class="measureVisualCard"><div class="measureRefTitle"><span>Selected design</span><b>'+titleFor(draft.garment)+'</b></div><div class="garmentRef">'+selectedDesignVisual(draft.garment||'blouse')+'</div></div><div class="measureVisualCard"><div class="activeMeasureTitle"><span>Measuring now</span><b>'+activeMeasure+'</b></div><div id="measureDiagram">'+measureSVG(group,activeMeasure)+'</div></div></div><div class="keypadArea"><div class="numPad standardPad">'+['7','8','9','4','5','6','1','2','3','.','0','⌫'].map(n=>'<button type="button" data-num="'+n+'">'+n+'</button>').join('')+'</div><div class="fractionBar">'+['¼','½','¾'].map(n=>'<button type="button" data-num="'+n+'">'+n+'</button>').join('')+'</div></div></aside></div>'
 }
 function chargesStep(){
  const total=Number(draft.stitching||0)+Number(draft.aariCharge||0),paid=Number(draft.advance||0),bal=Math.max(0,total-paid);
@@ -309,18 +309,35 @@ function bindNew(){
  const back=$('#backBtn'),next=$('#nextBtn');
  back.onclick=()=>{if(step>1){captureStep();step--;render()}else{editingOrderId=null;page='dashboard';render()}};
  next.onclick=()=>{captureStep();if(!validateStep())return;if(step<6){step++;render()}else saveOrder()};
- if(step===2){
-  $$('[data-cat]').forEach(b=>b.onclick=()=>{captureStep();cat=b.dataset.cat;draft.category=cat;render()});
-  $$('[data-garment]').forEach(b=>b.onclick=()=>{draft.garment=b.dataset.garment;saveDraft();render()});
-  $$('[data-photo-remove]').forEach(b=>b.onclick=()=>{draft.photos.splice(Number(b.dataset.photoRemove),1);saveDraft();render()});
-  $('#photoInput').onchange=handlePhotos;$('#voiceBtn').onclick=voiceToText;$('#recordBtn').onclick=recordAudio
+
+ const panel=$('.orderStep');
+ if(panel){
+  panel.onclick=e=>{
+   const catBtn=e.target.closest('[data-cat]');
+   if(catBtn&&step===2){e.preventDefault();captureStep();cat=catBtn.dataset.cat;draft.category=cat;saveDraft();render();return}
+   const garmentBtn=e.target.closest('[data-garment]');
+   if(garmentBtn&&step===2){e.preventDefault();draft.garment=garmentBtn.dataset.garment;saveDraft();render();return}
+   const photoRemove=e.target.closest('[data-photo-remove]');
+   if(photoRemove&&step===2){e.preventDefault();draft.photos.splice(Number(photoRemove.dataset.photoRemove),1);saveDraft();render();return}
+   const styleBtn=e.target.closest('[data-style]');
+   if(styleBtn&&step===3){e.preventDefault();draft.style[styleBtn.dataset.style]=styleBtn.dataset.value;saveDraft();render();return}
+   const tabBtn=e.target.closest('[data-measuretab]');
+   if(tabBtn&&step===4){e.preventDefault();if(tabBtn.disabled)return;measureTab=tabBtn.dataset.measuretab;const fs=fieldsForMeasureTab(garmentGroup(draft.garment),measureTab);activeMeasure=fs[0]||'';render();return}
+   const numBtn=e.target.closest('[data-num]');
+   if(numBtn&&step===4){e.preventDefault();let focus=document.activeElement?.classList?.contains('measureInput')?document.activeElement:$('.measureInput');if(!focus)return;focus.focus();let v=focus.value,n=numBtn.dataset.num;if(n==='⌫')v=v.slice(0,-1);else v+=n;focus.value=v;draft.measurements[focus.dataset.measure]=v;saveDraft();focus.dispatchEvent(new Event('input',{bubbles:true}));return}
+  }
  }
- if(step===3)$$('[data-style]').forEach(b=>b.onclick=()=>{draft.style[b.dataset.style]=b.dataset.value;saveDraft();render()});
+
+ if(step===2){
+  $('#photoInput').onchange=handlePhotos;
+  $('#voiceBtn').onclick=voiceToText;
+  $('#recordBtn').onclick=recordAudio;
+ }
  if(step===4){
-  $$('[data-measuretab]').forEach(b=>b.onclick=()=>{if(b.disabled)return;measureTab=b.dataset.measuretab;const fs=fieldsForMeasureTab(garmentGroup(draft.garment),measureTab);activeMeasure=fs[0]||'';render()});
-  $$('.measureInput').forEach(i=>{i.onfocus=()=>{activeMeasure=i.dataset.measure;const d=$('#measureDiagram');if(d)d.innerHTML=measureSVG(garmentGroup(draft.garment),activeMeasure);const t=$('.activeMeasureTitle b');if(t)t.textContent=activeMeasure};i.oninput=()=>{draft.measurements[i.dataset.measure]=i.value;saveDraft()}});
-  let focus=null;$$('.measureInput').forEach(i=>i.addEventListener('focus',()=>focus=i));
-  $$('[data-num]').forEach(b=>b.onclick=()=>{if(!focus){focus=$('.measureInput');if(!focus)return;focus.focus()}let v=focus.value,n=b.dataset.num;if(n==='⌫')v=v.slice(0,-1);else v+=n;focus.value=v;draft.measurements[focus.dataset.measure]=v;saveDraft()});
+  $$('.measureInput').forEach(i=>{
+   i.onfocus=()=>{activeMeasure=i.dataset.measure;const d=$('#measureDiagram');if(d)d.innerHTML=measureSVG(garmentGroup(draft.garment),activeMeasure);const t=$('.activeMeasureTitle b');if(t)t.textContent=activeMeasure};
+   i.oninput=()=>{draft.measurements[i.dataset.measure]=i.value;saveDraft()}
+  });
   $('#extraMeasure').onclick=()=>{const name=prompt('Extra measurement name');if(name){measureSets[garmentGroup(draft.garment)].push(name);render()}}
  }
  if(step===5){
@@ -365,7 +382,7 @@ function compressImage(file){return new Promise(res=>{const rd=new FileReader();
 function voiceToText(){const R=window.SpeechRecognition||window.webkitSpeechRecognition;if(!R){toast('Voice-to-text not supported in this browser');return}const r=new R();r.lang='ta-IN';r.interimResults=false;r.onresult=e=>{draft.designNotes=(draft.designNotes?draft.designNotes+' ':'')+e.results[0][0].transcript;saveDraft();render()};r.onerror=()=>toast('Voice recognition failed');r.start();toast('Listening…')}
 let recorder=null,chunks=[];async function recordAudio(){if(recorder&&recorder.state==='recording'){recorder.stop();return}try{const stream=await navigator.mediaDevices.getUserMedia({audio:true});recorder=new MediaRecorder(stream);chunks=[];recorder.ondataavailable=e=>chunks.push(e.data);recorder.onstop=()=>{draft.voiceNote='Audio note recorded ('+Math.round(chunks.reduce((a,b)=>a+b.size,0)/1024)+' KB)';stream.getTracks().forEach(t=>t.stop());saveDraft();render()};recorder.start();$('#voiceState').textContent='Recording… tap Record audio again to stop'}catch(e){toast('Microphone permission is required')}}
 function exportBackup(){
- const blob=new Blob([JSON.stringify({version:28,exported:new Date().toISOString(),orders,expenses},null,2)],{type:'application/json'}),a=document.createElement('a');
+ const blob=new Blob([JSON.stringify({version:29,exported:new Date().toISOString(),orders,expenses},null,2)],{type:'application/json'}),a=document.createElement('a');
  a.href=URL.createObjectURL(blob);a.download='SK-Tailoring-backup-'+today()+'.json';a.click();URL.revokeObjectURL(a.href)
 }
 $('#restoreInput').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const j=JSON.parse(r.result);if(!Array.isArray(j.orders))throw 0;orders=j.orders;expenses=Array.isArray(j.expenses)?j.expenses:[];saveOrders();saveExpenses();toast('Backup restored');page='dashboard';render()}catch(err){toast('Invalid backup file')}};r.readAsText(f)});
