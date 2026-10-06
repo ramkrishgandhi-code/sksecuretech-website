@@ -645,7 +645,7 @@ function bindNew(){
  }
  if(step===4){
   $$('.measureInput').forEach(i=>{
-   i.onfocus=()=>{activeMeasure=i.dataset.measure;$('.measureFieldCard').forEach(x=>x.classList.toggle('active',x.contains(i)));const d=$('#measureDiagram');if(d)d.innerHTML=liveMeasureSVG(draft.garment,draft.measurements,activeMeasure);const chip=$('.activeMeasurementChip');if(chip)chip.textContent=activeMeasure};
+   i.onfocus=()=>{activeMeasure=i.dataset.measure;$$('.measureFieldCard').forEach(x=>x.classList.toggle('active',x.contains(i)));const d=$('#measureDiagram');if(d)d.innerHTML=liveMeasureSVG(draft.garment,draft.measurements,activeMeasure);const chip=$('.activeMeasurementChip');if(chip)chip.textContent=activeMeasure};
    i.oninput=()=>{draft.measurements[i.dataset.measure]=i.value;saveDraft();const d=$('#measureDiagram');if(d)d.innerHTML=liveMeasureSVG(draft.garment,draft.measurements,activeMeasure)}
   });
   $('#extraMeasure').onclick=()=>{const name=prompt('Extra measurement name');if(name){draft.customMeasurements=draft.customMeasurements||[];draft.customMeasurements.push({tab:measureTab,name});saveDraft();render()}}
@@ -658,7 +658,7 @@ function bindNew(){
 function captureStep(){
  if(step===1){draft.customer=$('#customer')?.value.trim()||draft.customer;draft.phone=$('#phone')?.value.trim()||draft.phone}
  if(step===2){draft.designNotes=$('#designNotes')?.value||draft.designNotes}
- if(step===3){$('[data-style-select]').forEach(e=>draft.style[e.dataset.styleSelect]=e.value);draft.style.notes=$('#styleNotes')?.value||draft.style.notes}
+ if(step===3){$$('[data-style-select]').forEach(e=>draft.style[e.dataset.styleSelect]=e.value);draft.style.notes=$('#styleNotes')?.value||draft.style.notes}
  if(step===5){['stitching','aariCharge','advance','delivery'].forEach(k=>{const e=$('#'+k);if(e)draft[k]=e.value});draft.chargeNotes=$('#chargeNotes')?.value||draft.chargeNotes||''}
  saveDraft()
 }
