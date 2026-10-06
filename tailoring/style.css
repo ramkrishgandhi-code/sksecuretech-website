@@ -86,3 +86,201 @@ html,body{max-width:100%;overflow-x:hidden}
  .side.open{transform:translateX(0)}
  .mobileTop{display:flex}
 }
+
+
+/* v23 clear visual redesign */
+.heroGrid{
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:18px;
+}
+.dashCard{
+  min-height:250px;
+  border-radius:24px;
+  padding:0;
+  overflow:hidden;
+  border:0;
+  box-shadow:0 14px 34px rgba(11,70,72,.12);
+}
+.dashCard[data-dash="new"]{
+  grid-column:1/-1;
+  min-height:285px;
+}
+.dashCard .art{
+  inset:0!important;
+  opacity:1!important;
+  z-index:0;
+}
+.dashCard .art svg{
+  width:100%;
+  height:100%;
+  display:block;
+}
+.dashCard::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:1;
+  background:linear-gradient(90deg,rgba(255,255,255,.98) 0%,rgba(255,255,255,.92) 34%,rgba(255,255,255,.56) 52%,rgba(255,255,255,.10) 76%,rgba(255,255,255,0) 100%);
+}
+.dashCard.c1::after{
+  background:linear-gradient(90deg,rgba(4,75,79,.98) 0%,rgba(5,93,97,.93) 35%,rgba(5,102,106,.62) 54%,rgba(5,102,106,.12) 80%,rgba(5,102,106,0) 100%);
+}
+.dashCard h3,.dashCard .count,.dashCard p{
+  position:relative;
+  z-index:2;
+  margin-left:22px;
+}
+.dashCard h3{
+  margin-top:22px;
+  font-size:20px;
+  font-weight:800;
+}
+.dashCard .count{
+  font-size:46px;
+  margin-top:5px;
+}
+.dashCard p{
+  max-width:42%;
+  font-size:14px;
+  line-height:1.45;
+  font-weight:650;
+}
+.dashCard[data-dash="queue"] .art svg,
+.dashCard[data-dash="delivered"] .art svg{
+  transform:scale(1.08);
+  transform-origin:center;
+}
+.dashCard[data-dash="queue"],
+.dashCard[data-dash="delivered"]{
+  min-height:270px;
+}
+.dashCard[data-dash="queue"] p,
+.dashCard[data-dash="delivered"] p{
+  max-width:38%;
+}
+.selectedDesignBanner{
+  display:grid;
+  grid-template-columns:220px 1fr;
+  gap:22px;
+  align-items:center;
+  border:1px solid #dce8e3;
+  background:linear-gradient(135deg,#f8fbf8,#edf7f5);
+  border-radius:20px;
+  padding:18px;
+  margin-bottom:22px;
+}
+.selectedDesignImage{
+  height:190px;
+  border-radius:16px;
+  overflow:hidden;
+  background:#fff7ec;
+  display:grid;
+  place-items:center;
+}
+.selectedDesignImage svg,
+.selectedDesignImage img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+.selectedDesignBanner h2{
+  margin:4px 0 8px;
+  font-size:26px;
+}
+.selectedDesignBanner p{
+  margin:0;
+  color:#667d7c;
+  max-width:720px;
+}
+.miniLabel{
+  display:inline-block;
+  font-size:10px;
+  letter-spacing:.16em;
+  font-weight:800;
+  color:#0b7778;
+}
+.styleGrid{
+  grid-template-columns:repeat(4,minmax(0,1fr));
+}
+.styleCard{
+  min-height:175px;
+  padding:12px;
+  transition:transform .15s ease,box-shadow .15s ease;
+}
+.styleCard:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 20px rgba(11,70,72,.08);
+}
+.styleCard.active{
+  box-shadow:0 0 0 3px rgba(46,148,152,.22);
+}
+.styleCard svg{
+  height:125px;
+}
+.measureRefTitle,.activeMeasureTitle{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  align-items:baseline;
+  margin-bottom:8px;
+}
+.measureRefTitle span,.activeMeasureTitle span{
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:.1em;
+  color:#6e8382;
+}
+.measureRefTitle b,.activeMeasureTitle b{
+  font-size:13px;
+}
+.diagram .garmentRef{
+  height:180px;
+  margin-bottom:16px;
+  overflow:hidden;
+}
+.diagram .garmentRef svg,
+.diagram .garmentRef img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+.diagram #measureDiagram{
+  background:white;
+  border:1px solid #dbe7e2;
+  padding:8px;
+}
+.garment{
+  overflow:hidden;
+}
+.garment .pic{
+  height:178px;
+}
+.garment .pic svg{
+  transform:scale(1.06);
+}
+
+@media(max-width:900px){
+  .heroGrid{grid-template-columns:1fr 1fr}
+  .dashCard[data-dash="new"]{grid-column:1/-1}
+  .styleGrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .selectedDesignBanner{grid-template-columns:170px 1fr}
+  .selectedDesignImage{height:160px}
+}
+@media(max-width:640px){
+  .heroGrid{grid-template-columns:1fr}
+  .dashCard[data-dash="new"]{grid-column:auto}
+  .dashCard,.dashCard[data-dash="queue"],.dashCard[data-dash="delivered"]{
+    min-height:220px;
+  }
+  .dashCard h3{font-size:18px;margin-left:18px;margin-top:18px}
+  .dashCard .count{font-size:40px;margin-left:18px}
+  .dashCard p{font-size:13px;max-width:49%;margin-left:18px}
+  .dashCard[data-dash="queue"] p,.dashCard[data-dash="delivered"] p{max-width:46%}
+  .selectedDesignBanner{grid-template-columns:1fr;gap:14px;padding:14px}
+  .selectedDesignImage{height:220px}
+  .selectedDesignBanner h2{font-size:22px}
+  .styleGrid{grid-template-columns:1fr 1fr}
+  .styleCard{min-height:155px}
+  .styleCard svg{height:105px}
+  .garment .pic{height:138px}
+}
