@@ -7,12 +7,16 @@ const today=()=>new Date().toISOString().slice(0,10);
 const money=n=>'RM '+Number(n||0).toFixed(2);
 const esc=s=>String(s??'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
 let orders=loadOrders();
-let page='dashboard', step=1, cat='women', activeMeasure='Bust / மார்பு', measureTab='Body';
+const EXP_STORE='skTailoringExpensesV25';
+let expenses=loadExpenses();
+let page='dashboard', step=1, cat='women', activeMeasure='Bust / மார்பு', measureTab='Body', orderView='all';
 let draft=loadDraft();
 if(!draft) draft=freshDraft();
 function freshDraft(){return{customer:'',phone:'',garment:null,category:'women',designNotes:'',photos:[],voiceNote:'',style:{sleeve:'Short',neck:'Round',opening:'Back hooks',lining:'No lining',padding:'No pad',aari:'None',fit:'Regular',notes:''},measurements:{},stitching:'',aariCharge:'',advance:'',delivery:'',status:'New',created:today()}}
 function loadOrders(){try{return JSON.parse(localStorage.getItem(STORE)||'[]')}catch(e){return[]}}
 function saveOrders(){localStorage.setItem(STORE,JSON.stringify(orders))}
+function loadExpenses(){try{return JSON.parse(localStorage.getItem(EXP_STORE)||'[]')}catch(e){return[]}}
+function saveExpenses(){localStorage.setItem(EXP_STORE,JSON.stringify(expenses))}
 function loadDraft(){try{return JSON.parse(sessionStorage.getItem(draftKey)||'null')}catch(e){return null}}
 function saveDraft(){sessionStorage.setItem(draftKey,JSON.stringify(draft))}
 const cats={
@@ -35,7 +39,7 @@ const measureSets={
 function garmentGroup(k){if(!k)return'blouse';if(/blouse/.test(k))return'blouse';if(/shirt|school/.test(k))return'shirt';if(/trouser|palazzo|short/.test(k))return'trousers';if(/kurta|sherwani/.test(k))return'kurta';if(/skirt|petticoat|veshti|saree|fall-pico/.test(k))return'skirt';if(/alter/.test(k))return'alteration';return'dress'}
 function root(){return $('#app')}
 function toast(t){const d=document.createElement('div');d.className='toast';d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),2200)}
-function shell(content){return '<div class="app"><aside class="side" id="side"><div><div class="brand">✂ SK Tailoring</div><small>SHOP WORKSPACE</small></div><nav class="nav">'+navBtn('dashboard','▦ Dashboard')+navBtn('new','＋ New Order')+navBtn('orders','▤ Work Orders')+navBtn('backup','⚙ Backup')+'</nav><div class="made">Made for your daily craft.</div></aside><main class="main page-'+page+'"><div class="mobileTop"><button class="pill" id="menuBtn">☰ Menu</button><b>✂ SK Tailoring</b></div><div class="topline"><div class="eyebrow">SK SECURE TECH / TAILORING</div><div class="status">● Online · Saved on this device</div></div>'+content+'<div class="copyright">Device version v24 · orders save in this browser. Export a backup before clearing browser data.</div></main></div>'}
+function shell(content){return '<div class="app"><aside class="side" id="side"><div><div class="brand">✂ SK Tailoring</div><small>SHOP WORKSPACE</small></div><nav class="nav">'+navBtn('dashboard','▦ Dashboard')+navBtn('new','＋ New Order')+navBtn('orders','▤ Work Orders')+navBtn('backup','⚙ Backup')+'</nav><div class="made">Made for your daily craft.</div></aside><main class="main page-'+page+'"><div class="mobileTop"><button class="pill" id="menuBtn">☰ Menu</button><b>✂ SK Tailoring</b></div><div class="topline"><div class="eyebrow">SK SECURE TECH / TAILORING</div><div class="status">● Online · Saved on this device</div></div>'+content+'<div class="copyright">Device version v25 · orders save in this browser. Export a backup before clearing browser data.</div></main></div>'}
 function navBtn(p,label){return '<button data-nav="'+p+'" class="'+(page===p?'active':'')+'">'+label+'</button>'}
 function bindShell(){ $$('[data-nav]').forEach(b=>b.onclick=()=>{page=b.dataset.nav;if(page==='new'){step=1;draft=freshDraft();saveDraft()}const s=$('#side');if(s)s.classList.remove('open');render()}); const m=$('#menuBtn');if(m)m.onclick=()=>$('#side').classList.toggle('open') }
 function dashSVG(type){
@@ -134,7 +138,7 @@ function measureSVG(group,field){
  lines+='<path d="M109 89c6 11 27 11 33 0" fill="none" stroke="'+hit('neck')+'" stroke-width="5"/><text x="145" y="90" font-size="12" fill="'+hit('neck')+'">Neck</text>';
  return '<svg viewBox="0 0 260 290" xmlns="http://www.w3.org/2000/svg">'+g+lines+'</svg>'
 }
-function render(){let c=page==='dashboard'?dashboard():page==='new'?newOrder():page==='orders'?workOrders():backup();root().innerHTML=shell(c);bindShell();bindPage()}
+function render(){let c=page==='dashboard'?dashboard():page==='new'?newOrder():page==='orders'?workOrders():page==='customers'?customersPage():page==='accounts'?accountsPage():page==='payments'?paymentsPage():page==='expenses'?expensesPage():page==='reports'?reportsPage():backup();root().innerHTML=shell(c);bindShell();bindPage()}
 function dashboard(){
  const open=orders.filter(o=>o.status!=='Delivered').length, queue=orders.filter(o=>o.status==='In Progress').length, ready=orders.filter(o=>o.status==='Ready').length, due=orders.filter(o=>o.delivery===today()&&o.status!=='Delivered').length, over=orders.filter(o=>o.delivery&&o.delivery<today()&&o.status!=='Delivered').length,del=orders.filter(o=>o.status==='Delivered').length;
  const cards=[
@@ -149,17 +153,17 @@ function dashboard(){
  const modules=[
   ['new','＋','New Order','Live'],
   ['orders','▤','Work Orders','Live'],
-  ['planned','👤','Customers','Planned'],
-  ['planned','RM','Accounts','Planned'],
-  ['planned','✓','Payments','Planned'],
-  ['planned','↗','Expenses','Planned'],
-  ['planned','▥','Reports','Planned'],
+  ['customers','👤','Customers','Live'],
+  ['accounts','RM','Accounts','Live'],
+  ['payments','✓','Payments','Live'],
+  ['expenses','↗','Expenses','Live'],
+  ['reports','▥','Reports','Live'],
   ['backup','⚙','Backup','Live']
  ];
  return '<div class="dashHeader"><div><h1 class="h1">Your shop at a glance</h1><p class="sub">Daily tailoring workspace · '+today()+'</p></div><div class="dashLegend">One-screen dashboard</div></div>'+
  '<div class="dashWorkspace">'+
   '<section class="statusTiles">'+cards.map(x=>'<button class="statusTile '+x[4]+'" data-dash="'+x[0]+'"><div class="tileText"><span class="tileLabel">'+x[1]+'</span><strong>'+x[2]+'</strong><small>'+x[3]+'</small></div><div class="tileArt">'+dashSVG(x[0])+'</div></button>').join('')+'</section>'+
-  '<section class="moduleSection"><div class="moduleTitle"><b>Business modules</b><span>Space reserved for the modules already planned</span></div><div class="moduleGrid">'+modules.map(m=>m[0]==='planned'?'<button class="moduleTile planned" data-module="'+m[2]+'"><span class="moduleIcon">'+m[1]+'</span><b>'+m[2]+'</b><small>'+m[3]+'</small></button>':'<button class="moduleTile" data-nav="'+m[0]+'"><span class="moduleIcon">'+m[1]+'</span><b>'+m[2]+'</b><small>'+m[3]+'</small></button>').join('')+'</div></section>'+
+  '<section class="moduleSection"><div class="moduleTitle"><b>Business modules</b><span>Tap any tile to open the module</span></div><div class="moduleGrid">'+modules.map(m=>'<button class="moduleTile" data-nav="'+m[0]+'"><span class="moduleIcon">'+m[1]+'</span><b>'+m[2]+'</b><small>'+m[3]+'</small></button>').join('')+'</div></section>'+
   '<section class="nextBar"><div><span class="miniLabel">NEXT COLLECTIONS</span><b>Upcoming customer handovers</b></div><div class="nextBarOrders">'+nextCollectionsCompact()+'</div><button class="miniAction" data-nav="orders">View all →</button></section>'+
  '</div>'
 }
@@ -212,29 +216,70 @@ function measureStep(){
 }
 function chargesStep(){const total=Number(draft.stitching||0)+Number(draft.aariCharge||0), paid=Number(draft.advance||0), bal=Math.max(0,total-paid);return '<h2 class="sectionTitle">Charges + Dates / கட்டணம் + தேதி</h2><div class="form2"><div class="field"><label>Stitching charge (RM)</label><input id="stitching" inputmode="decimal" value="'+esc(draft.stitching)+'" /></div><div class="field"><label>Aari / extra charge (RM)</label><input id="aariCharge" inputmode="decimal" value="'+esc(draft.aariCharge)+'" /></div><div class="field"><label>Advance / paid (RM)</label><input id="advance" inputmode="decimal" value="'+esc(draft.advance)+'" /></div><div class="field"><label>Delivery date *</label><input id="delivery" type="date" value="'+esc(draft.delivery)+'" /></div></div><div class="panel" style="margin-top:16px;background:#edf8f6"><div class="row"><span>Total</span><b>'+money(total)+'</b></div><div class="row"><span>Paid</span><b>'+money(paid)+'</b></div><div class="row"><span>Balance</span><b class="money">'+money(bal)+'</b></div></div>'}
 function reviewStep(){const total=Number(draft.stitching||0)+Number(draft.aariCharge||0), paid=Number(draft.advance||0);return '<h2 class="sectionTitle">Review order / சரிபார்ப்பு</h2><div class="summary"><div class="row"><span>Customer</span><b>'+esc(draft.customer)+'</b></div><div class="row"><span>Phone</span><b>'+esc(draft.phone||'—')+'</b></div><div class="row"><span>Dress</span><b>'+esc(titleFor(draft.garment))+'</b></div><div class="row"><span>Style</span><b>'+esc(draft.style.sleeve)+' · '+esc(draft.style.neck)+'</b></div><div class="row"><span>Measurements</span><b>'+Object.keys(draft.measurements).filter(k=>draft.measurements[k]).length+' saved</b></div><div class="row"><span>Delivery</span><b>'+esc(draft.delivery)+'</b></div><div class="row"><span>Total</span><b>'+money(total)+'</b></div><div class="row"><span>Paid</span><b>'+money(paid)+'</b></div><div class="row"><span>Balance</span><b class="money">'+money(total-paid)+'</b></div></div>'}
-function workOrders(){return '<h1 class="h1">Work Orders</h1><p class="sub">Orders, production status, collection and opened-order payment.</p><div class="quick"><button class="pill" data-ordfilter="all">All</button><button class="pill" data-ordfilter="New">New</button><button class="pill" data-ordfilter="In Progress">In Progress</button><button class="pill" data-ordfilter="Ready">Ready</button><button class="pill" data-ordfilter="Delivered">Delivered</button></div><section class="panel"><div class="orders" id="orderList">'+(orders.length?orders.map(orderCard).join(''):'<div class="empty"><div><h3>No saved orders</h3><p>Create your first order from New Order.</p></div></div>')+'</div></section>'}
+function orderMatchesView(o,v){
+ if(v==='all')return true;
+ if(v==='open')return o.status!=='Delivered';
+ if(v==='queue')return o.status==='In Progress';
+ if(v==='ready')return o.status==='Ready';
+ if(v==='delivered')return o.status==='Delivered';
+ if(v==='due')return o.delivery===today()&&o.status!=='Delivered';
+ if(v==='over')return !!o.delivery&&o.delivery<today()&&o.status!=='Delivered';
+ return o.status===v
+}
+function workOrders(){
+ const views=[['all','All'],['open','Open'],['queue','In Progress'],['ready','Ready'],['due','Due today'],['over','Overdue'],['delivered','Delivered']];
+ const list=orders.filter(o=>orderMatchesView(o,orderView));
+ return '<div class="moduleHead"><div><button class="backDash" data-nav="dashboard">← Dashboard</button><h1 class="h1">Work Orders</h1><p class="sub">Orders, production status, collection and payment.</p></div><span class="moduleCount">'+list.length+' order(s)</span></div><div class="quick">'+views.map(v=>'<button class="pill '+(orderView===v[0]?'active':'')+'" data-order-view="'+v[0]+'">'+v[1]+'</button>').join('')+'</div><section class="panel"><div class="orders" id="orderList">'+(list.length?list.map(orderCard).join(''):'<div class="empty"><div><h3>No matching orders</h3><p>Nothing in this view yet.</p></div></div>')+'</div></section>'
+}
 function orderCard(o){const total=Number(o.stitching||0)+Number(o.aariCharge||0),paid=Number(o.advance||0);return '<div class="order" data-order="'+o.id+'"><div><b>'+esc(o.customer)+' · '+esc(titleFor(o.garment))+'</b><div style="margin-top:7px"><span class="badge">'+esc(o.status)+'</span> <small>Delivery: '+esc(o.delivery||'—')+'</small></div><small>Opened order: Total '+money(total)+' · Paid '+money(paid)+' · Balance '+money(total-paid)+'</small></div><button class="btn secondary" data-open="'+o.id+'">Open</button></div>'}
+function customersPage(){
+ const map=new Map();
+ orders.forEach(o=>{const key=(o.customer||'Unknown')+'|'+(o.phone||'');if(!map.has(key))map.set(key,{name:o.customer||'Unknown',phone:o.phone||'',orders:0,total:0,paid:0});const x=map.get(key);x.orders++;x.total+=Number(o.stitching||0)+Number(o.aariCharge||0);x.paid+=Number(o.advance||0)});
+ const list=[...map.values()];
+ return '<div class="moduleHead"><div><button class="backDash" data-nav="dashboard">← Dashboard</button><h1 class="h1">Customers</h1><p class="sub">Customer list generated from saved orders.</p></div><span class="moduleCount">'+list.length+' customer(s)</span></div><section class="panel"><div class="dataTable">'+(list.length?list.map(x=>'<div class="dataRow"><div><b>'+esc(x.name)+'</b><small>'+esc(x.phone||'No phone')+'</small></div><div><span>Orders</span><b>'+x.orders+'</b></div><div><span>Outstanding</span><b>'+money(x.total-x.paid)+'</b></div></div>').join(''):'<div class="empty"><div><h3>No customers yet</h3><p>Create an order to add your first customer.</p></div></div>')+'</div></section>'
+}
+function totals(){
+ return orders.reduce((a,o)=>{const t=Number(o.stitching||0)+Number(o.aariCharge||0),p=Number(o.advance||0);a.sales+=t;a.paid+=p;a.balance+=Math.max(0,t-p);return a},{sales:0,paid:0,balance:0})
+}
+function accountsPage(){
+ const t=totals(),e=expenses.reduce((s,x)=>s+Number(x.amount||0),0),net=t.paid-e;
+ return '<div class="moduleHead"><div><button class="backDash" data-nav="dashboard">← Dashboard</button><h1 class="h1">Accounts</h1><p class="sub">Simple financial summary from orders and expenses.</p></div></div><div class="financeGrid"><div class="financeCard"><span>Total sales</span><b>'+money(t.sales)+'</b></div><div class="financeCard"><span>Payments received</span><b>'+money(t.paid)+'</b></div><div class="financeCard"><span>Outstanding</span><b>'+money(t.balance)+'</b></div><div class="financeCard"><span>Expenses</span><b>'+money(e)+'</b></div><div class="financeCard accent"><span>Cash result</span><b>'+money(net)+'</b></div></div>'
+}
+function paymentsPage(){
+ const list=orders.filter(o=>Number(o.advance||0)>0||Number(o.stitching||0)+Number(o.aariCharge||0)>0);
+ return '<div class="moduleHead"><div><button class="backDash" data-nav="dashboard">← Dashboard</button><h1 class="h1">Payments</h1><p class="sub">Paid and balance amounts by order.</p></div></div><section class="panel"><div class="dataTable">'+(list.length?list.map(o=>{const t=Number(o.stitching||0)+Number(o.aariCharge||0),p=Number(o.advance||0);return'<div class="dataRow"><div><b>'+esc(o.customer)+'</b><small>'+esc(titleFor(o.garment))+'</small></div><div><span>Paid</span><b>'+money(p)+'</b></div><div><span>Balance</span><b>'+money(Math.max(0,t-p))+'</b></div></div>'}).join(''):'<div class="empty"><div><h3>No payment records yet</h3></div></div>')+'</div></section>'
+}
+function expensesPage(){
+ const total=expenses.reduce((s,x)=>s+Number(x.amount||0),0);
+ return '<div class="moduleHead"><div><button class="backDash" data-nav="dashboard">← Dashboard</button><h1 class="h1">Expenses</h1><p class="sub">Record shop expenses on this device.</p></div><span class="moduleCount">'+money(total)+'</span></div><section class="panel"><div class="expenseForm"><input id="expenseNote" placeholder="Expense description" /><input id="expenseAmount" inputmode="decimal" placeholder="RM amount" /><button class="btn primary" id="addExpense">Add expense</button></div><div class="dataTable expenseList">'+(expenses.length?expenses.slice().reverse().map(x=>'<div class="dataRow"><div><b>'+esc(x.note)+'</b><small>'+esc(x.date)+'</small></div><div><span>Amount</span><b>'+money(x.amount)+'</b></div></div>').join(''):'<div class="empty"><div><h3>No expenses yet</h3></div></div>')+'</div></section>'
+}
+function reportsPage(){
+ const t=totals(),counts={new:orders.filter(o=>o.status==='New').length,progress:orders.filter(o=>o.status==='In Progress').length,ready:orders.filter(o=>o.status==='Ready').length,delivered:orders.filter(o=>o.status==='Delivered').length};
+ return '<div class="moduleHead"><div><button class="backDash" data-nav="dashboard">← Dashboard</button><h1 class="h1">Reports</h1><p class="sub">Quick operational summary.</p></div></div><div class="reportGrid"><div><span>New</span><b>'+counts.new+'</b></div><div><span>In Progress</span><b>'+counts.progress+'</b></div><div><span>Ready</span><b>'+counts.ready+'</b></div><div><span>Delivered</span><b>'+counts.delivered+'</b></div><div><span>Sales</span><b>'+money(t.sales)+'</b></div><div><span>Outstanding</span><b>'+money(t.balance)+'</b></div></div>'
+}
 function backup(){return '<h1 class="h1">Backup</h1><p class="sub">Keep a copy before clearing browser data.</p><section class="panel"><div class="quick"><button class="btn primary" id="exportBtn">Export backup JSON</button><button class="btn secondary" id="restoreBtn">Restore backup</button></div><p>'+orders.length+' order(s) currently saved on this device.</p></section>'}
 function bindPage(){
  if(page==='dashboard'){
-  $('[data-dash]').forEach(b=>b.onclick=()=>{const t=b.dataset.dash;if(t==='new'){page='new';step=1;draft=freshDraft()}else{page='orders'}render()});
-  $('[data-module]').forEach(b=>b.onclick=()=>toast(b.dataset.module+' module is reserved for the next build'));
-  $('[data-open]').forEach(b=>b.onclick=()=>openOrder(b.dataset.open));
+  $$('[data-dash]').forEach(b=>b.onclick=()=>{const t=b.dataset.dash;if(t==='new'){page='new';step=1;draft=freshDraft();saveDraft()}else{orderView=t;page='orders'}render()});
+  $$('[data-open]').forEach(b=>b.onclick=()=>openOrder(b.dataset.open));
  }
  if(page==='new')bindNew();
  if(page==='orders'){
-   $$('[data-ordfilter]').forEach(b=>b.onclick=()=>filterOrders(b.dataset.ordfilter));
-   $$('[data-open]').forEach(b=>b.onclick=()=>openOrder(b.dataset.open));
+  $$('[data-order-view]').forEach(b=>b.onclick=()=>{orderView=b.dataset.orderView;render()});
+  $$('[data-open]').forEach(b=>b.onclick=()=>openOrder(b.dataset.open));
+ }
+ if(page==='expenses'){
+  const add=$('#addExpense');if(add)add.onclick=()=>{const note=$('#expenseNote').value.trim(),amount=Number($('#expenseAmount').value||0);if(!note||!Number.isFinite(amount)||amount<=0){toast('Enter a valid expense and amount');return}expenses.push({id:Date.now().toString(36),note,amount,date:today()});saveExpenses();render();toast('Expense added')}
  }
  if(page==='backup'){
-   $('#exportBtn').onclick=exportBackup;$('#restoreBtn').onclick=()=>$('#restoreInput').click();
+  $('#exportBtn').onclick=exportBackup;$('#restoreBtn').onclick=()=>$('#restoreInput').click();
  }
 }
 function bindNew(){
  const back=$('#backBtn'),next=$('#nextBtn');back.onclick=()=>{if(step>1){captureStep();step--;render()}else{page='dashboard';render()}};next.onclick=()=>{captureStep();if(!validateStep())return;if(step<6){step++;render()}else saveOrder()};
  if(step===2){$$('[data-cat]').forEach(b=>b.onclick=()=>{captureStep();cat=b.dataset.cat;draft.category=cat;render()});$$('[data-garment]').forEach(b=>b.onclick=()=>{draft.garment=b.dataset.garment;saveDraft();render()});$('#photoInput').onchange=handlePhotos;$('#voiceBtn').onclick=voiceToText;$('#recordBtn').onclick=recordAudio}
  if(step===3)$$('[data-style]').forEach(b=>b.onclick=()=>{draft.style[b.dataset.style]=b.dataset.value;saveDraft();render()});
- if(step===4){$('[data-measuretab]').forEach(b=>b.onclick=()=>{if(b.disabled)return;measureTab=b.dataset.measuretab;const fs=fieldsForMeasureTab(garmentGroup(draft.garment),measureTab);activeMeasure=fs[0]||'';render()});$('.measureInput').forEach(i=>{i.onfocus=()=>{activeMeasure=i.dataset.measure;const d=$('#measureDiagram');if(d)d.innerHTML=measureSVG(garmentGroup(draft.garment),activeMeasure);const t=$('.activeMeasureTitle b');if(t)t.textContent=activeMeasure};i.oninput=()=>{draft.measurements[i.dataset.measure]=i.value;saveDraft()}});let focus=null;$('.measureInput').forEach(i=>i.addEventListener('focus',()=>focus=i));$('[data-num]').forEach(b=>b.onclick=()=>{if(!focus){focus=$('.measureInput');if(!focus)return;focus.focus()}let v=focus.value,n=b.dataset.num;if(n==='⌫')v=v.slice(0,-1);else v+=n;focus.value=v;draft.measurements[focus.dataset.measure]=v;saveDraft()});$('#extraMeasure').onclick=()=>{const name=prompt('Extra measurement name');if(name){measureSets[garmentGroup(draft.garment)].push(name);render()}}}
+ if(step===4){$$('[data-measuretab]').forEach(b=>b.onclick=()=>{if(b.disabled)return;measureTab=b.dataset.measuretab;const fs=fieldsForMeasureTab(garmentGroup(draft.garment),measureTab);activeMeasure=fs[0]||'';render()});$$('.measureInput').forEach(i=>{i.onfocus=()=>{activeMeasure=i.dataset.measure;const d=$('#measureDiagram');if(d)d.innerHTML=measureSVG(garmentGroup(draft.garment),activeMeasure);const t=$('.activeMeasureTitle b');if(t)t.textContent=activeMeasure};i.oninput=()=>{draft.measurements[i.dataset.measure]=i.value;saveDraft()}});let focus=null;$$('.measureInput').forEach(i=>i.addEventListener('focus',()=>focus=i));$$('[data-num]').forEach(b=>b.onclick=()=>{if(!focus){focus=$('.measureInput');if(!focus)return;focus.focus()}let v=focus.value,n=b.dataset.num;if(n==='⌫')v=v.slice(0,-1);else v+=n;focus.value=v;draft.measurements[focus.dataset.measure]=v;saveDraft()});$('#extraMeasure').onclick=()=>{const name=prompt('Extra measurement name');if(name){measureSets[garmentGroup(draft.garment)].push(name);render()}}}
 }
 function captureStep(){
  if(step===1){draft.customer=$('#customer')?.value.trim()||draft.customer;draft.phone=$('#phone')?.value.trim()||draft.phone}
@@ -252,7 +297,7 @@ async function handlePhotos(e){const fs=[...e.target.files].slice(0,3-(draft.pho
 function compressImage(file){return new Promise(res=>{const rd=new FileReader();rd.onload=()=>{const img=new Image();img.onload=()=>{const s=Math.min(1,800/img.width);const c=document.createElement('canvas');c.width=Math.round(img.width*s);c.height=Math.round(img.height*s);c.getContext('2d').drawImage(img,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',.72))};img.src=rd.result};rd.readAsDataURL(file)})}
 function voiceToText(){const R=window.SpeechRecognition||window.webkitSpeechRecognition;if(!R){toast('Voice-to-text not supported in this browser');return}const r=new R();r.lang='ta-IN';r.interimResults=false;r.onresult=e=>{draft.designNotes=(draft.designNotes?draft.designNotes+' ':'')+e.results[0][0].transcript;saveDraft();render()};r.onerror=()=>toast('Voice recognition failed');r.start();toast('Listening…')}
 let recorder=null,chunks=[];async function recordAudio(){if(recorder&&recorder.state==='recording'){recorder.stop();return}try{const stream=await navigator.mediaDevices.getUserMedia({audio:true});recorder=new MediaRecorder(stream);chunks=[];recorder.ondataavailable=e=>chunks.push(e.data);recorder.onstop=()=>{draft.voiceNote='Audio note recorded ('+Math.round(chunks.reduce((a,b)=>a+b.size,0)/1024)+' KB)';stream.getTracks().forEach(t=>t.stop());saveDraft();render()};recorder.start();$('#voiceState').textContent='Recording… tap Record audio again to stop'}catch(e){toast('Microphone permission is required')}}
-function exportBackup(){const blob=new Blob([JSON.stringify({version:24,exported:new Date().toISOString(),orders},null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='SK-Tailoring-backup-'+today()+'.json';a.click();URL.revokeObjectURL(a.href)}
+function exportBackup(){const blob=new Blob([JSON.stringify({version:25,exported:new Date().toISOString(),orders},null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='SK-Tailoring-backup-'+today()+'.json';a.click();URL.revokeObjectURL(a.href)}
 $('#restoreInput').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const j=JSON.parse(r.result);if(!Array.isArray(j.orders))throw 0;orders=j.orders;saveOrders();toast('Backup restored');page='dashboard';render()}catch(err){toast('Invalid backup file')}};r.readAsText(f)});
 if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
 render();
