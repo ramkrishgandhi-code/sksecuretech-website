@@ -1795,3 +1795,31 @@ html,body{max-width:100%;overflow-x:hidden}
     flex-wrap:wrap;
   }
 }
+
+
+/* v29 interaction hardening */
+.garmentCompact,
+.styleCard,
+.tab,
+.measureTabs button,
+.numPad button,
+.fractionBar button{
+  cursor:pointer;
+  touch-action:manipulation;
+  user-select:none;
+  -webkit-tap-highlight-color:rgba(11,119,120,.14);
+}
+.garmentCompact.active{
+  outline:3px solid rgba(11,119,120,.18);
+  outline-offset:2px;
+}
+.styleCard.active{
+  outline:3px solid rgba(11,119,120,.16);
+  outline-offset:2px;
+}
+.tab.active,
+.measureTabs button.active{
+  background:#0b7778!important;
+  color:#fff!important;
+  border-color:#0b7778!important;
+}
