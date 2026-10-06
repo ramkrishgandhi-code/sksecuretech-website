@@ -9,7 +9,7 @@ const esc=s=>String(s??'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&g
 let orders=loadOrders();
 const EXP_STORE='skTailoringExpensesV25';
 let expenses=loadExpenses();
-let page='dashboard', step=1, cat='women', activeMeasure='Bust / மார்பு', measureTab='Body', orderView='all', editingOrderId=null, showAllGarments=false;
+let page='dashboard', step=1, cat='women', activeMeasure='Bust / மார்பு', measureTab='Body', orderView='all', editingOrderId=null, showAllGarments=false, sideCollapsed=localStorage.getItem('skTailoringSideCollapsed')==='1';
 let draft=loadDraft();
 if(!draft) draft=freshDraft();
 function freshDraft(){return{customer:'',phone:'',garment:null,category:'women',designNotes:'',photos:[],voiceNote:'',style:{sleeve:'Short',neck:'Round',opening:'Back hooks',lining:'No lining',padding:'No pad',aari:'None',fit:'Regular',notes:''},measurements:{},customMeasurements:[],stitching:'',aariCharge:'',advance:'',delivery:'',status:'New',created:today()}}
@@ -39,9 +39,13 @@ const measureSets={
 function garmentGroup(k){if(!k)return'blouse';if(/blouse/.test(k))return'blouse';if(/shirt|school/.test(k))return'shirt';if(/trouser|palazzo|short/.test(k))return'trousers';if(/kurta|sherwani/.test(k))return'kurta';if(/skirt|petticoat|veshti|saree|fall-pico/.test(k))return'skirt';if(/alter/.test(k))return'alteration';return'dress'}
 function root(){return $('#app')}
 function toast(t){const d=document.createElement('div');d.className='toast';d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),2200)}
-function shell(content){return '<div class="app"><aside class="side" id="side"><div><div class="brand">✂ SK Tailoring</div><small>SHOP WORKSPACE</small></div><nav class="nav">'+navBtn('dashboard','▦ Dashboard')+navBtn('new','＋ New Order')+navBtn('orders','▤ Work Orders')+navBtn('backup','⚙ Backup')+'</nav><div class="made">Made for your daily craft.</div></aside><main class="main page-'+page+'"><div class="mobileTop"><button class="pill" id="menuBtn">☰ Menu</button><b>✂ SK Tailoring</b></div><div class="topline"><div class="eyebrow">SK SECURE TECH / TAILORING</div><div class="status">● Online · Saved on this device</div></div>'+content+'<div class="copyright">Device version v33 · orders save in this browser. Export a backup before clearing browser data.</div></main></div>'}
+function shell(content){return '<div class="app '+(sideCollapsed?'sideCollapsed':'')+'"><aside class="side" id="side"><div class="sideHead"><div><div class="brand">✂ <span>SK Tailoring</span></div><small>SHOP WORKSPACE</small></div><button class="sideCollapseBtn" id="sideCollapseBtn" title="Minimize sidebar">'+(sideCollapsed?'›':'‹')+'</button></div><nav class="nav">'+navBtn('dashboard','▦ Dashboard')+navBtn('new','＋ New Order')+navBtn('orders','▤ Work Orders')+navBtn('backup','⚙ Backup')+'</nav><div class="made">Made for your daily craft.</div></aside><main class="main page-'+page+'"><div class="mobileTop"><button class="pill" id="menuBtn">☰ Menu</button><b>✂ SK Tailoring</b></div><div class="topline"><div class="eyebrow">SK SECURE TECH / TAILORING</div><div class="status">● Online · Saved on this device</div></div>'+content+'<div class="copyright">Device version v34 · orders save in this browser. Export a backup before clearing browser data.</div></main></div>'}
 function navBtn(p,label){return '<button data-nav="'+p+'" class="'+(page===p?'active':'')+'">'+label+'</button>'}
-function bindShell(){ $$('[data-nav]').forEach(b=>b.onclick=()=>{page=b.dataset.nav;if(page==='new'){editingOrderId=null;showAllGarments=false;step=1;draft=freshDraft();saveDraft()}const s=$('#side');if(s)s.classList.remove('open');render()}); const m=$('#menuBtn');if(m)m.onclick=()=>$('#side').classList.toggle('open') }
+function bindShell(){
+ $$('[data-nav]').forEach(b=>b.onclick=()=>{page=b.dataset.nav;if(page==='new'){editingOrderId=null;showAllGarments=false;step=1;draft=freshDraft();saveDraft()}const s=$('#side');if(s)s.classList.remove('open');render()});
+ const m=$('#menuBtn');if(m)m.onclick=()=>$('#side').classList.toggle('open');
+ const c=$('#sideCollapseBtn');if(c)c.onclick=()=>{sideCollapsed=!sideCollapsed;localStorage.setItem('skTailoringSideCollapsed',sideCollapsed?'1':'0');render()}
+}
 function dashSVG(type){
  const common='viewBox="0 0 420 220" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"';
  if(type==='new')return '<svg '+common+'><defs><linearGradient id="n1" x1="0" x2="1"><stop stop-color="#0d8b8c"/><stop offset="1" stop-color="#075d63"/></linearGradient></defs><rect width="420" height="220" fill="url(#n1)"/><circle cx="335" cy="62" r="82" fill="#ffffff14"/><circle cx="385" cy="190" r="110" fill="#ffffff0c"/><path d="M265 42c18 0 33 15 33 33s-15 33-33 33-33-15-33-33 15-33 33-33Zm93 0c18 0 33 15 33 33s-15 33-33 33-33-15-33-33 15-33 33-33Z" fill="none" stroke="#fff" stroke-width="10"/><path d="m289 91 101 101M334 92 238 188" stroke="#fff" stroke-width="11" stroke-linecap="round"/><path d="M228 178c45-34 92-43 146-28l23 70H201Z" fill="#e9d9b9" opacity=".78"/></svg>';
@@ -200,54 +204,55 @@ function garmentSVG(k,style={},measurements={},mode='catalog'){
 }
 function styleSchemaFor(k){
  const fam=visualFamily(k);
- const commonFit={key:'fit',label:'Fit',type:'select',options:['Regular','Slim','Comfort']};
+ const commonFit={key:'fit',label:'Fit',type:'select',options:['Regular','Slim','Comfort','Custom']};
  if(fam==='blouse')return[
-  {key:'sleeve',label:'Sleeve',type:'visual',options:['Short','Elbow','Long','Sleeveless']},
-  {key:'neck',label:'Neck',type:'visual',options:['Round','V neck','Square','Boat','High neck','Low neck']},
-  {key:'opening',label:'Opening',type:'select',options:['Back hooks','Front hooks','Zip','No opening']},
-  {key:'lining',label:'Lining',type:'select',options:['No lining','Cotton lining','Full lining']},
-  {key:'padding',label:'Padding',type:'select',options:['No pad','Pad']},
-  {key:'aari',label:'Aari / embroidery',type:'select',options:['None','Light','Medium','Heavy']},commonFit];
+  {key:'sleeve',label:'Sleeve',type:'visual',options:['Short','Elbow','Long','Sleeveless','Custom']},
+  {key:'neck',label:'Neck',type:'visual',options:['Round','V neck','Square','Boat','High neck','Low neck','Custom']},
+  {key:'opening',label:'Opening',type:'select',options:['Back hooks','Front hooks','Zip','No opening','Custom']},
+  {key:'lining',label:'Lining / உள்ளணி',type:'select',options:['No lining','Cotton lining','Full lining','Custom']},
+  {key:'padding',label:'Padding / பேட்',type:'select',options:['No pad','Pad','Custom']},
+  {key:'aari',label:'Aari / embroidery',type:'select',options:['None','Light','Medium','Heavy','Custom']},commonFit];
  if(fam==='shirt')return[
-  {key:'sleeve',label:'Sleeve',type:'visual',options:['Short','Elbow','Long']},
-  {key:'neck',label:'Collar',type:'visual',options:['Regular collar','Mandarin collar','Band collar','Collarless']},
-  {key:'cuff',label:'Cuff',type:'select',options:['Plain','Button cuff','Double cuff']},
-  {key:'pocket',label:'Pocket',type:'select',options:['No pocket','One pocket','Two pockets']},
-  {key:'placket',label:'Front',type:'select',options:['Standard','Hidden','Half placket']},commonFit];
+  {key:'sleeve',label:'Sleeve',type:'visual',options:['Short','Elbow','Long','Custom']},
+  {key:'neck',label:'Collar / Neck',type:'visual',options:['Regular collar','Mandarin collar','Band collar','Collarless','Custom']},
+  {key:'cuff',label:'Cuff',type:'select',options:['Plain','Button cuff','Double cuff','Custom']},
+  {key:'pocket',label:'Pocket',type:'select',options:['No pocket','One pocket','Two pockets','Custom']},
+  {key:'placket',label:'Front / Placket',type:'select',options:['Standard','Hidden','Half placket','Custom']},commonFit];
  if(fam==='trousers'||fam==='shorts')return[
-  {key:'waistStyle',label:'Waist',type:'visual',options:['Regular waist','High waist','Elastic waist']},
-  {key:'bottomStyle',label:'Bottom',type:'visual',options:['Straight','Tapered','Wide']},
-  {key:'pleat',label:'Pleat',type:'select',options:['No pleat','Single pleat','Double pleat']},
-  {key:'pocket',label:'Pocket',type:'select',options:['Side pockets','Cross pockets','No pocket']},commonFit];
+  {key:'waistStyle',label:'Waist',type:'visual',options:['Regular waist','High waist','Elastic waist','Custom']},
+  {key:'bottomStyle',label:'Bottom',type:'visual',options:['Straight','Tapered','Wide','Cuff','Custom']},
+  {key:'pleat',label:'Pleat',type:'select',options:['No pleat','Single pleat','Double pleat','Custom']},
+  {key:'pocket',label:'Pocket',type:'select',options:['Side pockets','Cross pockets','Back pocket','No pocket','Custom']},commonFit];
  if(fam==='skirt'||fam==='lehenga'||fam==='skirt-top')return[
-  {key:'waistStyle',label:'Waist',type:'visual',options:['Band waist','Elastic waist','Drawstring']},
-  {key:'flare',label:'Flare',type:'visual',options:['Straight','Medium flare','Full flare']},
-  {key:'border',label:'Border',type:'select',options:['No border','Simple border','Heavy border']},
-  {key:'lining',label:'Lining',type:'select',options:['No lining','Cotton lining','Full lining']},commonFit];
+  {key:'waistStyle',label:'Waist',type:'visual',options:['Band waist','Elastic waist','Drawstring','Custom']},
+  {key:'flare',label:'Flare / Shape',type:'visual',options:['Straight','Medium flare','Full flare','Custom']},
+  {key:'border',label:'Border',type:'select',options:['No border','Simple border','Heavy border','Custom']},
+  {key:'lining',label:'Lining',type:'select',options:['No lining','Cotton lining','Full lining','Custom']},commonFit];
  if(fam==='saree')return[
-  {key:'drape',label:'Drape',type:'visual',options:['Classic','Front pleat','Ready pleat']},
-  {key:'pallu',label:'Pallu',type:'visual',options:['Regular','Long pallu','Pinned']},
-  {key:'finish',label:'Finish',type:'select',options:['Plain','Border','Decorative']},
-  {key:'fit',label:'Waist fit',type:'select',options:['Regular','Snug','Comfort']}];
+  {key:'drape',label:'Drape',type:'visual',options:['Classic','Front pleat','Ready pleat','Custom']},
+  {key:'pallu',label:'Pallu',type:'visual',options:['Regular','Long pallu','Pinned','Custom']},
+  {key:'finish',label:'Finish',type:'select',options:['Plain','Border','Decorative','Custom']},
+  {key:'fit',label:'Waist fit',type:'select',options:['Regular','Snug','Comfort','Custom']}];
  if(fam==='fallpico')return[
-  {key:'finish',label:'Edge finish',type:'visual',options:['Pico','Rolled pico','Wide pico']},
-  {key:'fall',label:'Fall',type:'select',options:['No fall','Cotton fall','Premium fall']}];
+  {key:'finish',label:'Edge finish',type:'visual',options:['Pico','Rolled pico','Wide pico','Custom']},
+  {key:'fall',label:'Fall',type:'select',options:['No fall','Cotton fall','Premium fall','Custom']}];
  if(fam==='veshti')return[
-  {key:'border',label:'Border',type:'visual',options:['Plain','Single border','Double border']},
-  {key:'pleat',label:'Pleat',type:'select',options:['Standard','Ready pleat']},
-  {key:'fit',label:'Waist fit',type:'select',options:['Regular','Snug','Comfort']}];
+  {key:'border',label:'Border',type:'visual',options:['Plain','Single border','Double border','Custom']},
+  {key:'pleat',label:'Pleat',type:'select',options:['Standard','Ready pleat','Custom']},
+  {key:'fit',label:'Waist fit',type:'select',options:['Regular','Snug','Comfort','Custom']}];
  if(fam==='waistcoat')return[
-  {key:'neck',label:'Front / Neck',type:'visual',options:['V neck','Round','High neck']},
-  {key:'pocket',label:'Pocket',type:'select',options:['No pocket','Two pockets','Three pockets']},commonFit];
+  {key:'neck',label:'Front / Neck',type:'visual',options:['V neck','Round','High neck','Custom']},
+  {key:'pocket',label:'Pocket',type:'select',options:['No pocket','Two pockets','Three pockets','Custom']},commonFit];
  if(fam==='alteration')return[
-  {key:'area',label:'Alteration area',type:'visual',options:['Length','Waist','Sleeve','Shoulder']},
-  {key:'change',label:'Change',type:'select',options:['Reduce','Increase','Repair','Replace']}];
+  {key:'area',label:'Alteration area',type:'visual',options:['Length','Waist','Sleeve','Shoulder','Neck','Custom']},
+  {key:'change',label:'Change',type:'select',options:['Reduce','Increase','Repair','Replace','Custom']}];
  return[
-  {key:'sleeve',label:'Sleeve',type:'visual',options:['Short','Elbow','Long','Sleeveless']},
-  {key:'neck',label:'Neck',type:'visual',options:['Round','V neck','Square','Boat','High neck']},
-  {key:'flare',label:'Shape',type:'visual',options:['Straight','Medium flare','Full flare']},
-  {key:'lining',label:'Lining',type:'select',options:['No lining','Cotton lining','Full lining']},
-  {key:'aari',label:'Embroidery',type:'select',options:['None','Light','Medium','Heavy']},commonFit]
+  {key:'sleeve',label:'Sleeve',type:'visual',options:['Short','Elbow','Long','Sleeveless','Custom']},
+  {key:'neck',label:'Neck',type:'visual',options:['Round','V neck','Square','Boat','High neck','Low neck','Custom']},
+  {key:'flare',label:'Shape / Flare',type:'visual',options:['Straight','Medium flare','Full flare','Custom']},
+  {key:'opening',label:'Opening',type:'select',options:['Back','Front','Zip','No opening','Custom']},
+  {key:'lining',label:'Lining',type:'select',options:['No lining','Cotton lining','Full lining','Custom']},
+  {key:'aari',label:'Embroidery',type:'select',options:['None','Light','Medium','Heavy','Custom']},commonFit]
 }
 function ensureStyleDefaults(k){
  const schema=styleSchemaFor(k);draft.style=draft.style||{};
@@ -255,27 +260,32 @@ function ensureStyleDefaults(k){
  if(draft.style.notes==null)draft.style.notes=''
 }
 function optionIconSVG(kind,val){
- const p='#0B8587',a='#E1A83E',bg='#FCF6EA',v=String(val).toLowerCase();
+ const p='#0B8587',a='#E1A83E',bg='#FCF6EA',ink='#31565A',v=String(val).toLowerCase();
  let d='';
  if(kind==='sleeve'){
-  const l=v.includes('long')?67:v.includes('elbow')?48:v.includes('sleeveless')?6:30;
-  d='<path d="M42 46 73 30h44l31 16 18 23-24 13-'+l+' 4-8-17v45H65V69l-8 17-'+l+'-4-24-13Z" fill="'+p+'"/>';
+  const end=v.includes('long')?168:v.includes('elbow')?144:v.includes('sleeveless')?112:v.includes('custom')?150:130;
+  d='<path d="M44 45 Q73 27 101 42 L '+end+' 68 Q '+(end-5)+' 84 '+(end-18)+' 88 L96 68 Q70 78 48 72Z" fill="'+p+'"/><path d="M96 43v50" stroke="'+a+'" stroke-width="4" stroke-dasharray="5 5"/>';
+  if(v.includes('custom'))d+='<path d="M34 114h122" stroke="'+ink+'" stroke-width="3" stroke-dasharray="7 5"/>';
  }else if(kind==='neck'){
-  let n='M78 38 Q95 58 112 38';if(v.includes('v neck'))n='M78 38 95 59 112 38';if(v.includes('square'))n='M79 38v18h32V38';if(v.includes('boat'))n='M75 40q20 10 40 0';if(v.includes('high')||v.includes('mandarin'))n='M83 34h25v18H83Z';
-  d='<path d="M49 49 76 31h38l27 18 18 25-24 11-9-18v51H64V67l-9 18-24-11Z" fill="'+p+'"/><path d="'+n+'" fill="none" stroke="'+bg+'" stroke-width="6"/>';
+  let n='M48 42 Q95 93 142 42';if(v.includes('v neck'))n='M48 42 L95 100 L142 42';if(v.includes('square'))n='M52 42V90H138V42';if(v.includes('boat'))n='M40 55 Q95 81 150 55';if(v.includes('high')||v.includes('mandarin'))n='M69 35H121V82H69Z';if(v.includes('low'))n='M43 40 Q95 120 147 40';if(v.includes('band'))n='M62 38H128V68H62Z';if(v.includes('collarless'))n='M55 45 Q95 75 135 45';if(v.includes('custom'))n='M45 45 Q70 90 95 60 Q120 92 145 45';
+  d='<path d="M28 32H162V125H28Z" rx="18" fill="'+p+'" opacity=".95"/><path d="'+n+'" fill="'+bg+'" stroke="'+a+'" stroke-width="8" stroke-linejoin="round"/>';
  }else if(kind==='flare'||kind==='bottomStyle'){
-  const w=v.includes('full')||v.includes('wide')?60:v.includes('medium')?48:v.includes('taper')?25:38;
-  d='<path d="M76 31h38l8 38 '+w+' 56H'+(95-w)+'l'+w+'-56Z" fill="'+p+'"/><path d="M66 112h58" stroke="'+a+'" stroke-width="6"/>';
+  const w=v.includes('full')||v.includes('wide')?72:v.includes('medium')?56:v.includes('taper')?32:v.includes('cuff')?38:44;
+  d='<path d="M73 28h44L'+(95+w)+' 127H'+(95-w)+'Z" fill="'+p+'"/><path d="M'+(95-w+8)+' 112H'+(95+w-8)+'" stroke="'+a+'" stroke-width="'+(v.includes('cuff')?12:6)+'"/>';
  }else if(kind==='waistStyle'){
-  d='<path d="M62 40h66l8 83H54Z" fill="'+p+'"/><path d="M62 53h66" stroke="'+a+'" stroke-width="'+(v.includes('high')?10:6)+'"/>';
+  const band=v.includes('high')?18:v.includes('elastic')?12:8;
+  d='<path d="M46 47h98l12 78H34Z" fill="'+p+'"/><rect x="46" y="42" width="98" height="'+band+'" rx="5" fill="'+a+'"/>';
+  if(v.includes('elastic'))d+='<path d="M50 48q8 8 16 0t16 0t16 0t16 0t16 0" fill="none" stroke="'+bg+'" stroke-width="3"/>';
  }else if(kind==='border'){
-  d='<path d="M58 36h75l12 91H46Z" fill="#F5EFE1"/><path d="M49 105h93M52 116h88" stroke="'+a+'" stroke-width="6"/>';
+  d='<path d="M47 27h96l13 103H34Z" fill="#F5EFE1"/><path d="M38 104h114" stroke="'+a+'" stroke-width="8"/>'+(v.includes('double')?'<path d="M40 118h110" stroke="'+p+'" stroke-width="6"/>':'');
  }else if(kind==='drape'||kind==='pallu'){
-  d='<path d="M67 31h44l15 36-16 17 29 49H45l28-50-16-17Z" fill="'+p+'"/><path d="M76 34q54 32 43 94" fill="none" stroke="'+a+'" stroke-width="8"/>';
+  d='<path d="M65 26h53l17 39-18 18 34 50H40l31-50-18-18Z" fill="'+p+'"/><path d="M75 29q63 34 50 100" fill="none" stroke="'+a+'" stroke-width="'+(v.includes('long')?12:8)+'"/>';
+ }else if(kind==='finish'){
+  d='<path d="M30 75H160" stroke="'+p+'" stroke-width="32"/><path d="M30 76H160" stroke="'+a+'" stroke-width="'+(v.includes('wide')?10:5)+'"/>';
  }else if(kind==='area'){
-  d='<circle cx="67" cy="69" r="22" fill="none" stroke="'+p+'" stroke-width="7"/><circle cx="124" cy="69" r="22" fill="none" stroke="'+a+'" stroke-width="7"/><path d="m84 86 61 56M84 87l61-61" stroke="#5C544C" stroke-width="7"/>';
+  d='<circle cx="61" cy="63" r="25" fill="none" stroke="'+p+'" stroke-width="8"/><circle cx="129" cy="63" r="25" fill="none" stroke="'+a+'" stroke-width="8"/><path d="m80 82 69 64M80 82l69-69" stroke="#5C544C" stroke-width="8"/>';
  }else{
-  d='<rect x="50" y="36" width="92" height="92" rx="18" fill="'+p+'"/><path d="M66 83h60" stroke="'+a+'" stroke-width="8"/>';
+  d='<rect x="34" y="28" width="122" height="94" rx="22" fill="'+p+'"/><path d="M54 76h82" stroke="'+a+'" stroke-width="9"/>';
  }
  return '<svg viewBox="0 0 190 150" xmlns="http://www.w3.org/2000/svg"><rect width="190" height="150" rx="14" fill="'+bg+'"/>'+d+'</svg>'
 }
@@ -283,16 +293,17 @@ function styleCard(kind,val,on){return '<button type="button" class="styleCard v
 function measurementSchemaFor(k){
  const fam=visualFamily(k);
  if(fam==='blouse')return{Body:['Bust / மார்பு','Under bust','Waist / இடுப்பு','Shoulder / தோள்','Blouse length / நீளம்','Front length','Back length','Bust point distance','Shoulder to bust point','Waist round'],Sleeve:['Armhole','Sleeve length','Sleeve round'],Neck:['Front neck depth','Back neck depth']};
- if(fam==='shirt')return{Body:['Chest / மார்பு','Waist / இடுப்பு','Shoulder / தோள்','Shirt length'],Sleeve:['Armhole','Sleeve length','Bicep round','Cuff round'],Neck:['Neck / கழுத்து']};
+ if(fam==='shirt')return{Body:['Chest / மார்பு','Waist / இடுப்பு','Shoulder / தோள்','Shirt length','Front length','Back length'],Sleeve:['Armhole','Sleeve length','Bicep round','Cuff round'],Neck:['Neck / கழுத்து','Collar height']};
  if(fam==='trousers'||fam==='shorts')return{Lower:['Waist / இடுப்பு','Hip','Thigh','Knee','Bottom','Rise','Inseam','Outseam / length']};
- if(fam==='skirt'||fam==='lehenga'||fam==='skirt-top')return{Body:['Waist / இடுப்பு','Hip','Skirt length','Bottom / flare']};
- if(fam==='saree')return{Body:['Waist / இடுப்பு','Hip','Full length','Pallu length']};
- if(fam==='fallpico')return{Body:['Saree length','Fall length','Pico allowance']};
+ if(fam==='skirt')return{Body:['Waist / இடுப்பு','Hip','Skirt length','Bottom / flare']};
+ if(fam==='lehenga'||fam==='skirt-top')return{Body:['Waist / இடுப்பு','Hip','Waist to floor','Skirt length','Bottom / flare'],Top:['Chest / மார்பு','Shoulder / தோள்','Top length']};
+ if(fam==='saree')return{Body:['Waist / இடுப்பு','Hip','Full length','Pallu length','Pleat depth']};
+ if(fam==='fallpico')return{Body:['Saree length','Fall length','Fall width','Pico allowance']};
  if(fam==='veshti')return{Body:['Waist / இடுப்பு','Hip','Veshti length','Bottom']};
- if(fam==='alteration')return{Alteration:['Current size','Required size','Length change','Waist change','Sleeve change']};
- if(fam==='waistcoat')return{Body:['Chest / மார்பு','Waist / இடுப்பு','Shoulder / தோள்','Waistcoat length'],Neck:['Neck / கழுத்து']};
- if(fam==='kurta'||fam==='kurta-set')return{Body:['Chest / மார்பு','Waist / இடுப்பு','Hip','Shoulder / தோள்','Kurta length'],Sleeve:['Armhole','Sleeve length','Sleeve round'],Neck:['Neck / கழுத்து','Front neck depth']};
- return{Body:['Chest / மார்பு','Bust','Waist / இடுப்பு','Hip','Shoulder / தோள்','Dress length'],Sleeve:['Armhole','Sleeve length','Sleeve round'],Neck:['Neck / கழுத்து','Front neck depth']}
+ if(fam==='alteration')return{Alteration:['Area / பகுதி','Current size','Required size','Length change','Waist change','Sleeve change','Notes']};
+ if(fam==='waistcoat')return{Body:['Chest / மார்பு','Waist / இடுப்பு','Shoulder / தோள்','Waistcoat length','Front length','Back length'],Neck:['Neck / கழுத்து']};
+ if(fam==='kurta'||fam==='kurta-set')return{Body:['Chest / மார்பு','Waist / இடுப்பு','Hip','Shoulder / தோள்','Kurta length','Side slit'],Sleeve:['Armhole','Sleeve length','Sleeve round'],Neck:['Neck / கழுத்து','Front neck depth','Back neck depth']};
+ return{Body:['Chest / மார்பு','Bust','Waist / இடுப்பு','Hip','Shoulder / தோள்','Dress length','Front length','Back length','Waist to floor'],Sleeve:['Armhole','Sleeve length','Sleeve round'],Neck:['Neck / கழுத்து','Front neck depth','Back neck depth']}
 }
 function liveMeasureSVG(k,measurements={},activeField=''){
  const p=paletteFor(k), fam=visualFamily(k), base=garmentSVG(k,draft.style,measurements,'measure');
@@ -419,9 +430,10 @@ function selectedDesignVisual(g){
 function styleStep(){
  const g=draft.garment||'blouse';ensureStyleDefaults(g);
  const schema=styleSchemaFor(g), visual=schema.filter(x=>x.type==='visual'), selects=schema.filter(x=>x.type==='select');
- return '<div class="styleV33"><div class="styleLivePanel"><div class="stylePreviewArt">'+garmentSVG(g,draft.style,{},'style')+'</div><div class="stylePreviewMeta"><span class="miniLabel">LIVE STYLE PREVIEW</span><h2>'+esc(titleFor(g))+'</h2><p>Choose an option — this single preview updates immediately.</p><div class="stylePicked">'+visual.map(x=>'<span>'+esc(x.label)+' <b>'+esc(styleValue(draft.style,x.key,x.options[0]))+'</b></span>').join('')+'</div></div></div>'+
- '<div class="styleControlArea">'+visual.map(group=>'<section class="visualOptionGroup"><div class="groupHead"><h3>'+esc(group.label)+'</h3><span>'+esc(styleValue(draft.style,group.key,group.options[0]))+'</span></div><div class="visualOptionGrid">'+group.options.map(v=>styleCard(group.key,v,styleValue(draft.style,group.key,group.options[0])===v)).join('')+'</div></section>').join('')+
- '<section class="styleSelectPanel"><div class="styleSelectGrid">'+selects.map(group=>'<div class="field"><label>'+esc(group.label)+'</label><select data-style-select="'+group.key+'" id="styleSel_'+group.key+'">'+group.options.map(v=>'<option '+(styleValue(draft.style,group.key,group.options[0])===v?'selected':'')+'>'+esc(v)+'</option>').join('')+'</select></div>').join('')+'<div class="field notesField"><label>Style / fabric / colour notes</label><textarea id="styleNotes" rows="2">'+esc(draft.style.notes||'')+'</textarea></div></div></section></div></div>'
+ const ref=(draft.photos&&draft.photos[0])?'<div class="styleCustomerRef"><span>Customer reference</span><img src="'+draft.photos[0]+'" alt="Customer reference"></div>':'';
+ return '<div class="styleV34"><section class="styleHero"><div class="styleHeroArt">'+garmentSVG(g,draft.style,{},'style')+'</div><div class="styleHeroInfo"><span class="miniLabel">LIVE STYLE PREVIEW</span><h2>'+esc(titleFor(g))+'</h2><p>One garment preview. Sleeve, neck and garment-specific options update this preview.</p><div class="stylePicked">'+visual.map(x=>'<span>'+esc(x.label)+' <b>'+esc(styleValue(draft.style,x.key,x.options[0]))+'</b></span>').join('')+'</div>'+ref+'</div></section>'+
+ '<div class="styleGroupsV34">'+visual.map(group=>'<section class="visualOptionGroup"><div class="groupHead"><div><span class="miniLabel">CHOOSE</span><h3>'+esc(group.label)+'</h3></div><span>'+esc(styleValue(draft.style,group.key,group.options[0]))+'</span></div><div class="visualOptionGridV34">'+group.options.map(v=>styleCard(group.key,v,styleValue(draft.style,group.key,group.options[0])===v)).join('')+'</div></section>').join('')+'</div>'+
+ '<section class="styleSelectPanel"><div class="styleSelectGrid">'+selects.map(group=>'<div class="field"><label>'+esc(group.label)+'</label><select data-style-select="'+group.key+'" id="styleSel_'+group.key+'">'+group.options.map(v=>'<option '+(styleValue(draft.style,group.key,group.options[0])===v?'selected':'')+'>'+esc(v)+'</option>').join('')+'</select></div>').join('')+'<div class="field notesField"><label>Style / fabric / colour notes</label><textarea id="styleNotes" rows="2">'+esc(draft.style.notes||'')+'</textarea></div></div></section></div>'
 }
 function sel(k,arr){return '<select id="'+k+'">'+arr.map(v=>'<option '+(draft.style[k]===v?'selected':'')+'>'+v+'</option>').join('')+'</select>'}
 function titleFor(k){for(const group of Object.values(cats)){const f=group.find(x=>x[0]===k);if(f)return f[1]}return 'Garment'}
@@ -444,11 +456,10 @@ function measureStep(){
  if(!tabs.includes(measureTab))measureTab=tabs[0];
  const fields=fieldsForMeasureTab(g,measureTab);
  if(!fields.includes(activeMeasure))activeMeasure=fields[0]||'';
- return '<div class="measureV33"><div class="measureHead"><div><h2 class="sectionTitle">'+esc(titleFor(g))+' measurements</h2><p class="sub">Change a value and watch the selected garment preview respond.</p></div><div class="measureTabs">'+tabs.map(t=>'<button type="button" class="'+(measureTab===t?'active':'')+'" data-measuretab="'+t+'">'+({Body:'▣',Sleeve:'◩',Neck:'⌁',Lower:'▤',Alteration:'✂'}[t]||'•')+' '+t+' · '+fieldsForMeasureTab(g,t).length+'</button>').join('')+'</div></div>'+
- '<div class="measureDynamicLayout"><section class="measureEntry"><div class="measureList compactFields">'+fields.map(f=>'<div class="field"><label>'+esc(f)+'</label><input class="measureInput" data-measure="'+esc(f)+'" inputmode="decimal" value="'+esc(draft.measurements[f]||'')+'" /></div>').join('')+'</div><button class="pill compactAdd" id="extraMeasure">＋ Extra measurement</button></section>'+
- '<aside class="dynamicPreviewPanel"><div class="dynamicPreviewHead"><div><span class="miniLabel">LIVE MEASUREMENT PREVIEW</span><b>'+esc(titleFor(g))+'</b></div><span class="activeMeasurementChip">'+esc(activeMeasure||'Select a field')+'</span></div><div id="measureDiagram">'+liveMeasureSVG(g,draft.measurements,activeMeasure)+'</div><div class="keypadArea"><div class="numPad standardPad">'+['7','8','9','4','5','6','1','2','3','.','0','⌫'].map(n=>'<button type="button" data-num="'+n+'">'+n+'</button>').join('')+'</div><div class="fractionBar">'+['¼','½','¾'].map(n=>'<button type="button" data-num="'+n+'">'+n+'</button>').join('')+'</div></div></aside></div></div>'
+ return '<div class="measureV34"><div class="measureHeadV34"><div><span class="miniLabel">SELECTED GARMENT</span><h2 class="sectionTitle">'+esc(titleFor(g))+' measurements</h2><p class="sub">Tap a field, enter the size, and watch that area change in the garment preview.</p></div><div class="measureTabs">'+tabs.map(t=>'<button type="button" class="'+(measureTab===t?'active':'')+'" data-measuretab="'+t+'">'+({Body:'▣',Sleeve:'◩',Neck:'⌁',Lower:'▤',Top:'◫',Alteration:'✂'}[t]||'•')+' '+t+' · '+fieldsForMeasureTab(g,t).length+'</button>').join('')+'</div></div>'+
+ '<div class="measureLayoutV34"><aside class="measurePreviewV34"><div class="dynamicPreviewHead"><div><span class="miniLabel">LIVE MEASUREMENT PREVIEW</span><b>'+esc(titleFor(g))+'</b></div><span class="activeMeasurementChip">'+esc(activeMeasure||'Select a field')+'</span></div><div id="measureDiagram">'+liveMeasureSVG(g,draft.measurements,activeMeasure)+'</div></aside>'+
+ '<section class="measureEntryV34"><div class="measureListV34">'+fields.map(f=>'<label class="measureFieldCard '+(activeMeasure===f?'active':'')+'"><span>'+esc(f)+'</span><input class="measureInput" data-measure="'+esc(f)+'" inputmode="decimal" value="'+esc(draft.measurements[f]||'')+'" /></label>').join('')+'</div><div class="measureEntryBottom"><button class="pill compactAdd" id="extraMeasure">＋ Extra measurement</button><div class="keypadArea"><div class="numPad standardPad">'+['7','8','9','4','5','6','1','2','3','.','0','⌫'].map(n=>'<button type="button" data-num="'+n+'">'+n+'</button>').join('')+'</div><div class="fractionBar">'+['¼','½','¾'].map(n=>'<button type="button" data-num="'+n+'">'+n+'</button>').join('')+'</div></div></div></section></div></div>'
 }
-
 function chargesStep(){
  const total=Number(draft.stitching||0)+Number(draft.aariCharge||0),paid=Number(draft.advance||0),bal=Math.max(0,total-paid);
  return '<div class="chargesWorkspace"><div><h2 class="sectionTitle">Charges + Dates / கட்டணம் + தேதி</h2><p class="sub">Enter charges and collection date. Totals update immediately.</p><div class="chargeFields"><div class="field"><label>Stitching charge (RM)</label><input id="stitching" inputmode="decimal" value="'+esc(draft.stitching)+'" /></div><div class="field"><label>Aari / extra charge (RM)</label><input id="aariCharge" inputmode="decimal" value="'+esc(draft.aariCharge)+'" /></div><div class="field"><label>Advance / paid (RM)</label><input id="advance" inputmode="decimal" value="'+esc(draft.advance)+'" /></div><div class="field"><label>Delivery date *</label><input id="delivery" type="date" value="'+esc(draft.delivery)+'" /></div></div></div><aside class="chargeSummary"><div><span>Total</span><b id="chargeTotal">'+money(total)+'</b></div><div><span>Paid</span><b id="chargePaid">'+money(paid)+'</b></div><div class="balanceBox"><span>Balance</span><b id="chargeBalance">'+money(bal)+'</b></div><small id="chargeWarning"></small></aside></div>'
@@ -598,7 +609,7 @@ function bindNew(){
  }
  if(step===4){
   $$('.measureInput').forEach(i=>{
-   i.onfocus=()=>{activeMeasure=i.dataset.measure;const d=$('#measureDiagram');if(d)d.innerHTML=liveMeasureSVG(draft.garment,draft.measurements,activeMeasure);const chip=$('.activeMeasurementChip');if(chip)chip.textContent=activeMeasure};
+   i.onfocus=()=>{activeMeasure=i.dataset.measure;$('.measureFieldCard').forEach(x=>x.classList.toggle('active',x.contains(i)));const d=$('#measureDiagram');if(d)d.innerHTML=liveMeasureSVG(draft.garment,draft.measurements,activeMeasure);const chip=$('.activeMeasurementChip');if(chip)chip.textContent=activeMeasure};
    i.oninput=()=>{draft.measurements[i.dataset.measure]=i.value;saveDraft();const d=$('#measureDiagram');if(d)d.innerHTML=liveMeasureSVG(draft.garment,draft.measurements,activeMeasure)}
   });
   $('#extraMeasure').onclick=()=>{const name=prompt('Extra measurement name');if(name){draft.customMeasurements=draft.customMeasurements||[];draft.customMeasurements.push({tab:measureTab,name});saveDraft();render()}}
@@ -645,7 +656,7 @@ function compressImage(file){return new Promise(res=>{const rd=new FileReader();
 function voiceToText(){const R=window.SpeechRecognition||window.webkitSpeechRecognition;if(!R){toast('Voice-to-text not supported in this browser');return}const r=new R();r.lang='ta-IN';r.interimResults=false;r.onresult=e=>{draft.designNotes=(draft.designNotes?draft.designNotes+' ':'')+e.results[0][0].transcript;saveDraft();render()};r.onerror=()=>toast('Voice recognition failed');r.start();toast('Listening…')}
 let recorder=null,chunks=[];async function recordAudio(){if(recorder&&recorder.state==='recording'){recorder.stop();return}try{const stream=await navigator.mediaDevices.getUserMedia({audio:true});recorder=new MediaRecorder(stream);chunks=[];recorder.ondataavailable=e=>chunks.push(e.data);recorder.onstop=()=>{draft.voiceNote='Audio note recorded ('+Math.round(chunks.reduce((a,b)=>a+b.size,0)/1024)+' KB)';stream.getTracks().forEach(t=>t.stop());saveDraft();render()};recorder.start();$('#voiceState').textContent='Recording… tap Record audio again to stop'}catch(e){toast('Microphone permission is required')}}
 function exportBackup(){
- const blob=new Blob([JSON.stringify({version:33,exported:new Date().toISOString(),orders,expenses},null,2)],{type:'application/json'}),a=document.createElement('a');
+ const blob=new Blob([JSON.stringify({version:34,exported:new Date().toISOString(),orders,expenses},null,2)],{type:'application/json'}),a=document.createElement('a');
  a.href=URL.createObjectURL(blob);a.download='SK-Tailoring-backup-'+today()+'.json';a.click();URL.revokeObjectURL(a.href)
 }
 $('#restoreInput').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const j=JSON.parse(r.result);if(!Array.isArray(j.orders))throw 0;orders=j.orders;expenses=Array.isArray(j.expenses)?j.expenses:[];saveOrders();saveExpenses();toast('Backup restored');page='dashboard';render()}catch(err){toast('Invalid backup file')}};r.readAsText(f)});
