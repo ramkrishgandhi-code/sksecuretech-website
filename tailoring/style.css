@@ -855,3 +855,294 @@ html,body{max-width:100%;overflow-x:hidden}
     text-align:center;
   }
 }
+
+
+/* v27 business module polish */
+.compactPanel{padding:12px}
+.orderFilters{
+  display:grid;
+  grid-template-columns:repeat(7,minmax(0,1fr));
+  gap:7px;
+  margin:8px 0 12px;
+}
+.orderFilter{
+  border:1px solid #dbe5df;
+  border-radius:11px;
+  background:#edf1ee;
+  color:#5f6f6e;
+  min-height:48px;
+  padding:7px 9px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  font-weight:800;
+  cursor:pointer;
+}
+.orderFilter span{font-size:10px}
+.orderFilter b{
+  min-width:24px;
+  height:24px;
+  padding:0 6px;
+  display:grid;
+  place-items:center;
+  border-radius:999px;
+  background:#dde6e1;
+  font-size:10px;
+}
+.orderFilter.active,
+.orderFilter[aria-pressed="true"]{
+  background:#0b7778;
+  border-color:#0b7778;
+  color:#fff;
+  box-shadow:0 5px 14px rgba(11,119,120,.2);
+}
+.orderFilter.active b,
+.orderFilter[aria-pressed="true"] b{
+  background:rgba(255,255,255,.18);
+}
+.orderV27{
+  padding:11px 12px;
+  border-radius:13px;
+}
+.orderMain{min-width:0}
+.orderTitle{
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:7px;
+}
+.orderTitle>b{font-size:12px}
+.orderMeta{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px 14px;
+  margin-top:7px;
+}
+.orderMeta span{
+  font-size:9px;
+  color:#738684;
+}
+.orderMeta b{color:#284c4c}
+.compactBtn{
+  padding:8px 11px!important;
+  min-width:66px;
+}
+.badge.status-new{background:#e7f1ef;color:#2f6f6c}
+.badge.status-in-progress{background:#fff1d9;color:#9a6515}
+.badge.status-ready{background:#e0f4e6;color:#2f7d48}
+.badge.status-delivered{background:#e5ebf6;color:#526e9e}
+
+.customerGrid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:9px;
+}
+.customerCard{
+  border:1px solid #e3eae6;
+  border-radius:14px;
+  padding:11px;
+  display:grid;
+  grid-template-columns:42px minmax(0,1fr);
+  gap:10px;
+  background:#fff;
+}
+.customerAvatar{
+  width:42px;
+  height:42px;
+  border-radius:12px;
+  display:grid;
+  place-items:center;
+  background:#dceeed;
+  color:#0b7778;
+  font-weight:900;
+  font-size:17px;
+}
+.customerInfo{
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+}
+.customerInfo b{
+  font-size:12px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.customerInfo span{
+  font-size:9px;
+  color:#758887;
+}
+.customerStats{
+  grid-column:1/-1;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:6px;
+}
+.customerStats>div{
+  border-radius:10px;
+  background:#f5f8f5;
+  padding:7px;
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+}
+.customerStats span{font-size:8px;color:#7a8c8a}
+.customerStats b{font-size:10px}
+
+.financeGridV27{grid-template-columns:repeat(5,minmax(0,1fr))}
+.financeCard small{
+  font-size:8px;
+  color:#82918f;
+}
+.financeCard.warn{
+  background:#fff7e7;
+  border-color:#f1dfb8;
+}
+.accountLower{margin-top:10px}
+.panelTitleRow{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:8px;
+}
+.panelTitleRow b{font-size:12px}
+.panelTitleRow span{font-size:9px;color:#788b89}
+.compactData{
+  grid-template-columns:minmax(0,1fr) 120px;
+}
+.smallEmpty{min-height:80px}
+
+.paymentList{
+  display:grid;
+  gap:9px;
+}
+.paymentRow{
+  border:1px solid #e3eae6;
+  border-radius:13px;
+  padding:10px 12px;
+  background:#fff;
+}
+.paymentTop{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+}
+.paymentTop>div{
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+}
+.paymentTop>div:last-child{text-align:right}
+.paymentTop b{font-size:11px}
+.paymentTop span{font-size:9px;color:#748685}
+.payBar{
+  height:7px;
+  margin:8px 0 4px;
+  border-radius:999px;
+  background:#edf1ee;
+  overflow:hidden;
+}
+.payBar i{
+  display:block;
+  height:100%;
+  background:#0b7778;
+  border-radius:999px;
+}
+.paymentRow small{font-size:8px;color:#768986}
+
+.expenseFormV27{
+  grid-template-columns:minmax(0,1fr) 150px 135px auto;
+}
+.expenseForm select{
+  border:1px solid #dfe7e2;
+  border-radius:10px;
+  padding:9px 10px;
+  min-height:38px;
+  background:#fff;
+}
+.expenseRow{
+  grid-template-columns:minmax(0,1fr) 120px auto;
+}
+.iconBtn{
+  width:32px;
+  height:32px;
+  border-radius:9px;
+  border:1px solid #e2e9e5;
+  background:#f8faf7;
+  cursor:pointer;
+}
+.iconBtn.danger{
+  color:#b24d49;
+}
+.iconBtn.danger:hover{
+  background:#fff0ef;
+  border-color:#efc8c5;
+}
+
+.reportGridV27{
+  grid-template-columns:repeat(6,minmax(0,1fr));
+}
+.reportLower{
+  margin-top:10px;
+  display:grid;
+  grid-template-columns:1.2fr .8fr;
+  gap:14px;
+}
+.statusBars{
+  display:grid;
+  gap:8px;
+}
+.statusBarRow{
+  display:grid;
+  grid-template-columns:80px 1fr 24px;
+  gap:8px;
+  align-items:center;
+}
+.statusBarRow span,.statusBarRow b{font-size:9px}
+.statusBarTrack{
+  height:8px;
+  border-radius:999px;
+  background:#edf1ee;
+  overflow:hidden;
+}
+.statusBarTrack i{
+  display:block;
+  height:100%;
+  border-radius:999px;
+  background:#0b7778;
+}
+.reportMoney{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:7px;
+}
+.reportMoney>div{
+  border-radius:10px;
+  background:#f5f8f5;
+  padding:8px 10px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.reportMoney span{font-size:9px;color:#718482}
+.reportMoney b{font-size:11px}
+
+@media(max-width:1100px){
+  .orderFilters{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .financeGridV27{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .reportGridV27{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(max-width:640px){
+  .orderFilters{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .customerGrid{grid-template-columns:1fr}
+  .financeGridV27{grid-template-columns:1fr 1fr}
+  .reportGridV27{grid-template-columns:1fr 1fr}
+  .reportLower{grid-template-columns:1fr}
+  .expenseFormV27{grid-template-columns:1fr}
+  .expenseRow{grid-template-columns:1fr auto}
+  .expenseRow>div:first-child{grid-column:1/-1}
+  .orderMeta{display:grid;grid-template-columns:1fr 1fr}
+  .paymentTop{align-items:flex-start}
+}
