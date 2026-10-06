@@ -89,8 +89,10 @@ const garmentPalettes=[
  ['#0E777A','#C97F46','#E8F6F4'],['#814A45','#CFA242','#F8E8E5']
 ];
 function paletteFor(k){
- let h=0;for(let i=0;i<String(k).length;i++)h=(h*33+String(k).charCodeAt(i))>>>0;
- const p=garmentPalettes[h%garmentPalettes.length];
+ const keys=Object.values(cats).flat().map(x=>x[0]);
+ let idx=keys.indexOf(k);
+ if(idx<0){idx=0;for(let i=0;i<String(k).length;i++)idx=(idx*33+String(k).charCodeAt(i))>>>0}
+ const p=garmentPalettes[idx%garmentPalettes.length];
  return{main:p[0],accent:p[1],soft:p[2],skin:'#8E6D4A',paper:'#FCF6EA'}
 }
 function parseMeasureValue(v){
@@ -109,15 +111,15 @@ function garmentMetrics(map={}){
  hip=findMeasure(map,/hip/,40), length=findMeasure(map,/length|outseam|நீளம்/,26), sleeve=findMeasure(map,/sleeve length/,9),
  bottom=findMeasure(map,/bottom|flare/,20), thigh=findMeasure(map,/thigh/,22), neck=findMeasure(map,/neck|கழுத்து/,15);
  return{
-  shoulder:clamp(.78+(shoulder/15)*.22,.78,1.35),
-  bust:clamp(.72+(bust/36)*.28,.72,1.38),
-  waist:clamp(.72+(waist/32)*.28,.72,1.4),
-  hip:clamp(.72+(hip/40)*.28,.72,1.42),
-  length:clamp(.70+(length/26)*.30,.70,1.5),
-  sleeve:clamp(.55+(sleeve/9)*.45,.35,1.75),
-  bottom:clamp(.70+(bottom/20)*.30,.70,1.6),
-  thigh:clamp(.72+(thigh/22)*.28,.72,1.45),
-  neck:clamp(.75+(neck/15)*.25,.72,1.35)
+  shoulder:clamp(.50+(shoulder/15)*.50,.65,1.65),
+  bust:clamp(.50+(bust/36)*.50,.65,1.65),
+  waist:clamp(.50+(waist/32)*.50,.65,1.70),
+  hip:clamp(.50+(hip/40)*.50,.65,1.70),
+  length:clamp(.48+(length/26)*.52,.65,1.75),
+  sleeve:clamp(.40+(sleeve/9)*.60,.30,1.90),
+  bottom:clamp(.48+(bottom/20)*.52,.65,1.85),
+  thigh:clamp(.50+(thigh/22)*.50,.65,1.70),
+  neck:clamp(.55+(neck/15)*.45,.70,1.55)
  }
 }
 function styleValue(style,key,fallback=''){return (style&&style[key])||fallback}
@@ -466,7 +468,9 @@ function chargesStep(){
 }
 function reviewStep(){
  const total=Number(draft.stitching||0)+Number(draft.aariCharge||0),paid=Number(draft.advance||0),bal=Math.max(0,total-paid),measureCount=Object.keys(draft.measurements).filter(k=>draft.measurements[k]).length;
- return '<div class="reviewWorkspace"><div class="reviewMain"><div class="reviewTitle"><div><span class="miniLabel">FINAL CHECK</span><h2 class="sectionTitle">Review order / சரிபார்ப்பு</h2></div><span class="selectedGarmentPill">'+esc(titleFor(draft.garment))+'</span></div><div class="reviewRows"><div><span>Customer</span><b>'+esc(draft.customer)+'</b></div><div><span>Phone</span><b>'+esc(draft.phone||'—')+'</b></div><div><span>Style</span><b>'+esc(draft.style.sleeve)+' · '+esc(draft.style.neck)+'</b></div><div><span>Measurements</span><b>'+measureCount+' saved</b></div><div><span>Delivery</span><b>'+esc(draft.delivery||'—')+'</b></div><div><span>Status</span><b>'+esc(draft.status||'New')+'</b></div></div></div><aside class="reviewMoney"><div class="reviewGarment">'+selectedDesignVisual(draft.garment||'blouse')+'</div><div><span>Total</span><b>'+money(total)+'</b></div><div><span>Paid</span><b>'+money(paid)+'</b></div><div class="reviewBalance"><span>Balance</span><b>'+money(bal)+'</b></div></aside></div>'
+ const schema=styleSchemaFor(draft.garment||'blouse');
+ const styleSummary=schema.slice(0,4).map(x=>esc(x.label)+': '+esc(styleValue(draft.style,x.key,x.options[0]))).join(' · ');
+ return '<div class="reviewWorkspace"><div class="reviewMain"><div class="reviewTitle"><div><span class="miniLabel">FINAL CHECK</span><h2 class="sectionTitle">Review order / சரிபார்ப்பு</h2></div><span class="selectedGarmentPill">'+esc(titleFor(draft.garment))+'</span></div><div class="reviewRows"><div><span>Customer</span><b>'+esc(draft.customer)+'</b></div><div><span>Phone</span><b>'+esc(draft.phone||'—')+'</b></div><div><span>Style</span><b class="reviewStyleSummary">'+styleSummary+'</b></div><div><span>Measurements</span><b>'+measureCount+' saved</b></div><div><span>Delivery</span><b>'+esc(draft.delivery||'—')+'</b></div><div><span>Status</span><b>'+esc(draft.status||'New')+'</b></div></div></div><aside class="reviewMoney"><div class="reviewGarment">'+garmentSVG(draft.garment||'blouse',draft.style,draft.measurements,'style')+'</div><div><span>Total</span><b>'+money(total)+'</b></div><div><span>Paid</span><b>'+money(paid)+'</b></div><div class="reviewBalance"><span>Balance</span><b>'+money(bal)+'</b></div></aside></div>'
 }
 function orderMatchesView(o,v){
  if(v==='all')return true;
