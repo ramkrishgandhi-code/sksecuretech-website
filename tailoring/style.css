@@ -15,3 +15,74 @@
 .diagram #measureDiagram{background:rgba(255,255,255,.5);border-radius:14px;margin-top:8px}
 @media(max-width:900px){.dashCard{min-height:205px}.dashCard .art{transform:scale(1.08)}}
 @media(max-width:560px){.dashCard{min-height:205px}.dashCard p{max-width:55%}.garment .pic{height:138px}.styleCard svg{height:118px}}
+
+
+/* v21 mobile-first correction */
+html,body{max-width:100%;overflow-x:hidden}
+.dashCard{min-height:220px}
+.dashCard .art{inset:0!important;transform:none!important;opacity:.9}
+.dashCard .art svg{width:100%;height:100%;display:block}
+.dashCard::after{background:linear-gradient(90deg,rgba(255,255,255,.97) 0%,rgba(255,255,255,.91) 34%,rgba(255,255,255,.46) 56%,rgba(255,255,255,.08) 82%,rgba(255,255,255,0) 100%)}
+.dashCard.c1::after{background:linear-gradient(90deg,rgba(5,92,96,.98) 0%,rgba(5,102,106,.92) 35%,rgba(5,106,110,.48) 58%,rgba(5,106,110,.08) 85%,rgba(5,106,110,0) 100%)}
+.dashCard p{max-width:47%;line-height:1.35}
+.order{width:100%}
+
+@media(max-width:1100px){
+ .app{grid-template-columns:1fr}
+ .side{position:fixed;left:0;top:0;bottom:0;width:min(290px,82vw);height:100dvh;z-index:100;transform:translateX(-105%);transition:transform .22s ease;box-shadow:14px 0 36px rgba(0,0,0,.18)}
+ .side.open{transform:translateX(0)}
+ .mobileTop{display:flex;position:sticky;top:0;z-index:80;justify-content:space-between;align-items:center;margin:-16px -16px 14px;padding:12px 16px;background:rgba(245,247,242,.96);backdrop-filter:blur(10px);border-bottom:1px solid #e3e9e5}
+ .main{max-width:none;width:100%;padding:16px}
+ .topline{margin-top:2px}
+ .heroGrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+ .dashCard{min-height:210px}
+ .dashCard h3{font-size:17px}
+ .dashCard .count{font-size:36px}
+ .dashCard p{font-size:12px;max-width:52%}
+ .steps{grid-template-columns:repeat(3,1fr)}
+ .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .styleGrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .measureLayout{grid-template-columns:1fr}
+ .diagram{position:static}
+ .form2,.measureList{grid-template-columns:1fr}
+ .panel{width:100%}
+ .orders{width:100%}
+ .order{grid-template-columns:minmax(0,1fr) auto}
+}
+
+@media(max-width:640px){
+ .main{padding:12px}
+ .mobileTop{margin:-12px -12px 12px;padding:10px 12px}
+ .topline{align-items:flex-start;gap:8px}
+ .eyebrow{font-size:9px;letter-spacing:.18em}
+ .status{font-size:10px;padding:6px 9px;white-space:nowrap}
+ .h1{font-size:25px;line-height:1.1}
+ .sub{font-size:14px}
+ .heroGrid{grid-template-columns:1fr}
+ .dashCard{min-height:185px;padding:18px;border-radius:18px}
+ .dashCard .count{font-size:34px}
+ .dashCard p{font-size:13px;max-width:50%}
+ .dashCard .art{opacity:.96}
+ .quick{gap:8px}
+ .pill{padding:10px 12px}
+ .panel{padding:14px;border-radius:18px}
+ .grid{grid-template-columns:1fr 1fr;gap:10px}
+ .garment{padding:8px}
+ .garment .pic{height:124px}
+ .garment b{font-size:13px}
+ .garment span{font-size:11px}
+ .steps{grid-template-columns:repeat(2,1fr);gap:7px}
+ .step{font-size:12px;padding:9px 6px}
+ .styleGrid{grid-template-columns:1fr 1fr}
+ .styleCard svg{height:105px}
+ .order{grid-template-columns:1fr;gap:12px;padding:12px}
+ .order .btn{width:100%}
+ .actions{position:sticky;bottom:0;background:rgba(245,247,242,.96);padding:10px 0 2px;z-index:20}
+}
+
+@media(hover:none) and (pointer:coarse){
+ .app{grid-template-columns:1fr}
+ .side{position:fixed;left:0;top:0;bottom:0;width:min(290px,82vw);height:100dvh;z-index:100;transform:translateX(-105%);transition:transform .22s ease}
+ .side.open{transform:translateX(0)}
+ .mobileTop{display:flex}
+}
