@@ -39,9 +39,9 @@ const measureSets={
 function garmentGroup(k){if(!k)return'blouse';if(/blouse/.test(k))return'blouse';if(/shirt|school/.test(k))return'shirt';if(/trouser|palazzo|short/.test(k))return'trousers';if(/kurta|sherwani/.test(k))return'kurta';if(/skirt|petticoat|veshti|saree|fall-pico/.test(k))return'skirt';if(/alter/.test(k))return'alteration';return'dress'}
 function root(){return $('#app')}
 function toast(t){const d=document.createElement('div');d.className='toast';d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),2200)}
-function shell(content){return '<div class="app"><aside class="side" id="side"><div><div class="brand">✂ SK Tailoring</div><small>SHOP WORKSPACE</small></div><nav class="nav">'+navBtn('dashboard','▦ Dashboard')+navBtn('new','＋ New Order')+navBtn('orders','▤ Work Orders')+navBtn('backup','⚙ Backup')+'</nav><div class="made">Made for your daily craft.</div></aside><main class="main page-'+page+'"><div class="mobileTop"><button class="pill" id="menuBtn">☰ Menu</button><b>✂ SK Tailoring</b></div><div class="topline"><div class="eyebrow">SK SECURE TECH / TAILORING</div><div class="status">● Online · Saved on this device</div></div>'+content+'<div class="copyright">Device version v29 · orders save in this browser. Export a backup before clearing browser data.</div></main></div>'}
+function shell(content){return '<div class="app"><aside class="side" id="side"><div><div class="brand">✂ SK Tailoring</div><small>SHOP WORKSPACE</small></div><nav class="nav">'+navBtn('dashboard','▦ Dashboard')+navBtn('new','＋ New Order')+navBtn('orders','▤ Work Orders')+navBtn('backup','⚙ Backup')+'</nav><div class="made">Made for your daily craft.</div></aside><main class="main page-'+page+'"><div class="mobileTop"><button class="pill" id="menuBtn">☰ Menu</button><b>✂ SK Tailoring</b></div><div class="topline"><div class="eyebrow">SK SECURE TECH / TAILORING</div><div class="status">● Online · Saved on this device</div></div>'+content+'<div class="copyright">Device version v30 · orders save in this browser. Export a backup before clearing browser data.</div></main></div>'}
 function navBtn(p,label){return '<button data-nav="'+p+'" class="'+(page===p?'active':'')+'">'+label+'</button>'}
-function bindShell(){ $('[data-nav]').forEach(b=>b.onclick=()=>{page=b.dataset.nav;if(page==='new'){editingOrderId=null;step=1;draft=freshDraft();saveDraft()}const s=$('#side');if(s)s.classList.remove('open');render()}); const m=$('#menuBtn');if(m)m.onclick=()=>$('#side').classList.toggle('open') }
+function bindShell(){ $$('[data-nav]').forEach(b=>b.onclick=()=>{page=b.dataset.nav;if(page==='new'){editingOrderId=null;step=1;draft=freshDraft();saveDraft()}const s=$('#side');if(s)s.classList.remove('open');render()}); const m=$('#menuBtn');if(m)m.onclick=()=>$('#side').classList.toggle('open') }
 function dashSVG(type){
  const common='viewBox="0 0 420 220" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"';
  if(type==='new')return '<svg '+common+'><defs><linearGradient id="n1" x1="0" x2="1"><stop stop-color="#0d8b8c"/><stop offset="1" stop-color="#075d63"/></linearGradient></defs><rect width="420" height="220" fill="url(#n1)"/><circle cx="335" cy="62" r="82" fill="#ffffff14"/><circle cx="385" cy="190" r="110" fill="#ffffff0c"/><path d="M265 42c18 0 33 15 33 33s-15 33-33 33-33-15-33-33 15-33 33-33Zm93 0c18 0 33 15 33 33s-15 33-33 33-33-15-33-33 15-33 33-33Z" fill="none" stroke="#fff" stroke-width="10"/><path d="m289 91 101 101M334 92 238 188" stroke="#fff" stroke-width="11" stroke-linecap="round"/><path d="M228 178c45-34 92-43 146-28l23 70H201Z" fill="#e9d9b9" opacity=".78"/></svg>';
@@ -138,6 +138,21 @@ function measureSVG(group,field){
  lines+='<path d="M109 89c6 11 27 11 33 0" fill="none" stroke="'+hit('neck')+'" stroke-width="5"/><text x="145" y="90" font-size="12" fill="'+hit('neck')+'">Neck</text>';
  return '<svg viewBox="0 0 260 290" xmlns="http://www.w3.org/2000/svg">'+g+lines+'</svg>'
 }
+function installGlobalRouter(){
+ if(window.__skTailoringRouterInstalled)return;
+ window.__skTailoringRouterInstalled=true;
+ document.addEventListener('click',e=>{
+  const nav=e.target.closest('[data-nav]');
+  if(nav){e.preventDefault();page=nav.dataset.nav;if(page==='new'){editingOrderId=null;step=1;draft=freshDraft();saveDraft()}const s=$('#side');if(s)s.classList.remove('open');render();return}
+  const dash=e.target.closest('[data-dash]');
+  if(dash){e.preventDefault();const t=dash.dataset.dash;if(t==='new'){editingOrderId=null;page='new';step=1;draft=freshDraft();saveDraft()}else{orderView=t;page='orders'}render();return}
+  const ov=e.target.closest('[data-order-view]');
+  if(ov){e.preventDefault();orderView=ov.dataset.orderView;page='orders';render();return}
+  const op=e.target.closest('[data-open]');
+  if(op){e.preventDefault();openOrder(op.dataset.open);return}
+ },true)
+}
+installGlobalRouter();
 function render(){let c=page==='dashboard'?dashboard():page==='new'?newOrder():page==='orders'?workOrders():page==='customers'?customersPage():page==='accounts'?accountsPage():page==='payments'?paymentsPage():page==='expenses'?expensesPage():page==='reports'?reportsPage():backup();root().innerHTML=shell(c);bindShell();bindPage()}
 function dashboard(){
  const open=orders.filter(o=>o.status!=='Delivered').length, queue=orders.filter(o=>o.status==='In Progress').length, ready=orders.filter(o=>o.status==='Ready').length, due=orders.filter(o=>o.delivery===today()&&o.status!=='Delivered').length, over=orders.filter(o=>o.delivery&&o.delivery<today()&&o.status!=='Delivered').length,del=orders.filter(o=>o.status==='Delivered').length;
@@ -382,7 +397,7 @@ function compressImage(file){return new Promise(res=>{const rd=new FileReader();
 function voiceToText(){const R=window.SpeechRecognition||window.webkitSpeechRecognition;if(!R){toast('Voice-to-text not supported in this browser');return}const r=new R();r.lang='ta-IN';r.interimResults=false;r.onresult=e=>{draft.designNotes=(draft.designNotes?draft.designNotes+' ':'')+e.results[0][0].transcript;saveDraft();render()};r.onerror=()=>toast('Voice recognition failed');r.start();toast('Listening…')}
 let recorder=null,chunks=[];async function recordAudio(){if(recorder&&recorder.state==='recording'){recorder.stop();return}try{const stream=await navigator.mediaDevices.getUserMedia({audio:true});recorder=new MediaRecorder(stream);chunks=[];recorder.ondataavailable=e=>chunks.push(e.data);recorder.onstop=()=>{draft.voiceNote='Audio note recorded ('+Math.round(chunks.reduce((a,b)=>a+b.size,0)/1024)+' KB)';stream.getTracks().forEach(t=>t.stop());saveDraft();render()};recorder.start();$('#voiceState').textContent='Recording… tap Record audio again to stop'}catch(e){toast('Microphone permission is required')}}
 function exportBackup(){
- const blob=new Blob([JSON.stringify({version:29,exported:new Date().toISOString(),orders,expenses},null,2)],{type:'application/json'}),a=document.createElement('a');
+ const blob=new Blob([JSON.stringify({version:30,exported:new Date().toISOString(),orders,expenses},null,2)],{type:'application/json'}),a=document.createElement('a');
  a.href=URL.createObjectURL(blob);a.download='SK-Tailoring-backup-'+today()+'.json';a.click();URL.revokeObjectURL(a.href)
 }
 $('#restoreInput').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const j=JSON.parse(r.result);if(!Array.isArray(j.orders))throw 0;orders=j.orders;expenses=Array.isArray(j.expenses)?j.expenses:[];saveOrders();saveExpenses();toast('Backup restored');page='dashboard';render()}catch(err){toast('Invalid backup file')}};r.readAsText(f)});
