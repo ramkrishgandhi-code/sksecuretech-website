@@ -2269,3 +2269,166 @@ html,body{max-width:100%;overflow-x:hidden}
   .measureDynamicLayout .compactFields{grid-template-columns:1fr 1fr}
   .liveGarmentCanvas{height:195px}
 }
+
+
+/* v34 approved visual-first rebuild: mobile-first, detail options, live measurement */
+.sideHead{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.sideCollapseBtn{
+  width:32px;height:32px;border:1px solid rgba(255,255,255,.18);border-radius:9px;
+  background:rgba(255,255,255,.08);color:#fff;cursor:pointer;font-size:20px;line-height:1
+}
+.app.sideCollapsed{grid-template-columns:78px 1fr}
+.app.sideCollapsed .side{padding:22px 10px}
+.app.sideCollapsed .brand span,
+.app.sideCollapsed .side small,
+.app.sideCollapsed .nav button{font-size:0}
+.app.sideCollapsed .brand{font-size:22px;text-align:center}
+.app.sideCollapsed .nav button{
+  text-align:center;padding:13px 8px
+}
+.app.sideCollapsed .nav button::first-letter{font-size:18px}
+.app.sideCollapsed .made{display:none}
+
+/* Step 2: larger pictures, exactly two columns on phone/tablet */
+@media(max-width:900px){
+  .dressMain{grid-template-columns:1fr!important}
+  .designRefCompact{position:static!important}
+  .garmentVisualGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .garmentVisualArt{height:150px!important}
+  .garmentVisualLabel b{font-size:11px!important}
+  .garmentVisualLabel span{font-size:9px!important}
+  .categoryVisualTabs{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+}
+
+/* Step 3: one hero preview, option-specific detail drawings */
+.styleV34{display:grid;gap:10px}
+.styleHero{
+  display:grid;grid-template-columns:minmax(240px,340px) minmax(0,1fr);gap:12px;
+  align-items:stretch;border:1px solid #d9e7e2;border-radius:16px;
+  background:linear-gradient(150deg,#edf8f6,#fbfcf8);padding:11px
+}
+.styleHeroArt{
+  height:310px;border-radius:14px;overflow:hidden;background:#fcf6ea;
+  box-shadow:inset 0 0 0 1px rgba(11,119,120,.06)
+}
+.styleHeroArt svg{width:100%;height:100%;display:block}
+.styleHeroInfo{padding:7px 5px;min-width:0}
+.styleHeroInfo h2{margin:3px 0 5px;font-size:23px}
+.styleHeroInfo p{margin:0;max-width:600px;color:#687d7b;font-size:10px;line-height:1.45}
+.styleCustomerRef{
+  margin-top:10px;display:flex;align-items:center;gap:8px;
+  padding:7px;border:1px solid #dce7e2;border-radius:10px;background:#fff
+}
+.styleCustomerRef span{font-size:8px;color:#687d7b}
+.styleCustomerRef img{width:52px;height:52px;object-fit:cover;border-radius:8px;margin-left:auto}
+.styleGroupsV34{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px
+}
+.visualOptionGridV34{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px
+}
+.visualOptionGridV34 .visualOption svg{height:92px!important}
+.visualOptionGridV34 .visualOption div{
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:8px!important
+}
+.visualOptionGridV34 .visualOption{min-width:0!important}
+.styleV34 .styleSelectPanel{padding:10px}
+.styleV34 .styleSelectGrid{grid-template-columns:repeat(3,minmax(0,1fr))}
+
+/* Step 4: preview dominant and measurement entry cards */
+.measureV34{display:grid;gap:9px}
+.measureHeadV34{
+  display:flex;align-items:flex-end;justify-content:space-between;gap:12px
+}
+.measureHeadV34 .sub{margin-bottom:0;font-size:10px}
+.measureLayoutV34{
+  display:grid;grid-template-columns:minmax(390px,.9fr) minmax(0,1.1fr);gap:11px;align-items:start
+}
+.measurePreviewV34{
+  position:sticky;top:8px;border:1px solid #d6e6e1;border-radius:16px;
+  background:linear-gradient(160deg,#eef9f7,#e3f2ef);padding:10px
+}
+.measurePreviewV34 .liveGarmentCanvas{height:350px}
+.measurePreviewV34 .liveMeasureSvg>small{font-size:8px}
+.measureEntryV34{
+  border:1px solid #e0e8e3;border-radius:16px;background:#fff;padding:10px
+}
+.measureListV34{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px
+}
+.measureFieldCard{
+  display:grid;gap:4px;padding:7px;border:1px solid #dce5e1;border-radius:11px;
+  background:#fbfcf9;cursor:text;transition:.12s
+}
+.measureFieldCard span{font-size:8px;color:#59716f;font-weight:700}
+.measureFieldCard input{
+  width:100%;min-height:34px;padding:7px 8px;border:1px solid #d7dfdb;border-radius:8px;
+  background:#fff;color:#17383f;font-size:11px
+}
+.measureFieldCard.active{
+  border:2px solid #0b8587;background:#edf8f6;box-shadow:0 0 0 2px rgba(11,133,135,.08)
+}
+.measureFieldCard.active span{color:#0b7778}
+.measureEntryBottom{display:grid;grid-template-columns:auto 1fr;gap:9px;align-items:start;margin-top:8px}
+.measureEntryBottom .compactAdd{margin:0;white-space:nowrap}
+.measureEntryBottom .keypadArea{margin:0}
+.measureEntryBottom .standardPad button,
+.measureEntryBottom .fractionBar button{min-height:34px}
+
+/* Stronger active state everywhere */
+.visualOption.active,
+.garmentVisualCard.active{
+  box-shadow:0 0 0 3px rgba(11,133,135,.14)!important
+}
+.visualOption.active::after{
+  content:"SELECTED";position:absolute;left:6px;top:6px;
+  padding:3px 5px;border-radius:999px;background:#0b8587;color:#fff;font-size:6px;font-weight:900;letter-spacing:.04em
+}
+
+/* tablet/mobile */
+@media(max-width:900px){
+  .app.sideCollapsed{grid-template-columns:1fr}
+  .sideCollapseBtn{display:none}
+  .styleHero{
+    grid-template-columns:1fr!important;
+    padding:9px
+  }
+  .styleHeroArt{
+    height:285px!important;
+    max-width:430px;width:100%;margin:0 auto
+  }
+  .styleHeroInfo{text-align:center}
+  .stylePicked{justify-content:center}
+  .styleCustomerRef{max-width:430px;margin:9px auto 0}
+  .styleGroupsV34{grid-template-columns:1fr!important}
+  .visualOptionGridV34{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .visualOptionGridV34 .visualOption svg{height:110px!important}
+  .styleV34 .styleSelectGrid{grid-template-columns:1fr 1fr!important}
+  .measureHeadV34{display:grid;gap:7px}
+  .measureLayoutV34{grid-template-columns:1fr!important}
+  .measurePreviewV34{position:static!important}
+  .measurePreviewV34 .liveGarmentCanvas{height:310px}
+  .measureListV34{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:640px){
+  .dressTop{gap:7px}
+  .garmentVisualArt{height:135px!important}
+  .styleHeroArt{height:250px!important}
+  .styleHeroInfo h2{font-size:18px}
+  .styleHeroInfo p{font-size:9px}
+  .visualOptionGridV34 .visualOption svg{height:96px!important}
+  .styleV34 .styleSelectGrid{grid-template-columns:1fr 1fr!important}
+  .measurePreviewV34 .liveGarmentCanvas{height:260px}
+  .measureListV34{grid-template-columns:1fr 1fr}
+  .measureEntryBottom{grid-template-columns:1fr}
+  .measureEntryBottom .compactAdd{justify-self:start}
+  .measureFieldCard{padding:6px}
+  .measureFieldCard span{font-size:7.5px}
+  .measureFieldCard input{min-height:32px}
+}
+@media(max-width:430px){
+  .garmentVisualArt{height:118px!important}
+  .styleHeroArt{height:220px!important}
+  .visualOptionGridV34 .visualOption svg{height:86px!important}
+  .measurePreviewV34 .liveGarmentCanvas{height:230px}
+}
