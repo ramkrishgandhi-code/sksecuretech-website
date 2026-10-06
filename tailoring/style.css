@@ -284,3 +284,364 @@ html,body{max-width:100%;overflow-x:hidden}
   .styleCard svg{height:105px}
   .garment .pic{height:138px}
 }
+
+
+/* v24 compact workspace — one-screen desktop dashboard */
+.dashHeader{
+  display:flex;
+  align-items:end;
+  justify-content:space-between;
+  gap:16px;
+  margin-bottom:10px;
+}
+.dashHeader .h1{margin-bottom:2px}
+.dashHeader .sub{margin:0}
+.dashLegend{
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:#68807e;
+  background:#edf4ef;
+  padding:7px 10px;
+  border-radius:999px;
+  white-space:nowrap;
+}
+.dashWorkspace{
+  display:grid;
+  gap:10px;
+  min-height:0;
+}
+.statusTiles{
+  display:grid;
+  grid-template-columns:repeat(7,minmax(0,1fr));
+  gap:10px;
+}
+.statusTile{
+  position:relative;
+  min-width:0;
+  height:138px;
+  overflow:hidden;
+  border:1px solid #e1e8e4;
+  border-radius:17px;
+  padding:13px;
+  text-align:left;
+  background:#fff;
+  color:#17383f;
+  cursor:pointer;
+  box-shadow:0 6px 16px rgba(20,67,68,.06);
+}
+.statusTile .tileText{
+  position:relative;
+  z-index:3;
+  display:flex;
+  height:100%;
+  flex-direction:column;
+  align-items:flex-start;
+}
+.tileLabel{
+  font-size:12px;
+  font-weight:800;
+  line-height:1.15;
+}
+.statusTile strong{
+  font-size:28px;
+  line-height:1;
+  margin-top:8px;
+}
+.statusTile small{
+  margin-top:auto;
+  max-width:72%;
+  font-size:10px;
+  font-weight:700;
+  color:#607574;
+  line-height:1.2;
+}
+.statusTile .tileArt{
+  position:absolute;
+  inset:0;
+  z-index:0;
+  opacity:.72;
+}
+.statusTile .tileArt svg{
+  width:100%;
+  height:100%;
+  display:block;
+}
+.statusTile::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:1;
+  background:linear-gradient(90deg,rgba(255,255,255,.98) 0%,rgba(255,255,255,.91) 49%,rgba(255,255,255,.34) 72%,rgba(255,255,255,0) 100%);
+  pointer-events:none;
+}
+.statusTile.c1{
+  color:#fff;
+  border-color:#0d7f83;
+}
+.statusTile.c1 small{color:#d8eeee}
+.statusTile.c1::after{
+  background:linear-gradient(90deg,rgba(5,92,96,.98) 0%,rgba(5,100,103,.92) 50%,rgba(5,100,103,.32) 76%,rgba(5,100,103,0) 100%);
+}
+.statusTile:hover{transform:translateY(-1px)}
+.moduleSection{
+  border:1px solid #e1e8e4;
+  border-radius:16px;
+  padding:10px 12px;
+  background:#fff;
+}
+.moduleTitle{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  margin-bottom:8px;
+}
+.moduleTitle b{font-size:13px}
+.moduleTitle span{font-size:10px;color:#788c8b}
+.moduleGrid{
+  display:grid;
+  grid-template-columns:repeat(8,minmax(0,1fr));
+  gap:8px;
+}
+.moduleTile{
+  min-width:0;
+  height:66px;
+  border:1px solid #e3eae6;
+  border-radius:13px;
+  background:#f8faf7;
+  display:grid;
+  grid-template-columns:30px 1fr;
+  grid-template-rows:1fr 1fr;
+  column-gap:7px;
+  align-items:center;
+  padding:8px;
+  text-align:left;
+  color:#17383f;
+  cursor:pointer;
+}
+.moduleIcon{
+  grid-row:1/3;
+  width:29px;
+  height:29px;
+  display:grid;
+  place-items:center;
+  border-radius:9px;
+  background:#dceeed;
+  color:#0b7778;
+  font-size:12px;
+  font-weight:900;
+}
+.moduleTile b{
+  font-size:10px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.moduleTile small{
+  font-size:9px;
+  color:#7a8e8c;
+}
+.moduleTile.planned{opacity:.76}
+.nextBar{
+  min-height:72px;
+  display:grid;
+  grid-template-columns:180px 1fr auto;
+  gap:10px;
+  align-items:center;
+  border:1px solid #e1e8e4;
+  border-radius:16px;
+  padding:10px 12px;
+  background:#fff;
+}
+.nextBar>div:first-child{
+  display:flex;
+  flex-direction:column;
+  gap:3px;
+}
+.nextBar>div:first-child b{font-size:12px}
+.nextBarOrders{
+  display:flex;
+  gap:8px;
+  min-width:0;
+}
+.nextChip{
+  min-width:0;
+  flex:1;
+  border:1px solid #e4eae6;
+  background:#f7f9f6;
+  border-radius:11px;
+  padding:8px 10px;
+  text-align:left;
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+  color:#17383f;
+}
+.nextChip b{
+  font-size:11px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.nextChip span,.nextEmpty{
+  font-size:9px;
+  color:#738684;
+}
+.miniAction{
+  border:0;
+  border-radius:10px;
+  padding:9px 11px;
+  background:#e7efea;
+  color:#284b4c;
+  font-weight:700;
+  font-size:10px;
+}
+
+/* Compact measurement workspace */
+.measureHead{
+  display:flex;
+  justify-content:space-between;
+  align-items:end;
+  gap:16px;
+  margin-bottom:10px;
+}
+.measureHead .sectionTitle{margin-bottom:2px}
+.measureHead .sub{margin:0;font-size:11px}
+.measureHead .measureTabs{margin:0;flex-wrap:nowrap}
+.measureHead .measureTabs button{
+  padding:7px 10px;
+  font-size:10px;
+}
+.measureHead .measureTabs button:disabled{
+  opacity:.35;
+  cursor:not-allowed;
+}
+.compactMeasure{
+  grid-template-columns:minmax(0,.95fr) minmax(420px,1.05fr);
+  gap:14px;
+  align-items:start;
+}
+.compactFields{
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:8px 10px;
+}
+.compactFields .field{gap:3px}
+.compactFields label{font-size:10px}
+.compactFields input{
+  padding:8px 9px;
+  min-height:36px;
+}
+.compactAdd{
+  margin-top:9px!important;
+  padding:8px 10px;
+  font-size:10px;
+}
+.compactDiagram{
+  padding:11px;
+}
+.compactVisualTop{
+  display:grid;
+  grid-template-columns:.72fr 1.28fr;
+  gap:10px;
+  align-items:start;
+}
+.compactDiagram .measureRefTitle,
+.compactDiagram .activeMeasureTitle{
+  margin-bottom:5px;
+}
+.compactDiagram .measureRefTitle span,
+.compactDiagram .activeMeasureTitle span{
+  font-size:8px;
+}
+.compactDiagram .measureRefTitle b,
+.compactDiagram .activeMeasureTitle b{
+  font-size:10px;
+}
+.compactDiagram .garmentRef{
+  height:165px;
+  margin:0;
+}
+.compactDiagram #measureDiagram{
+  height:165px;
+  margin:0;
+  padding:4px;
+  overflow:hidden;
+}
+.compactDiagram #measureDiagram svg{
+  width:100%;
+  height:100%;
+}
+.compactPad{
+  grid-template-columns:repeat(5,1fr);
+  gap:5px;
+  margin-top:8px;
+}
+.compactPad button{
+  padding:7px 4px;
+  min-height:31px;
+  font-size:11px;
+}
+
+/* On normal desktop screens the dashboard must stay within one viewport. */
+@media(min-width:1101px){
+  .page-dashboard{
+    height:100dvh;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+    padding-top:15px;
+    padding-bottom:8px;
+  }
+  .page-dashboard .topline{flex:0 0 auto}
+  .page-dashboard .dashHeader{flex:0 0 auto}
+  .page-dashboard .dashWorkspace{
+    flex:1 1 auto;
+    grid-template-rows:minmax(118px,1fr) auto auto;
+  }
+  .page-dashboard .statusTiles{min-height:0}
+  .page-dashboard .statusTile{
+    height:100%;
+    min-height:118px;
+    max-height:155px;
+  }
+  .page-dashboard .copyright{
+    flex:0 0 auto;
+    margin-top:5px;
+    font-size:9px;
+  }
+  .page-new .panel{
+    padding-top:14px;
+    padding-bottom:14px;
+  }
+  .page-new .compactMeasure{
+    max-height:455px;
+  }
+}
+
+/* Tablet/mobile can scroll, but stays much denser than before. */
+@media(max-width:1100px){
+  .statusTiles{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .moduleGrid{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .nextBar{grid-template-columns:1fr}
+  .nextBarOrders{width:100%}
+}
+@media(max-width:640px){
+  .dashHeader{align-items:flex-start}
+  .dashLegend{display:none}
+  .statusTiles{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .statusTile{height:120px;padding:10px}
+  .statusTile strong{font-size:24px}
+  .statusTile small{max-width:70%;font-size:9px}
+  .moduleGrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .moduleTitle span{display:none}
+  .nextBarOrders{flex-direction:column}
+  .measureHead{align-items:flex-start;flex-direction:column}
+  .measureHead .measureTabs{width:100%}
+  .measureHead .measureTabs button{flex:1}
+  .compactMeasure{grid-template-columns:1fr}
+  .compactFields{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .compactVisualTop{grid-template-columns:1fr 1.25fr}
+  .compactDiagram .garmentRef,.compactDiagram #measureDiagram{height:145px}
+}
