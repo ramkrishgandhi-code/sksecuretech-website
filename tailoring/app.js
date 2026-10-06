@@ -39,7 +39,7 @@ const measureSets={
 function garmentGroup(k){if(!k)return'blouse';if(/blouse/.test(k))return'blouse';if(/shirt|school/.test(k))return'shirt';if(/trouser|palazzo|short/.test(k))return'trousers';if(/kurta|sherwani/.test(k))return'kurta';if(/skirt|petticoat|veshti|saree|fall-pico/.test(k))return'skirt';if(/alter/.test(k))return'alteration';return'dress'}
 function root(){return $('#app')}
 function toast(t){const d=document.createElement('div');d.className='toast';d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),2200)}
-function shell(content){return '<div class="app '+(sideCollapsed?'sideCollapsed':'')+'"><aside class="side" id="side"><div class="sideHead"><div><div class="brand">✂ <span>SK Tailoring</span></div><small>SHOP WORKSPACE</small></div><button class="sideCollapseBtn" id="sideCollapseBtn" title="Minimize sidebar">'+(sideCollapsed?'›':'‹')+'</button></div><nav class="nav">'+navBtn('dashboard','▦ Dashboard')+navBtn('new','＋ New Order')+navBtn('orders','▤ Work Orders')+navBtn('backup','⚙ Backup')+'</nav><div class="made">Made for your daily craft.</div></aside><main class="main page-'+page+'"><div class="mobileTop"><button class="pill" id="menuBtn">☰ Menu</button><b>✂ SK Tailoring</b></div><div class="topline"><div class="eyebrow">SK SECURE TECH / TAILORING</div><div class="status">● Online · Saved on this device</div></div>'+content+'<div class="copyright">Device version v34 · orders save in this browser. Export a backup before clearing browser data.</div></main></div>'}
+function shell(content){return '<div class="app '+(sideCollapsed?'sideCollapsed':'')+'"><aside class="side" id="side"><div class="sideHead"><div><div class="brand">✂ <span>SK Tailoring</span></div><small>SHOP WORKSPACE</small></div><button class="sideCollapseBtn" id="sideCollapseBtn" title="Minimize sidebar">'+(sideCollapsed?'›':'‹')+'</button></div><nav class="nav">'+navBtn('dashboard','▦ Dashboard')+navBtn('new','＋ New Order')+navBtn('orders','▤ Work Orders')+navBtn('backup','⚙ Backup')+'</nav><div class="made">Made for your daily craft.</div></aside><main class="main page-'+page+'"><div class="mobileTop"><button class="pill" id="menuBtn">☰ Menu</button><b>✂ SK Tailoring</b></div><div class="topline"><div class="eyebrow">SK SECURE TECH / TAILORING</div><div class="status">● Online · Saved on this device</div></div>'+content+'<div class="copyright">Device version v35 · orders save in this browser. Export a backup before clearing browser data.</div></main></div>'}
 function navBtn(p,label){return '<button data-nav="'+p+'" class="'+(page===p?'active':'')+'">'+label+'</button>'}
 function bindShell(){
  $$('[data-nav]').forEach(b=>b.onclick=()=>{page=b.dataset.nav;if(page==='new'){editingOrderId=null;showAllGarments=false;step=1;draft=freshDraft();saveDraft()}const s=$('#side');if(s)s.classList.remove('open');render()});
@@ -201,8 +201,25 @@ function garmentShape(k,style={},measurements={},mode='catalog'){
  return{body,extras,paper,p,metrics:m,fam}
 }
 function garmentSVG(k,style={},measurements={},mode='catalog'){
- const s=garmentShape(k,style,measurements,mode), p=s.p;
- return '<svg viewBox="0 0 240 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="'+esc(titleFor(k))+'"><rect width="240" height="220" rx="18" fill="'+p.paper+'"/><circle cx="120" cy="30" r="11" fill="'+p.skin+'"/><path d="M120 41V58" stroke="'+p.skin+'" stroke-width="5"/>'+s.body+s.extras+'</svg>'
+ const s=garmentShape(k,style,measurements,mode), p=s.p, id=('g'+String(k).replace(/[^a-z0-9]/gi,'')+Math.abs((String(style.sleeve||'')+String(style.neck||'')+String(style.flare||'')).split('').reduce((a,ch)=>a+ch.charCodeAt(0),0))) ;
+ const light='#ffffff', dark='#183f43';
+ let art=(s.body+s.extras)
+   .split('fill="'+p.main+'"').join('fill="url(#'+id+'Main)"')
+   .split('fill="'+p.accent+'"').join('fill="url(#'+id+'Accent)"')
+   .split('fill="'+p.soft+'"').join('fill="url(#'+id+'Soft)"');
+ return '<svg viewBox="0 0 240 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="'+esc(titleFor(k))+'">'+
+  '<defs>'+
+   '<linearGradient id="'+id+'Main" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="'+p.main+'"/><stop offset=".42" stop-color="'+p.main+'"/><stop offset="1" stop-color="'+dark+'" stop-opacity=".48"/></linearGradient>'+
+   '<linearGradient id="'+id+'Accent" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="'+p.accent+'"/><stop offset="1" stop-color="#9b6422"/></linearGradient>'+
+   '<linearGradient id="'+id+'Soft" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="'+light+'"/><stop offset="1" stop-color="'+p.soft+'"/></linearGradient>'+
+   '<filter id="'+id+'Shadow" x="-25%" y="-25%" width="150%" height="170%"><feDropShadow dx="0" dy="7" stdDeviation="5" flood-color="#153f43" flood-opacity=".18"/></filter>'+
+  '</defs>'+
+  '<rect width="240" height="220" rx="18" fill="#fffaf1"/>'+
+  '<ellipse cx="120" cy="204" rx="62" ry="8" fill="#1b4d50" opacity=".08"/>'+
+  '<g opacity=".96"><circle cx="120" cy="29" r="11" fill="'+p.skin+'"/><path d="M120 40V57" stroke="'+p.skin+'" stroke-width="5" stroke-linecap="round"/></g>'+
+  '<g filter="url(#'+id+'Shadow)">'+art+'</g>'+
+  '<path d="M68 63 Q120 49 172 63" fill="none" stroke="#fff" stroke-width="1.2" opacity=".22"/>'+
+ '</svg>'
 }
 function styleSchemaFor(k){
  const fam=visualFamily(k);
@@ -291,7 +308,10 @@ function optionIconSVG(kind,val){
  }
  return '<svg viewBox="0 0 190 150" xmlns="http://www.w3.org/2000/svg"><rect width="190" height="150" rx="14" fill="'+bg+'"/>'+d+'</svg>'
 }
-function styleCard(kind,val,on){return '<button type="button" class="styleCard visualOption '+(on?'active':'')+'" data-style="'+kind+'" data-value="'+esc(val)+'">'+optionIconSVG(kind,val)+'<div>'+esc(val)+'</div>'+(on?'<i>✓</i>':'')+'</button>'}
+function styleCard(kind,val,on,garment){
+ const g=garment||draft.garment||'blouse', next={...(draft.style||{})};next[kind]=val;
+ return '<button type="button" class="styleCard visualOption '+(on?'active':'')+'" data-style="'+kind+'" data-value="'+esc(val)+'"><div class="styleGarmentThumb">'+garmentSVG(g,next,{},'style')+'</div><div>'+esc(val)+'</div>'+(on?'<i>✓</i>':'')+'</button>'
+}
 function measurementSchemaFor(k){
  const fam=visualFamily(k);
  if(fam==='blouse')return{Body:['Bust / மார்பு','Under bust','Waist / இடுப்பு','Shoulder / தோள்','Blouse length / நீளம்','Front length','Back length','Bust point distance','Shoulder to bust point','Waist round'],Sleeve:['Armhole','Sleeve length','Sleeve round'],Neck:['Front neck depth','Back neck depth']};
@@ -434,7 +454,7 @@ function styleStep(){
  const schema=styleSchemaFor(g), visual=schema.filter(x=>x.type==='visual'), selects=schema.filter(x=>x.type==='select');
  const ref=(draft.photos&&draft.photos[0])?'<div class="styleCustomerRef"><span>Customer reference</span><img src="'+draft.photos[0]+'" alt="Customer reference"></div>':'';
  return '<div class="styleV34"><section class="styleHero"><div class="styleHeroArt">'+garmentSVG(g,draft.style,{},'style')+'</div><div class="styleHeroInfo"><span class="miniLabel">LIVE STYLE PREVIEW</span><h2>'+esc(titleFor(g))+'</h2><p>One garment preview. Sleeve, neck and garment-specific options update this preview.</p><div class="stylePicked">'+visual.map(x=>'<span>'+esc(x.label)+' <b>'+esc(styleValue(draft.style,x.key,x.options[0]))+'</b></span>').join('')+'</div>'+ref+'</div></section>'+
- '<div class="styleGroupsV34">'+visual.map(group=>'<section class="visualOptionGroup"><div class="groupHead"><div><span class="miniLabel">CHOOSE</span><h3>'+esc(group.label)+'</h3></div><span>'+esc(styleValue(draft.style,group.key,group.options[0]))+'</span></div><div class="visualOptionGridV34">'+group.options.map(v=>styleCard(group.key,v,styleValue(draft.style,group.key,group.options[0])===v)).join('')+'</div></section>').join('')+'</div>'+
+ '<div class="styleGroupsV34">'+visual.map(group=>'<section class="visualOptionGroup"><div class="groupHead"><div><span class="miniLabel">CHOOSE</span><h3>'+esc(group.label)+'</h3></div><span>'+esc(styleValue(draft.style,group.key,group.options[0]))+'</span></div><div class="visualOptionGridV34">'+group.options.map(v=>styleCard(group.key,v,styleValue(draft.style,group.key,group.options[0])===v,g)).join('')+'</div></section>').join('')+'</div>'+
  '<section class="styleSelectPanel"><div class="styleSelectGrid">'+selects.map(group=>'<div class="field"><label>'+esc(group.label)+'</label><select data-style-select="'+group.key+'" id="styleSel_'+group.key+'">'+group.options.map(v=>'<option '+(styleValue(draft.style,group.key,group.options[0])===v?'selected':'')+'>'+esc(v)+'</option>').join('')+'</select></div>').join('')+'<div class="field notesField"><label>Style / fabric / colour notes</label><textarea id="styleNotes" rows="2">'+esc(draft.style.notes||'')+'</textarea></div></div></section></div>'
 }
 function sel(k,arr){return '<select id="'+k+'">'+arr.map(v=>'<option '+(draft.style[k]===v?'selected':'')+'>'+v+'</option>').join('')+'</select>'}
