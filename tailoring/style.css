@@ -645,3 +645,122 @@ html,body{max-width:100%;overflow-x:hidden}
   .compactVisualTop{grid-template-columns:1fr 1.25fr}
   .compactDiagram .garmentRef,.compactDiagram #measureDiagram{height:145px}
 }
+
+
+/* v25 functional business modules */
+.moduleHead{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  gap:16px;
+  margin-bottom:12px;
+}
+.moduleHead .h1{margin:5px 0 2px}
+.backDash{
+  border:0;
+  background:transparent;
+  padding:0;
+  color:#0b7778;
+  font-weight:800;
+  font-size:11px;
+  cursor:pointer;
+}
+.moduleCount{
+  padding:7px 10px;
+  border-radius:999px;
+  background:#edf4ef;
+  color:#42615f;
+  font-size:11px;
+  font-weight:800;
+}
+.dataTable{
+  display:grid;
+  gap:8px;
+}
+.dataRow{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 140px 160px;
+  gap:12px;
+  align-items:center;
+  padding:10px 12px;
+  border:1px solid #e4ebe7;
+  border-radius:12px;
+  background:#fff;
+}
+.dataRow>div{
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+}
+.dataRow span,.dataRow small{
+  font-size:9px;
+  color:#738684;
+}
+.dataRow b{font-size:12px}
+.financeGrid,.reportGrid{
+  display:grid;
+  grid-template-columns:repeat(5,minmax(0,1fr));
+  gap:10px;
+}
+.financeCard,.reportGrid>div{
+  min-height:110px;
+  border:1px solid #e1e8e4;
+  border-radius:15px;
+  background:#fff;
+  padding:14px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+}
+.financeCard span,.reportGrid span{
+  font-size:10px;
+  color:#6f8381;
+  font-weight:700;
+}
+.financeCard b,.reportGrid b{
+  font-size:22px;
+  color:#17383f;
+}
+.financeCard.accent{
+  background:#0b7778;
+  border-color:#0b7778;
+}
+.financeCard.accent span,.financeCard.accent b{color:#fff}
+.expenseForm{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 160px auto;
+  gap:8px;
+  margin-bottom:12px;
+}
+.expenseForm input{
+  border:1px solid #dfe7e2;
+  border-radius:10px;
+  padding:9px 10px;
+  min-height:38px;
+}
+.reportGrid{
+  grid-template-columns:repeat(6,minmax(0,1fr));
+}
+.reportGrid>div{
+  min-height:95px;
+}
+.moduleTile:not(.planned):hover{
+  border-color:#9ec7c2;
+  background:#f2f9f7;
+}
+.statusTile{touch-action:manipulation}
+.statusTile .tileArt{pointer-events:none}
+.statusTile .tileText{pointer-events:none}
+
+@media(max-width:900px){
+  .financeGrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .reportGrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .dataRow{grid-template-columns:minmax(0,1fr) 110px 120px}
+}
+@media(max-width:640px){
+  .moduleHead{align-items:flex-start;flex-direction:column}
+  .expenseForm{grid-template-columns:1fr}
+  .dataRow{grid-template-columns:1fr 1fr}
+  .dataRow>div:first-child{grid-column:1/-1}
+  .financeGrid,.reportGrid{grid-template-columns:1fr 1fr}
+}
