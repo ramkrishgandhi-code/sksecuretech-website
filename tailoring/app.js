@@ -9,7 +9,7 @@ const esc=s=>String(s??'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&g
 let orders=loadOrders();
 const EXP_STORE='skTailoringExpensesV25';
 let expenses=loadExpenses();
-let page='dashboard', step=1, cat='women', activeMeasure='Bust / மார்பு', measureTab='Body', orderView='all', editingOrderId=null, showAllGarments=false, sideCollapsed=localStorage.getItem('skTailoringSideCollapsed')==='1';
+let page='dashboard', step=1, cat='women', activeMeasure='Bust / மார்பு', measureTab='Body', orderView='all', editingOrderId=null, showAllGarments=false, garmentSearch='', sideCollapsed=localStorage.getItem('skTailoringSideCollapsed')==='1';
 let draft=loadDraft();
 if(!draft) draft=freshDraft();
 function freshDraft(){return{customer:'',phone:'',garment:null,category:'women',designNotes:'',photos:[],voiceNote:'',style:{sleeve:'Short',neck:'Round',opening:'Back hooks',lining:'No lining',padding:'No pad',aari:'None',fit:'Regular',notes:''},measurements:{},customMeasurements:[],stitching:'',aariCharge:'',advance:'',delivery:'',status:'New',created:today()}}
@@ -39,10 +39,10 @@ const measureSets={
 function garmentGroup(k){if(!k)return'blouse';if(/blouse/.test(k))return'blouse';if(/shirt|school/.test(k))return'shirt';if(/trouser|palazzo|short/.test(k))return'trousers';if(/kurta|sherwani/.test(k))return'kurta';if(/skirt|petticoat|veshti|saree|fall-pico/.test(k))return'skirt';if(/alter/.test(k))return'alteration';return'dress'}
 function root(){return $('#app')}
 function toast(t){const d=document.createElement('div');d.className='toast';d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),2200)}
-function shell(content){return '<div class="app '+(sideCollapsed?'sideCollapsed':'')+'"><aside class="side" id="side"><div class="sideHead"><div><div class="brand">✂ <span>SK Tailoring</span></div><small>SHOP WORKSPACE</small></div><button class="sideCollapseBtn" id="sideCollapseBtn" title="Minimize sidebar">'+(sideCollapsed?'›':'‹')+'</button></div><nav class="nav">'+navBtn('dashboard','▦ Dashboard')+navBtn('new','＋ New Order')+navBtn('orders','▤ Work Orders')+navBtn('backup','⚙ Backup')+'</nav><div class="made">Made for your daily craft.</div></aside><main class="main page-'+page+'"><div class="mobileTop"><button class="pill" id="menuBtn">☰ Menu</button><b>✂ SK Tailoring</b></div><div class="topline"><div class="eyebrow">SK SECURE TECH / TAILORING</div><div class="status">● Online · Saved on this device</div></div>'+content+'<div class="copyright">Device version v35 · orders save in this browser. Export a backup before clearing browser data.</div></main></div>'}
+function shell(content){return '<div class="app '+(sideCollapsed?'sideCollapsed':'')+'"><aside class="side" id="side"><div class="sideHead"><div><div class="brand">✂ <span>SK Tailoring</span></div><small>SHOP WORKSPACE</small></div><button class="sideCollapseBtn" id="sideCollapseBtn" title="Minimize sidebar">'+(sideCollapsed?'›':'‹')+'</button></div><nav class="nav">'+navBtn('dashboard','▦ Dashboard')+navBtn('new','＋ New Order')+navBtn('orders','▤ Work Orders')+navBtn('customers','👤 Customers')+navBtn('backup','⚙ Backup')+'</nav><div class="made">Made for your daily craft.</div></aside><main class="main page-'+page+'"><div class="mobileTop"><button class="pill" id="menuBtn">☰ Menu</button><b>✂ SK Tailoring</b></div><div class="topline"><div class="eyebrow">SK SECURE TECH / TAILORING</div><div class="status">● Online · Saved on this device</div></div>'+content+'<div class="copyright">Device version v36 · orders save in this browser. Export a backup before clearing browser data.</div></main></div>'}
 function navBtn(p,label){return '<button data-nav="'+p+'" class="'+(page===p?'active':'')+'">'+label+'</button>'}
 function bindShell(){
- $$('[data-nav]').forEach(b=>b.onclick=()=>{page=b.dataset.nav;if(page==='new'){editingOrderId=null;showAllGarments=false;step=1;draft=freshDraft();saveDraft()}const s=$('#side');if(s)s.classList.remove('open');render()});
+ $$('[data-nav]').forEach(b=>b.onclick=()=>{page=b.dataset.nav;if(page==='new'){editingOrderId=null;showAllGarments=false;garmentSearch='';step=1;draft=freshDraft();saveDraft()}const s=$('#side');if(s)s.classList.remove('open');render()});
  const m=$('#menuBtn');if(m)m.onclick=()=>$('#side').classList.toggle('open');
  const c=$('#sideCollapseBtn');if(c)c.onclick=()=>{sideCollapsed=!sideCollapsed;localStorage.setItem('skTailoringSideCollapsed',sideCollapsed?'1':'0');render()}
 }
@@ -328,27 +328,29 @@ function measurementSchemaFor(k){
  return{Body:['Chest / மார்பு','Bust','Waist / இடுப்பு','Hip','Shoulder / தோள்','Dress length','Front length','Back length','Waist to floor'],Sleeve:['Armhole','Sleeve length','Sleeve round'],Neck:['Neck / கழுத்து','Front neck depth','Back neck depth']}
 }
 function liveMeasureSVG(k,measurements={},activeField=''){
- const p=paletteFor(k), fam=visualFamily(k), base=garmentSVG(k,draft.style,measurements,'measure');
- const active=String(activeField||''), val=measurements[active]||'—';
- const label=esc(active||'Measurement'), value=esc(String(val));
- let guide='';
- const low=active.toLowerCase();
- if(/shoulder/.test(low))guide='<path d="M74 69H166" class="dim"/><path d="m74 69 8-5v10Zm92 0-8-5v10Z" class="arrow"/>';
- else if(/bust|chest|மார்பு/.test(low))guide='<path d="M67 101H173" class="dim"/><path d="m67 101 8-5v10Zm106 0-8-5v10Z" class="arrow"/>';
- else if(/waist|இடுப்பு/.test(low))guide='<path d="M76 128H164" class="dim"/><path d="m76 128 8-5v10Zm88 0-8-5v10Z" class="arrow"/>';
- else if(/hip|thigh|bottom|flare/.test(low))guide='<path d="M63 157H177" class="dim"/><path d="m63 157 8-5v10Zm114 0-8-5v10Z" class="arrow"/>';
- else if(/length|outseam|inseam|நீளம்/.test(low))guide='<path d="M190 56V194" class="dim"/><path d="m190 56-5 8h10Zm0 138-5-8h10Z" class="arrow"/>';
- else if(/sleeve|armhole|bicep|cuff/.test(low))guide='<path d="M44 82 73 131" class="dim"/><path d="m44 82 1 10 8-5Zm29 49-1-10-8 5Z" class="arrow"/>';
- else if(/neck/.test(low))guide='<path d="M103 55H137" class="dim"/><path d="m103 55 8-5v10Zm34 0-8-5v10Z" class="arrow"/>';
- return '<div class="liveMeasureSvg"><div class="liveGarmentCanvas">'+base.replace('<svg ','<svg class="garmentBase" ')+'<svg class="measureOverlay" viewBox="0 0 240 220" xmlns="http://www.w3.org/2000/svg"><style>.dim{stroke:#E05A4F;stroke-width:4;fill:none;stroke-linecap:round}.arrow{fill:#E05A4F}</style>'+guide+'</svg></div><div class="measureLiveLabel"><span>'+label+'</span><b>'+value+'</b></div><small>Visual preview only — final cutting follows tailor measurements.</small></div>'
+ const base=garmentSVG(k,draft.style,measurements,'measure'), active=String(activeField||''), low=active.toLowerCase();
+ const get=(re)=>{for(const [name,v] of Object.entries(measurements||{})){if(re.test(name.toLowerCase())&&String(v).trim())return String(v)}return''};
+ const shoulder=get(/shoulder|தோள்/), bust=get(/bust|chest|மார்பு/), waist=get(/waist|இடுப்பு/), hip=get(/hip/), length=get(/length|outseam|நீளம்/), sleeve=get(/sleeve length/), neck=get(/neck|கழுத்து/);
+ const activeType=t=>(t==='shoulder'&&/shoulder/.test(low))||(t==='bust'&&/bust|chest|மார்பு/.test(low))||(t==='waist'&&/waist|இடுப்பு/.test(low))||(t==='hip'&&/hip/.test(low))||(t==='length'&&/length|outseam|நீளம்/.test(low))||(t==='sleeve'&&/sleeve/.test(low))||(t==='neck'&&/neck/.test(low));
+ const tag=(t,v,x,y)=>'<rect x="'+(x-28)+'" y="'+(y-11)+'" width="56" height="20" rx="10" class="dimTag"/><text x="'+x+'" y="'+(y+3)+'" text-anchor="middle" class="dimText">'+esc(t.charAt(0).toUpperCase()+t.slice(1))+' '+esc(v)+'</text>';
+ const group=(t,v,path,x,y)=>v?'<g class="'+(activeType(t)?'activeDim':'')+'">'+path+tag(t,v,x,y)+'</g>':'';
+ let guides='';
+ guides+=group('shoulder',shoulder,'<path d="M73 68H167" class="dimLine"/><path d="m73 68 7-4v8Zm94 0-7-4v8Z" class="dimArrow"/>',120,54);
+ guides+=group('bust',bust,'<path d="M66 101H174" class="dimLine"/><path d="m66 101 7-4v8Zm108 0-7-4v8Z" class="dimArrow"/>',120,91);
+ guides+=group('waist',waist,'<path d="M75 130H165" class="dimLine"/><path d="m75 130 7-4v8Zm90 0-7-4v8Z" class="dimArrow"/>',120,120);
+ guides+=group('hip',hip,'<path d="M62 157H178" class="dimLine"/><path d="m62 157 7-4v8Zm116 0-7-4v8Z" class="dimArrow"/>',120,148);
+ guides+=group('length',length,'<path d="M195 57V194" class="dimLine"/><path d="m195 57-4 7h8Zm0 137-4-7h8Z" class="dimArrow"/>',207,126);
+ guides+=group('sleeve',sleeve,'<path d="M44 82 72 132" class="dimLine"/><path d="m44 82 1 9 7-4Zm28 50-1-9-7 4Z" class="dimArrow"/>',46,119);
+ guides+=group('neck',neck,'<path d="M103 55H137" class="dimLine"/><path d="m103 55 7-4v8Zm34 0-7-4v8Z" class="dimArrow"/>',120,43);
+ if(!guides)guides='<path d="M73 68H167M66 101H174M75 130H165M195 57V194" class="dimLine faint"/>';
+ return '<div class="liveMeasureSvg"><div class="measureViewTabs"><button type="button" class="active">Front view</button><button type="button">Back view</button><button type="button">Side view</button></div><div class="liveGarmentCanvas">'+base.replace('<svg ','<svg class="garmentBase" ')+'<svg class="measureOverlay" viewBox="0 0 240 220" xmlns="http://www.w3.org/2000/svg"><style>.dimLine{stroke:#159c9d;stroke-width:2.6;fill:none;stroke-linecap:round}.dimArrow{fill:#159c9d}.dimTag{fill:#fff;stroke:#159c9d;stroke-width:1.2}.dimText{font:700 8px sans-serif;fill:#075d61}.activeDim .dimLine{stroke:#e25555;stroke-width:4}.activeDim .dimArrow{fill:#e25555}.activeDim .dimTag{stroke:#e25555;stroke-width:2}.activeDim .dimText{fill:#c23c3c}.faint{opacity:.3}</style>'+guides+'</svg></div><div class="measureLiveLabel"><span>'+esc(active||'Select a measurement')+'</span><b>'+esc(String(measurements[active]||''))+'</b></div><small>Live visual guide — measurement changes update this garment preview.</small></div>'
 }
-
 function installGlobalRouter(){
  if(window.__skTailoringRouterInstalled)return;
  window.__skTailoringRouterInstalled=true;
  document.addEventListener('click',e=>{
   const nav=e.target.closest('[data-nav]');
-  if(nav){e.preventDefault();page=nav.dataset.nav;if(page==='new'){editingOrderId=null;showAllGarments=false;step=1;draft=freshDraft();saveDraft()}const s=$('#side');if(s)s.classList.remove('open');render();return}
+  if(nav){e.preventDefault();page=nav.dataset.nav;if(page==='new'){editingOrderId=null;showAllGarments=false;garmentSearch='';step=1;draft=freshDraft();saveDraft()}const s=$('#side');if(s)s.classList.remove('open');render();return}
   const dash=e.target.closest('[data-dash]');
   if(dash){e.preventDefault();const t=dash.dataset.dash;if(t==='new'){editingOrderId=null;page='new';step=1;draft=freshDraft();saveDraft()}else{orderView=t;page='orders'}render();return}
   const ov=e.target.closest('[data-order-view]');
@@ -439,10 +441,17 @@ function customerStep(){
 }
 
 function dressStep(){
- const garments=cats[cat], limit=8, shown=showAllGarments?garments:garments.slice(0,limit);
- return '<div class="dressV33"><div class="dressTop"><div><h2 class="sectionTitle">Choose dress / உடை தேர்வு</h2><p class="sub">Picture first — choose the garment by looking at the design.</p></div><div class="categoryVisualTabs">'+Object.keys(cats).map(k=>'<button type="button" class="'+(cat===k?'active':'')+'" data-cat="'+k+'"><span>'+({women:'👗',men:'👔',girls:'🎀',boys:'🧒'}[k])+'</span><b>'+catLabels[k].split(' / ')[0]+'</b><small>'+catLabels[k].split(' / ')[1]+'</small></button>').join('')+'</div></div>'+
- '<div class="dressMainV34"><section><div class="garmentVisualGrid">'+shown.map(([k,en,ta])=>'<button type="button" class="garmentVisualCard '+(draft.garment===k?'active':'')+'" data-garment="'+k+'"><div class="garmentVisualArt">'+garmentSVG(k,draft.garment===k?draft.style:{})+'</div><div class="garmentVisualLabel"><b>'+en+'</b><span>'+ta+'</span></div>'+(draft.garment===k?'<i>✓</i>':'')+'</button>').join('')+'</div>'+(garments.length>limit?'<button type="button" class="moreGarments" data-more-garments="1">'+(showAllGarments?'Show less ↑':'More designs ('+(garments.length-limit)+') ↓')+'</button>':'')+'</section></div>'+
- '<details class="designRefPanel designRefCompact referenceDetails"><summary><span>📷 Customer design reference</span><small>Optional · photo / instructions / voice</small></summary><div class="referenceDetailsBody"><div class="designRefTop"><div><span class="miniLabel">CUSTOMER DESIGN</span><h3>Reference & instructions</h3></div>'+(draft.garment?'<span class="selectedGarmentPill">'+esc(titleFor(draft.garment))+'</span>':'')+'</div><div class="field"><label>Design photo (up to 3)</label><input id="photoInput" type="file" accept="image/*" multiple /></div><div class="photos compactPhotos">'+(draft.photos||[]).map((p,i)=>'<div class="photoWrap"><img src="'+p+'" alt="design" /><button type="button" data-photo-remove="'+i+'">×</button></div>').join('')+'</div><div class="field"><label>Requested design / alteration instructions</label><textarea id="designNotes" rows="3">'+esc(draft.designNotes)+'</textarea></div><div class="voiceBox compactVoice"><b>🎙 Voice instructions</b><div class="quick"><button class="pill" id="voiceBtn">Voice → text</button><button class="pill" id="recordBtn">Record audio</button></div><small id="voiceState">'+esc(draft.voiceNote||'')+'</small></div></div></details></div>'
+ const all=cats[cat], q=normText(garmentSearch);
+ const filtered=q?all.filter(x=>normText(x[1]+' '+x[2]).includes(q)):all;
+ const limit=showAllGarments?filtered.length:Math.min(10,filtered.length), shown=filtered.slice(0,limit);
+ return '<div class="dressV36">'+
+ '<div class="dressTopV36"><div><h2 class="sectionTitle">Dress + Design / உடை தேர்வு</h2><p class="sub">Choose garment category and design with clear visuals.</p></div>'+
+ '<div class="dressToolsV36"><div class="categoryVisualTabs">'+Object.keys(cats).map(k=>'<button type="button" class="'+(cat===k?'active':'')+'" data-cat="'+k+'"><span>'+({women:'👗',men:'👔',girls:'🎀',boys:'🧒'}[k])+'</span><b>'+catLabels[k].split(' / ')[0]+'</b><small>'+catLabels[k].split(' / ')[1]+'</small></button>').join('')+'</div>'+
+ '<label class="garmentSearchBox">⌕<input id="garmentSearch" value="'+esc(garmentSearch)+'" placeholder="Search designs..." /></label></div></div>'+
+ '<div class="garmentVisualGrid previewGallery">'+shown.map(([k,en,ta])=>'<button type="button" class="garmentVisualCard '+(draft.garment===k?'active':'')+'" data-garment="'+k+'"><div class="garmentVisualArt">'+garmentSVG(k,draft.garment===k?draft.style:{})+'</div><div class="garmentVisualLabel"><b>'+en+'</b><span>'+ta+'</span></div>'+(draft.garment===k?'<i>✓</i>':'')+'</button>').join('')+'</div>'+
+ ((!q&&all.length>10)?'<button type="button" class="moreGarments" data-more-garments="1">'+(showAllGarments?'Show less ↑':'More designs ('+(all.length-10)+') ↓')+'</button>':'')+
+ (q&&!shown.length?'<div class="emptySearch">No matching design</div>':'')+
+ '<details class="designRefPanel designRefCompact referenceDetails"><summary><span>📷 Reference photos + voice instructions</span><small>Optional</small></summary><div class="referenceDetailsBody"><div class="designRefTop"><div><span class="miniLabel">CUSTOMER DESIGN</span><h3>Reference & instructions</h3></div>'+(draft.garment?'<span class="selectedGarmentPill">'+esc(titleFor(draft.garment))+'</span>':'')+'</div><div class="field"><label>Design photo (up to 3)</label><input id="photoInput" type="file" accept="image/*" multiple /></div><div class="photos compactPhotos">'+(draft.photos||[]).map((p,i)=>'<div class="photoWrap"><img src="'+p+'" alt="design" /><button type="button" data-photo-remove="'+i+'">×</button></div>').join('')+'</div><div class="field"><label>Special instructions</label><textarea id="designNotes" rows="3" maxlength="500" placeholder="Sleeve design, lace, loose fit, customer notes...">'+esc(draft.designNotes)+'</textarea></div><div class="voiceBox compactVoice"><b>🎙 Voice instructions</b><div class="quick"><button class="pill" id="voiceBtn">Voice → text</button><button class="pill" id="recordBtn">Record audio</button></div><small id="voiceState">'+esc(draft.voiceNote||'')+'</small></div></div></details></div>'
 }
 function selectedDesignVisual(g){
  if(draft.photos&&draft.photos[0])return '<img class="selectedPhoto" src="'+draft.photos[0]+'" alt="Customer selected design" />';
@@ -484,7 +493,8 @@ function measureStep(){
 }
 function chargesStep(){
  const total=Number(draft.stitching||0)+Number(draft.aariCharge||0),paid=Number(draft.advance||0),bal=Math.max(0,total-paid);
- return '<div class="chargesWorkspace"><div><h2 class="sectionTitle">Charges + Dates / கட்டணம் + தேதி</h2><p class="sub">Enter charges and collection date. Totals update immediately.</p><div class="chargeFields"><div class="field"><label>Stitching charge (RM)</label><input id="stitching" inputmode="decimal" value="'+esc(draft.stitching)+'" /></div><div class="field"><label>Aari / extra charge (RM)</label><input id="aariCharge" inputmode="decimal" value="'+esc(draft.aariCharge)+'" /></div><div class="field"><label>Advance / paid (RM)</label><input id="advance" inputmode="decimal" value="'+esc(draft.advance)+'" /></div><div class="field"><label>Delivery date *</label><input id="delivery" type="date" value="'+esc(draft.delivery)+'" /></div></div></div><aside class="chargeSummary"><div><span>Total</span><b id="chargeTotal">'+money(total)+'</b></div><div><span>Paid</span><b id="chargePaid">'+money(paid)+'</b></div><div class="balanceBox"><span>Balance</span><b id="chargeBalance">'+money(bal)+'</b></div><small id="chargeWarning"></small></aside></div>'
+ return '<div class="chargesV36"><div class="chargesHead"><div><span class="miniLabel">PRICE & COLLECTION</span><h2 class="sectionTitle">Charges + Delivery / கட்டணம் + தேதி</h2><p class="sub">Set price, advance and delivery date.</p></div><div class="chargeTotalHero"><span>Total (RM)</span><b id="chargeTotal">'+money(total)+'</b></div></div>'+
+ '<div class="chargeFieldsV36"><div class="field"><label>Item / stitching charge (RM)</label><input id="stitching" inputmode="decimal" value="'+esc(draft.stitching)+'" /></div><div class="field"><label>Extra work charge (RM)</label><input id="aariCharge" inputmode="decimal" value="'+esc(draft.aariCharge)+'" /></div><div class="field"><label>Advance (RM)</label><input id="advance" inputmode="decimal" value="'+esc(draft.advance)+'" /></div><div class="chargeBalanceCard"><span>Balance</span><b id="chargeBalance">'+money(bal)+'</b><small>Paid <strong id="chargePaid">'+money(paid)+'</strong></small></div><div class="field"><label>Delivery date *</label><input id="delivery" type="date" value="'+esc(draft.delivery)+'" /></div><div class="field chargeNotes"><label>Notes (optional)</label><textarea id="chargeNotes" rows="3" placeholder="Special instructions, fabric notes, etc.">'+esc(draft.chargeNotes||'')+'</textarea></div></div><small id="chargeWarning"></small></div>'
 }
 function reviewStep(){
  const total=Number(draft.stitching||0)+Number(draft.aariCharge||0),paid=Number(draft.advance||0),bal=Math.max(0,total-paid),measureCount=Object.keys(draft.measurements).filter(k=>draft.measurements[k]).length;
@@ -624,9 +634,11 @@ function bindNew(){
   document.addEventListener('click',e=>{if(!e.target.closest('.customerLookup'))box.hidden=true},{once:true,capture:true})
  }
  if(step===2){
-  $('#photoInput').onchange=handlePhotos;
-  $('#voiceBtn').onclick=voiceToText;
-  $('#recordBtn').onclick=recordAudio;
+  const gs=$('#garmentSearch');
+  if(gs){gs.oninput=()=>{garmentSearch=gs.value;clearTimeout(window.__garmentSearchTimer);window.__garmentSearchTimer=setTimeout(()=>render(),120)}}
+  const photoInput=$('#photoInput');if(photoInput)photoInput.onchange=handlePhotos;
+  const vb=$('#voiceBtn');if(vb)vb.onclick=voiceToText;
+  const rb=$('#recordBtn');if(rb)rb.onclick=recordAudio;
  }
  if(step===3){
   $$('[data-style-select]').forEach(s=>s.onchange=()=>{draft.style[s.dataset.styleSelect]=s.value;saveDraft();render()})
@@ -647,7 +659,7 @@ function captureStep(){
  if(step===1){draft.customer=$('#customer')?.value.trim()||draft.customer;draft.phone=$('#phone')?.value.trim()||draft.phone}
  if(step===2){draft.designNotes=$('#designNotes')?.value||draft.designNotes}
  if(step===3){$('[data-style-select]').forEach(e=>draft.style[e.dataset.styleSelect]=e.value);draft.style.notes=$('#styleNotes')?.value||draft.style.notes}
- if(step===5){['stitching','aariCharge','advance','delivery'].forEach(k=>{const e=$('#'+k);if(e)draft[k]=e.value})}
+ if(step===5){['stitching','aariCharge','advance','delivery'].forEach(k=>{const e=$('#'+k);if(e)draft[k]=e.value});draft.chargeNotes=$('#chargeNotes')?.value||draft.chargeNotes||''}
  saveDraft()
 }
 function validateStep(){if(step===1&&!draft.customer){toast('Customer name is required');return false}if(step===2&&!draft.garment){toast('Select a dress / garment');return false}if(step===5){let s=Number(draft.stitching||0),a=Number(draft.aariCharge||0),p=Number(draft.advance||0);if([s,a,p].some(n=>n<0||!Number.isFinite(n))){toast('Enter valid non-negative amounts');return false}if(p>s+a){toast('Advance cannot be more than total');return false}if(!draft.delivery){toast('Delivery date is required');return false}}return true}
