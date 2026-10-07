@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>SK Secure Tech | CCTV & Security Solutions Malaysia</title>
+
+  <meta
+    name="description"
+    content="SK Secure Tech provides CCTV installation, CCTV troubleshooting, access control, networking, intercom, ANPR and security system services in Malaysia."
+  >
+
+  <style>
+    :root {
+      --bg: #07111f;
+      --bg2: #0b1728;
+      --card: #101e31;
+      --line: #20334b;
+      --primary: #18b8ff;
+      --primary-dark: #008bcc;
+      --green: #22c55e;
+      --text: #f8fafc;
+      --muted: #a8b5c7;
+      --white: #ffffff;
+      --max: 1180px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background:
+        radial-gradient(circle at top right, rgba(24,184,255,.13), transparent 30%),
+        var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .container {
+      width: min(92%, var(--max));
+      margin: auto;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(7,17,31,.94);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    nav {
+      min-height: 74px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.3rem;
+      font-weight: 800;
+      letter-spacing: .3px;
+    }
+
+    .logo {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--primary), #2563eb);
+      color: white;
+      font-weight: 900;
+      box-shadow: 0 8px 28px rgba(24,184,255,.3);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      color: var(--muted);
+      font-size: .95rem;
+    }
+
+    .nav-links a:hover {
+      color: var(--white);
+    }
+
+    .language {
+      display: flex;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .language button {
+      border: 0;
+      padding: 8px 10px;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .language button.active {
+      background: var(--primary);
+      color: #03111b;
+    }
+
+    .hero {
+      padding: 95px 0 75px;
+      min-height: 610px;
+      display: flex;
+      align-items: center;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap: 55px;
+      align-items: center;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid rgba(24,184,255,.35);
+      background: rgba(24,184,255,.08);
+      color: #77d7ff;
+      border-radius: 999px;
+      padding: 7px 13px;
+      margin-bottom: 20px;
+      font-size: .86rem;
+      font-weight: 700;
+    }
+
+    h1 {
+      font-size: clamp(2.5rem, 6vw, 4.8rem);
+      line-height: 1.04;
+      max-width: 850px;
+      margin-bottom: 22px;
+    }
+
+    .highlight {
+      color: var(--primary);
+    }
+
+    .hero p {
+      color: var(--muted);
+      max-width: 700px;
+      font-size: 1.12rem;
+      margin-bottom: 30px;
+    }
+
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 13px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 0 21px;
+      border-radius: 11px;
+      font-weight: 800;
+      transition: .2s ease;
+      border: 1px solid transparent;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #04111b;
+    }
+
+    .btn-primary:hover {
+      background: #5fd0ff;
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      border-color: var(--line);
+      background: var(--card);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+    }
+
+    .hero-panel {
+      padding: 28px;
+      border: 1px solid var(--line);
+      background: linear-gradient(145deg, #112339, #091624);
+      border-radius: 24px;
+      box-shadow: 0 25px 80px rgba(0,0,0,.28);
+    }
+
+    .camera-art {
+      height: 260px;
+      display: grid;
+      place-items: center;
+      border-radius: 18px;
+      background:
+        radial-gradient(circle, rgba(24,184,255,.18), transparent 52%),
+        #07131f;
+      border: 1px solid var(--line);
+      font-size: 7rem;
+      margin-bottom: 20px;
+    }
+
+    .mini-grid {
+      display: grid;
+      grid-template-columns: repeat(2,1fr);
+      gap: 12px;
+    }
+
+    .mini-card {
+      padding: 16px;
+      border-radius: 13px;
+      background: rgba(255,255,255,.035);
+      border: 1px solid var(--line);
+    }
+
+    .mini-card strong {
+      display: block;
+      color: var(--white);
+      margin-bottom: 4px;
+    }
+
+    .mini-card span {
+      font-size: .83rem;
+      color: var(--muted);
+    }
+
+    section {
+      padding: 78px 0;
+    }
+
+    .section-title {
+      max-width: 700px;
+      margin-bottom: 35px;
+    }
+
+    .section-title small {
+      color: var(--primary);
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+    }
+
+    .section-title h2 {
+      font-size: clamp(2rem, 4vw, 3rem);
+      margin-top: 7px;
+    }
+
+    .section-title p {
+      color: var(--muted);
+      margin-top: 10px;
+    }
+
+    .services {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 18px;
+    }
+
+    .service {
+      border: 1px solid var(--line);
+      background: var(--card);
+      border-radius: 18px;
+      padding: 27px;
+      transition: .2s ease;
+    }
+
+    .service:hover {
+      transform: translateY(-5px);
+      border-color: rgba(24,184,255,.65);
+    }
+
+    .icon {
+      font-size: 2rem;
+      margin-bottom: 16px;
+    }
+
+    .service h3 {
+      margin-bottom: 9px;
+    }
+
+    .service p {
+      color: var(--muted);
+      font-size: .94rem;
+    }
+
+    .about {
+      background: var(--bg2);
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 45px;
+      align-items: center;
+    }
+
+    .checklist {
+      display: grid;
+      gap: 13px;
+      margin-top: 25px;
+    }
+
+    .check {
+      display: flex;
+      gap: 11px;
+      align-items: flex-start;
+      color: var(--muted);
+    }
+
+    .check span:first-child {
+      color: var(--green);
+      font-weight: 900;
+    }
+
+    .process {
+      display: grid;
+      grid-template-columns: repeat(4,1fr);
+      gap: 16px;
+    }
+
+    .step {
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+    }
+
+    .step-number {
+      color: var(--primary);
+      font-size: 1.7rem;
+      font-weight: 900;
+      margin-bottom: 7px;
+    }
+
+    .step p {
+      color: var(--muted);
+      font-size: .92rem;
+    }
+
+    .contact-box {
+      padding: 42px;
+      background:
+        linear-gradient(135deg, rgba(24,184,255,.12), rgba(37,99,235,.08)),
+        var(--card);
+      border: 1px solid rgba(24,184,255,.28);
+      border-radius: 24px;
+      text-align: center;
+    }
+
+    .contact-box h2 {
+      font-size: clamp(2rem, 4vw, 3rem);
+      margin-bottom: 12px;
+    }
+
+    .contact-box p {
+      color: var(--muted);
+      max-width: 700px;
+      margin: 0 auto 25px;
+    }
+
+    footer {
+      padding: 30px 0;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: .9rem;
+    }
+
+    .footer-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 900px) {
+      .nav-links {
+        display: none;
+      }
+
+      .hero-grid,
+      .about-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .services {
+        grid-template-columns: repeat(2,1fr);
+      }
+
+      .process {
+        grid-template-columns: repeat(2,1fr);
+      }
+
+      .hero {
+        padding-top: 65px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      nav {
+        min-height: 66px;
+      }
+
+      .brand {
+        font-size: 1.05rem;
+      }
+
+      .logo {
+        width: 37px;
+        height: 37px;
+      }
+
+      .hero {
+        padding: 55px 0;
+      }
+
+      .services,
+      .process,
+      .mini-grid {
+        grid-template-columns: 1fr;
+      }
+
+      section {
+        padding: 58px 0;
+      }
+
+      .camera-art {
+        height: 190px;
+        font-size: 5rem;
+      }
+
+      .contact-box {
+        padding: 30px 20px;
+      }
+
+      .buttons .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="container">
+    <nav>
+      <a class="brand" href="#">
+        <div class="logo">SK</div>
+        <span>SK Secure Tech</span>
+      </a>
+
+      <div class="nav-links">
+        <a href="#services" data-en="Services" data-ms="Perkhidmatan">Services</a>
+        <a href="#about" data-en="About" data-ms="Tentang Kami">About</a>
+        <a href="#process" data-en="How We Work" data-ms="Cara Kami Bekerja">How We Work</a>
+        <a href="#contact" data-en="Contact" data-ms="Hubungi">Contact</a>
+      </div>
+
+      <div class="language">
+        <button id="enBtn" class="active" onclick="setLanguage('en')">EN</button>
+        <button id="msBtn" onclick="setLanguage('ms')">BM</button>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <section class="hero">
+    <div class="container hero-grid">
+
+      <div>
+        <div
+          class="eyebrow"
+          data-en="Security • CCTV • Networking"
+          data-ms="Keselamatan • CCTV • Rangkaian"
+        >
+          Security • CCTV • Networking
+        </div>
+
+        <h1
+          data-en="Professional <span class='highlight'>Security & CCTV</span> Solutions"
+          data-ms="Penyelesaian <span class='highlight'>Keselamatan & CCTV</span> Profesional"
+        >
+          Professional <span class="highlight">Security & CCTV</span> Solutions
+        </h1>
+
+        <p
+          data-en="Installation, troubleshooting and technical support for CCTV, access control, intercom, networking, ANPR and other security systems."
+          data-ms="Pemasangan, penyelesaian masalah dan sokongan teknikal untuk CCTV, kawalan akses, interkom, rangkaian, ANPR dan sistem keselamatan lain."
+        >
+          Installation, troubleshooting and technical support for CCTV,
+          access control, intercom, networking, ANPR and other security systems.
+        </p>
+
+        <div class="buttons">
+          <a
+            href="#contact"
+            class="btn btn-primary"
+            data-en="Request a Quotation"
+            data-ms="Minta Sebut Harga"
+          >
+            Request a Quotation
+          </a>
+
+          <a
+            href="#services"
+            class="btn btn-secondary"
+            data-en="View Services"
+            data-ms="Lihat Perkhidmatan"
+          >
+            View Services
+          </a>
+        </div>
+      </div>
+
+      <div class="hero-panel">
+        <div class="camera-art">📹</div>
+
+        <div class="mini-grid">
+          <div class="mini-card">
+            <strong>CCTV</strong>
+            <span data-en="IP & Analog Systems" data-ms="Sistem IP & Analog">
+              IP & Analog Systems
+            </span>
+          </div>
+
+          <div class="mini-card">
+            <strong>Network</strong>
+            <span data-en="LAN • Wi-Fi • Cabling" data-ms="LAN • Wi-Fi • Pendawaian">
+              LAN • Wi-Fi • Cabling
+            </span>
+          </div>
+
+          <div class="mini-card">
+            <strong>Access</strong>
+            <span data-en="Door & Entry Systems" data-ms="Sistem Pintu & Akses">
+              Door & Entry Systems
+            </span>
+          </div>
+
+          <div class="mini-card">
+            <strong>ANPR</strong>
+            <span data-en="Vehicle Access Solutions" data-ms="Penyelesaian Akses Kenderaan">
+              Vehicle Access Solutions
+            </span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <section id="services">
+    <div class="container">
+
+      <div class="section-title">
+        <small data-en="Our Services" data-ms="Perkhidmatan Kami">
+          Our Services
+        </small>
+
+        <h2
+          data-en="Complete security & technical solutions"
+          data-ms="Penyelesaian keselamatan & teknikal lengkap"
+        >
+          Complete security & technical solutions
+        </h2>
+
+        <p
+          data-en="Solutions for homes, shops, offices and commercial properties."
+          data-ms="Penyelesaian untuk rumah, kedai, pejabat dan premis komersial."
+        >
+          Solutions for homes, shops, offices and commercial properties.
+        </p>
+      </div>
+
+
+      <div class="services">
+
+        <article class="service">
+          <div class="icon">📹</div>
+          <h3 data-en="CCTV Installation" data-ms="Pemasangan CCTV">
+            CCTV Installation
+          </h3>
+          <p
+            data-en="IP and analog camera installation, DVR/NVR setup, remote viewing and system configuration."
+            data-ms="Pemasangan kamera IP dan analog, tetapan DVR/NVR, paparan jarak jauh dan konfigurasi sistem."
+          >
+            IP and analog camera installation, DVR/NVR setup,
+            remote viewing and system configuration.
+          </p>
+        </article>
+
+
+        <article class="service">
+          <div class="icon">🛠️</div>
+          <h3 data-en="CCTV Troubleshooting" data-ms="Baik Pulih CCTV">
+            CCTV Troubleshooting
+          </h3>
+          <p
+            data-en="Camera offline, no video, network issues, recording problems and system diagnostics."
+            data-ms="Kamera offline, tiada video, masalah rangkaian, rakaman dan diagnostik sistem."
+          >
+            Camera offline, no video, network issues,
+            recording problems and system diagnostics.
+          </p>
+        </article>
+
+
+        <article class="service">
+          <div class="icon">🔐</div>
+          <h3 data-en="Access Control" data-ms="Kawalan Akses">
+            Access Control
+          </h3>
+          <p
+            data-en="Door access, electromagnetic locks, readers, exit buttons and entry management systems."
+            data-ms="Kawalan pintu, kunci elektromagnet, pembaca, butang keluar dan sistem pengurusan akses."
+          >
+            Door access, electromagnetic locks, readers,
+            exit buttons and entry management systems.
+          </p>
+        </article>
+
+
+        <article class="service">
+          <div class="icon">📡</div>
+          <h3 data-en="Networking & Wi-Fi" data-ms="Rangkaian & Wi-Fi">
+            Networking & Wi-Fi
+          </h3>
+          <p
+            data-en="Network cabling, switches, routers, Wi-Fi access points and connectivity troubleshooting."
+            data-ms="Pendawaian rangkaian, switch, router, access point Wi-Fi dan penyelesaian masalah sambungan."
+          >
+            Network cabling, switches, routers,
+            Wi-Fi access points and connectivity troubleshooting.
+          </p>
+        </article>
+
+
+        <article class="service">
+          <div class="icon">☎️</div>
+          <h3 data-en="Intercom Systems" data-ms="Sistem Interkom">
+            Intercom Systems
+          </h3>
+          <p
+            data-en="Video intercom, door communication and visitor entry solutions."
+            data-ms="Interkom video, komunikasi pintu dan penyelesaian kemasukan pelawat."
+          >
+            Video intercom, door communication and visitor entry solutions.
+          </p>
+        </article>
+
+
+        <article class="service">
+          <div class="icon">🚘</div>
+          <h3 data-en="ANPR & Barrier Gate" data-ms="ANPR & Palang Automatik">
+            ANPR & Barrier Gate
+          </h3>
+          <p
+            data-en="Automatic number plate recognition, vehicle access and barrier integration solutions."
+            data-ms="Pengecaman nombor plat automatik, akses kenderaan dan integrasi palang."
+          >
+            Automatic number plate recognition,
+            vehicle access and barrier integration solutions.
+          </p>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+
+  <section id="about" class="about">
+    <div class="container about-grid">
+
+      <div>
+        <div class="section-title">
+          <small data-en="Why SK Secure Tech" data-ms="Mengapa SK Secure Tech">
+            Why SK Secure Tech
+          </small>
+
+          <h2
+            data-en="Practical technical support you can depend on"
+            data-ms="Sokongan teknikal praktikal yang boleh dipercayai"
+          >
+            Practical technical support you can depend on
+          </h2>
+
+          <p
+            data-en="We focus on proper installation, clear troubleshooting and solutions that are practical for each site."
+            data-ms="Kami memberi tumpuan kepada pemasangan yang betul, penyelesaian masalah yang jelas dan penyelesaian praktikal untuk setiap lokasi."
+          >
+            We focus on proper installation, clear troubleshooting
+            and solutions that are practical for each site.
+          </p>
+        </div>
+      </div>
+
+
+      <div class="checklist">
+
+        <div class="check">
+          <span>✓</span>
+          <div data-en="Professional installation and testing"
+               data-ms="Pemasangan dan ujian profesional">
+            Professional installation and testing
+          </div>
+        </div>
+
+        <div class="check">
+          <span>✓</span>
+          <div data-en="Clear troubleshooting and fault diagnosis"
+               data-ms="Penyelesaian masalah dan diagnosis kerosakan yang jelas">
+            Clear troubleshooting and fault diagnosis
+          </div>
+        </div>
+
+        <div class="check">
+          <span>✓</span>
+          <div data-en="Residential and commercial solutions"
+               data-ms="Penyelesaian kediaman dan komersial">
+            Residential and commercial solutions
+          </div>
+        </div>
+
+        <div class="check">
+          <span>✓</span>
+          <div data-en="Modern IP camera and network systems"
+               data-ms="Sistem kamera IP dan rangkaian moden">
+            Modern IP camera and network systems
+          </div>
+        </div>
+
+        <div class="check">
+          <span>✓</span>
+          <div data-en="Support before and after installation"
+               data-ms="Sokongan sebelum dan selepas pemasangan">
+            Support before and after installation
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <section id="process">
+    <div class="container">
+
+      <div class="section-title">
+        <small data-en="How We Work" data-ms="Cara Kami Bekerja">
+          How We Work
+        </small>
+
+        <h2
+          data-en="Simple process from enquiry to completion"
+          data-ms="Proses mudah dari pertanyaan hingga siap"
+        >
+          Simple process from enquiry to completion
+        </h2>
+      </div>
+
+
+      <div class="process">
+
+        <div class="step">
+          <div class="step-number">01</div>
+          <h3 data-en="Contact" data-ms="Hubungi">Contact</h3>
+          <p
+            data-en="Tell us what system or problem you need help with."
+            data-ms="Beritahu kami sistem atau masalah yang memerlukan bantuan."
+          >
+            Tell us what system or problem you need help with.
+          </p>
+        </div>
+
+        <div class="step">
+          <div class="step-number">02</div>
+          <h3 data-en="Assessment" data-ms="Penilaian">Assessment</h3>
+          <p
+            data-en="We review your requirements and recommend a practical solution."
+            data-ms="Kami menilai keperluan dan mencadangkan penyelesaian praktikal."
+          >
+            We review your requirements and recommend a practical solution.
+          </p>
+        </div>
+
+        <div class="step">
+          <div class="step-number">03</div>
+          <h3 data-en="Quotation" data-ms="Sebut Harga">Quotation</h3>
+          <p
+            data-en="Receive a clear quotation before work begins."
+            data-ms="Terima sebut harga yang jelas sebelum kerja bermula."
+          >
+            Receive a clear quotation before work begins.
+          </p>
+        </div>
+
+        <div class="step">
+          <div class="step-number">04</div>
+          <h3 data-en="Installation" data-ms="Pemasangan">Installation</h3>
+          <p
+            data-en="Installation, testing and final system handover."
+            data-ms="Pemasangan, ujian dan penyerahan sistem."
+          >
+            Installation, testing and final system handover.
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <section id="contact">
+    <div class="container">
+
+      <div class="contact-box">
+        <h2
+          data-en="Need CCTV or security system assistance?"
+          data-ms="Perlukan bantuan CCTV atau sistem keselamatan?"
+        >
+          Need CCTV or security system assistance?
+        </h2>
+
+        <p
+          data-en="Contact SK Secure Tech for installation, troubleshooting or a quotation."
+          data-ms="Hubungi SK Secure Tech untuk pemasangan, penyelesaian masalah atau sebut harga."
+        >
+          Contact SK Secure Tech for installation,
+          troubleshooting or a quotation.
+        </p>
+
+        <div class="buttons" style="justify-content:center;">
+          <a
+            class="btn btn-primary"
+            href="mailto:info@sksecuretech.my"
+            data-en="Email Us"
+            data-ms="E-mel Kami"
+          >
+            Email Us
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+
+<footer>
+  <div class="container footer-row">
+    <div>© <span id="year"></span> SK Secure Tech</div>
+    <div>sksecuretech.my</div>
+  </div>
+</footer>
+
+
+<script>
+  document.getElementById("year").textContent =
+    new Date().getFullYear();
+
+  function setLanguage(lang) {
+    document.querySelectorAll("[data-en]").forEach(element => {
+      element.innerHTML =
+        lang === "ms"
+          ? element.getAttribute("data-ms")
+          : element.getAttribute("data-en");
+    });
+
+    document.getElementById("enBtn")
+      .classList.toggle("active", lang === "en");
+
+    document.getElementById("msBtn")
+      .classList.toggle("active", lang === "ms");
+
+    document.documentElement.lang =
+      lang === "ms" ? "ms" : "en";
+  }
+</script>
+
+</body>
+</html>
