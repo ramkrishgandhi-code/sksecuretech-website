@@ -3,918 +3,532 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>SK Secure Tech | CCTV & Security Solutions Malaysia</title>
-
-  <meta
-    name="description"
-    content="SK Secure Tech provides CCTV installation, CCTV troubleshooting, access control, networking, intercom, ANPR and security system services in Malaysia."
-  >
-
+  <meta name="theme-color" content="#f7fbff">
+  <title>SK Secure Tech | Simple Digital Tools</title>
+  <meta name="description" content="SK Secure Tech builds practical browser-based tools for real business workflows. Explore SK Tailoring, our tailoring shop management web app.">
   <style>
-    :root {
-      --bg: #07111f;
-      --bg2: #0b1728;
-      --card: #101e31;
-      --line: #20334b;
-      --primary: #18b8ff;
-      --primary-dark: #008bcc;
-      --green: #22c55e;
-      --text: #f8fafc;
-      --muted: #a8b5c7;
-      --white: #ffffff;
-      --max: 1180px;
+    :root{
+      --ink:#10213d;
+      --muted:#62718a;
+      --line:#dfe8f0;
+      --soft:#f5fbff;
+      --mint:#eafbf4;
+      --blue:#edf7ff;
+      --teal:#0f9f89;
+      --teal-dark:#0a7c6d;
+      --green:#16a36f;
+      --navy:#0d2948;
+      --white:#fff;
+      --shadow:0 18px 55px rgba(35,74,105,.10);
+      --radius:24px;
+      --max:1180px;
     }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      font-family: Arial, Helvetica, sans-serif;
+    *{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      color:var(--ink);
       background:
-        radial-gradient(circle at top right, rgba(24,184,255,.13), transparent 30%),
-        var(--bg);
-      color: var(--text);
-      line-height: 1.6;
+        radial-gradient(circle at 10% 5%,rgba(88,184,255,.13),transparent 28%),
+        radial-gradient(circle at 90% 7%,rgba(27,188,135,.10),transparent 24%),
+        #fbfdff;
+      line-height:1.55;
     }
-
-    a {
-      color: inherit;
-      text-decoration: none;
+    a{text-decoration:none;color:inherit}
+    button{font:inherit}
+    .container{width:min(92%,var(--max));margin:auto}
+    .topbar{
+      position:sticky;top:0;z-index:30;
+      background:rgba(255,255,255,.9);
+      backdrop-filter:blur(16px);
+      border-bottom:1px solid rgba(223,232,240,.85);
     }
-
-    .container {
-      width: min(92%, var(--max));
-      margin: auto;
+    nav{
+      min-height:76px;display:flex;align-items:center;justify-content:space-between;gap:24px;
     }
-
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      background: rgba(7,17,31,.94);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--line);
+    .brand{display:flex;align-items:center;gap:12px;min-width:max-content}
+    .brand-mark{
+      width:50px;height:50px;border-radius:16px;
+      background:linear-gradient(145deg,#0f9f89,#1b78db);
+      display:grid;place-items:center;color:#fff;font-weight:900;font-size:1.3rem;
+      box-shadow:0 10px 28px rgba(15,159,137,.24);
     }
-
-    nav {
-      min-height: 74px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 20px;
+    .brand-copy strong{display:block;font-size:1.05rem;letter-spacing:.03em}
+    .brand-copy span{display:block;font-size:.78rem;color:var(--muted)}
+    .nav-links{display:flex;align-items:center;gap:26px;font-size:.92rem;color:#334761;font-weight:650}
+    .nav-links a:hover{color:var(--teal)}
+    .wa-btn,.primary-btn,.secondary-btn{
+      display:inline-flex;align-items:center;justify-content:center;gap:9px;
+      border-radius:12px;font-weight:800;transition:.2s ease;
     }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-size: 1.3rem;
-      font-weight: 800;
-      letter-spacing: .3px;
+    .wa-btn{padding:12px 18px;background:#08a65d;color:#fff;box-shadow:0 10px 28px rgba(8,166,93,.18)}
+    .wa-btn:hover,.primary-btn:hover{transform:translateY(-2px)}
+    .menu-btn{display:none;border:0;background:transparent;font-size:1.5rem;color:var(--navy);cursor:pointer}
+    .hero{padding:70px 0 48px}
+    .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center}
+    .badge{
+      display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;
+      background:#ecfbf7;color:var(--teal-dark);font-weight:800;font-size:.82rem;margin-bottom:18px;
+      border:1px solid #ccefe5;
     }
-
-    .logo {
-      width: 42px;
-      height: 42px;
-      display: grid;
-      place-items: center;
-      border-radius: 12px;
-      background: linear-gradient(135deg, var(--primary), #2563eb);
-      color: white;
-      font-weight: 900;
-      box-shadow: 0 8px 28px rgba(24,184,255,.3);
+    h1{font-size:clamp(2.7rem,6vw,5.25rem);line-height:1.02;letter-spacing:-.045em;margin-bottom:22px}
+    .accent{color:var(--teal)}
+    .hero-copy p{font-size:1.1rem;color:var(--muted);max-width:650px;margin-bottom:28px}
+    .hero-actions{display:flex;flex-wrap:wrap;gap:12px}
+    .primary-btn{padding:14px 20px;background:linear-gradient(135deg,#0f9f89,#18b779);color:#fff}
+    .secondary-btn{padding:14px 20px;background:#fff;color:var(--ink);border:1px solid var(--line)}
+    .secondary-btn:hover{border-color:#9fdacb;transform:translateY(-2px)}
+    .trust-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:38px}
+    .trust-card{
+      border:1px solid var(--line);background:rgba(255,255,255,.78);border-radius:18px;padding:16px;
+      min-height:125px;
     }
-
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 22px;
-      color: var(--muted);
-      font-size: .95rem;
+    .trust-icon{
+      width:42px;height:42px;border-radius:13px;display:grid;place-items:center;
+      background:var(--blue);font-size:1.3rem;margin-bottom:10px;
     }
-
-    .nav-links a:hover {
-      color: var(--white);
+    .trust-card strong{display:block;font-size:.92rem;margin-bottom:5px}
+    .trust-card span{display:block;color:var(--muted);font-size:.78rem}
+    .device-stage{
+      min-height:500px;position:relative;padding:22px 12px 0;
+      display:flex;align-items:center;justify-content:center;
     }
-
-    .language {
-      display: flex;
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: 10px;
-      overflow: hidden;
+    .glow{
+      position:absolute;width:390px;height:390px;border-radius:50%;
+      background:radial-gradient(circle,rgba(29,187,151,.18),rgba(63,159,255,.09),transparent 70%);
+      filter:blur(8px);
     }
-
-    .language button {
-      border: 0;
-      padding: 8px 10px;
-      background: transparent;
-      color: var(--muted);
-      cursor: pointer;
-      font-weight: 700;
+    .laptop{
+      width:min(100%,520px);background:#111827;border-radius:20px 20px 14px 14px;padding:12px 12px 18px;
+      box-shadow:0 30px 70px rgba(14,42,68,.22);position:relative;z-index:2;
     }
-
-    .language button.active {
-      background: var(--primary);
-      color: #03111b;
+    .screen{
+      min-height:330px;border-radius:12px;background:#f7fbff;overflow:hidden;border:1px solid #1b293a;
+      display:grid;grid-template-columns:92px 1fr;
     }
-
-    .hero {
-      padding: 95px 0 75px;
-      min-height: 610px;
-      display: flex;
-      align-items: center;
+    .side{
+      background:linear-gradient(180deg,#0c4560,#0a766f);color:#e9ffff;padding:17px 10px;
     }
-
-    .hero-grid {
-      display: grid;
-      grid-template-columns: 1.15fr .85fr;
-      gap: 55px;
-      align-items: center;
+    .side-logo{font-weight:900;margin-bottom:20px;font-size:.86rem}
+    .side-item{font-size:.64rem;margin:12px 0;opacity:.9}
+    .app-main{padding:18px}
+    .app-title{display:flex;justify-content:space-between;gap:8px;margin-bottom:14px}
+    .app-title strong{font-size:.9rem}.app-title span{font-size:.62rem;color:var(--muted)}
+    .status-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+    .status-card{
+      background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 8px;min-height:72px;
+      box-shadow:0 6px 18px rgba(43,77,111,.05)
     }
-
-    .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      border: 1px solid rgba(24,184,255,.35);
-      background: rgba(24,184,255,.08);
-      color: #77d7ff;
-      border-radius: 999px;
-      padding: 7px 13px;
-      margin-bottom: 20px;
-      font-size: .86rem;
-      font-weight: 700;
+    .status-card b{display:block;font-size:.64rem;margin-bottom:6px}
+    .status-card em{font-style:normal;font-size:.85rem;font-weight:900}
+    .status-card:nth-child(1){background:#ecfbf5}.status-card:nth-child(2){background:#fff7ea}
+    .status-card:nth-child(3){background:#f2efff}.status-card:nth-child(4){background:#effaf3}
+    .status-card:nth-child(5){background:#fff1f1}.status-card:nth-child(6){background:#fff1f5}
+    .status-card:nth-child(7){background:#eef7ff}.status-card:nth-child(8){background:#effbf9}
+    .app-strip{margin-top:14px;border-radius:12px;background:#fff;border:1px solid var(--line);padding:12px}
+    .app-strip strong{font-size:.72rem}.mini-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:9px}
+    .mini-stat{padding:8px;border-radius:9px;background:#f8fbfd;text-align:center;font-size:.58rem;color:var(--muted)}
+    .mini-stat b{display:block;color:var(--ink);font-size:.86rem}
+    .phone{
+      position:absolute;right:-4px;bottom:26px;width:162px;background:#121826;border-radius:28px;padding:9px;
+      box-shadow:0 25px 55px rgba(15,36,61,.28);z-index:4;
     }
-
-    h1 {
-      font-size: clamp(2.5rem, 6vw, 4.8rem);
-      line-height: 1.04;
-      max-width: 850px;
-      margin-bottom: 22px;
+    .phone-screen{background:#f8fbff;border-radius:21px;overflow:hidden;min-height:310px}
+    .phone-head{background:linear-gradient(135deg,#0d6e70,#0ea56b);color:#fff;padding:13px 12px;font-weight:900;font-size:.72rem}
+    .phone-body{padding:9px}
+    .phone-item{
+      background:#fff;border:1px solid var(--line);border-radius:10px;padding:9px 8px;margin-bottom:7px;
+      font-size:.61rem;font-weight:800;display:flex;justify-content:space-between
     }
-
-    .highlight {
-      color: var(--primary);
+    section{padding:68px 0}
+    .section-head{max-width:760px;margin-bottom:30px}
+    .eyebrow{font-size:.78rem;color:var(--teal);font-weight:900;letter-spacing:.08em;text-transform:uppercase}
+    .section-head h2{font-size:clamp(2rem,4vw,3.35rem);line-height:1.08;letter-spacing:-.03em;margin:8px 0 12px}
+    .section-head p{color:var(--muted)}
+    .product-wrap{
+      padding:32px;border-radius:30px;
+      background:linear-gradient(135deg,#e9fbf5,#f4fbff);
+      border:1px solid #d9eee7;box-shadow:var(--shadow)
     }
-
-    .hero p {
-      color: var(--muted);
-      max-width: 700px;
-      font-size: 1.12rem;
-      margin-bottom: 30px;
+    .product-grid{display:grid;grid-template-columns:.95fr 1.05fr;gap:34px;align-items:center}
+    .product-copy h3{font-size:2.4rem;letter-spacing:-.03em;margin:8px 0 10px}
+    .product-copy p{color:var(--muted);margin-bottom:20px}
+    .product-note{
+      display:inline-flex;gap:8px;align-items:center;color:#0d775f;background:#fff;border:1px solid #cfe8de;
+      border-radius:999px;padding:7px 11px;font-size:.76rem;font-weight:800;margin-bottom:12px;
     }
-
-    .buttons {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 13px;
+    .feature-chips{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 23px}
+    .feature-chips span{background:#fff;border:1px solid #dce9e5;border-radius:999px;padding:8px 10px;font-size:.78rem;font-weight:700}
+    .preview-panel{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .preview-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px;min-height:190px}
+    .preview-card h4{font-size:.9rem;margin-bottom:11px}
+    .garments{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
+    .garment{
+      min-height:68px;border-radius:12px;background:linear-gradient(145deg,#fff3f5,#f8ecef);display:grid;place-items:center;
+      font-size:1.6rem
     }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 48px;
-      padding: 0 21px;
-      border-radius: 11px;
-      font-weight: 800;
-      transition: .2s ease;
-      border: 1px solid transparent;
+    .measure-lines{display:grid;gap:8px}
+    .measure-line{height:28px;border:1px solid var(--line);border-radius:9px;display:flex;align-items:center;justify-content:space-between;padding:0 9px;font-size:.67rem;color:var(--muted)}
+    .status-list{display:grid;gap:7px}
+    .status-line{border-radius:9px;padding:8px 10px;font-size:.68rem;font-weight:800;display:flex;justify-content:space-between;background:#f7fbff;border:1px solid #e6edf3}
+    .why-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+    .why-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:0 10px 30px rgba(35,74,105,.05)}
+    .why-card .icon{width:44px;height:44px;border-radius:13px;display:grid;place-items:center;background:#eef8ff;font-size:1.25rem;margin-bottom:12px}
+    .why-card h3{font-size:1rem;margin-bottom:6px}.why-card p{font-size:.84rem;color:var(--muted)}
+    .about-box{
+      display:grid;grid-template-columns:1fr .9fr;gap:34px;align-items:center;
+      background:#fff;border:1px solid var(--line);border-radius:26px;padding:34px;box-shadow:var(--shadow)
     }
-
-    .btn-primary {
-      background: var(--primary);
-      color: #04111b;
+    .about-box p{color:var(--muted);margin-top:12px}
+    .principles{display:grid;gap:10px}
+    .principle{display:flex;gap:12px;align-items:flex-start;padding:13px;border-radius:14px;background:#f8fbfd}
+    .principle b{color:var(--teal)}
+    .contact{
+      background:linear-gradient(135deg,#eaf7ff,#ecfbf6);border:1px solid #dcecf0;border-radius:28px;padding:34px;
+      display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:center
     }
-
-    .btn-primary:hover {
-      background: #5fd0ff;
-      transform: translateY(-2px);
+    .contact p{color:var(--muted);margin-top:8px}
+    .contact-actions{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .contact-card{
+      display:flex;align-items:center;gap:12px;background:#fff;border:1px solid #dce8ef;border-radius:14px;padding:15px
     }
-
-    .btn-secondary {
-      border-color: var(--line);
-      background: var(--card);
+    .contact-card span{font-size:.8rem;color:var(--muted);display:block}
+    .contact-card strong{display:block;font-size:.9rem}
+    footer{padding:28px 0;border-top:1px solid var(--line);background:#fff}
+    .footer-row{display:flex;justify-content:space-between;gap:18px;align-items:center;flex-wrap:wrap;color:var(--muted);font-size:.84rem}
+    .footer-links{display:flex;gap:18px;flex-wrap:wrap}
+    @media(max-width:980px){
+      .hero-grid,.product-grid,.about-box,.contact{grid-template-columns:1fr}
+      .device-stage{min-height:460px}
+      .why-grid{grid-template-columns:repeat(2,1fr)}
+      .trust-row{grid-template-columns:repeat(2,1fr)}
+      .nav-links{display:none}
+      .menu-btn{display:block}
+      .wa-btn.nav-wa{display:none}
+      .mobile-menu{display:none;position:absolute;left:4%;right:4%;top:72px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:12px;box-shadow:var(--shadow)}
+      .mobile-menu.open{display:grid}
+      .mobile-menu a{padding:11px;border-radius:10px;font-weight:700}
     }
-
-    .btn-secondary:hover {
-      border-color: var(--primary);
-      transform: translateY(-2px);
-    }
-
-    .hero-panel {
-      padding: 28px;
-      border: 1px solid var(--line);
-      background: linear-gradient(145deg, #112339, #091624);
-      border-radius: 24px;
-      box-shadow: 0 25px 80px rgba(0,0,0,.28);
-    }
-
-    .camera-art {
-      height: 260px;
-      display: grid;
-      place-items: center;
-      border-radius: 18px;
-      background:
-        radial-gradient(circle, rgba(24,184,255,.18), transparent 52%),
-        #07131f;
-      border: 1px solid var(--line);
-      font-size: 7rem;
-      margin-bottom: 20px;
-    }
-
-    .mini-grid {
-      display: grid;
-      grid-template-columns: repeat(2,1fr);
-      gap: 12px;
-    }
-
-    .mini-card {
-      padding: 16px;
-      border-radius: 13px;
-      background: rgba(255,255,255,.035);
-      border: 1px solid var(--line);
-    }
-
-    .mini-card strong {
-      display: block;
-      color: var(--white);
-      margin-bottom: 4px;
-    }
-
-    .mini-card span {
-      font-size: .83rem;
-      color: var(--muted);
-    }
-
-    section {
-      padding: 78px 0;
-    }
-
-    .section-title {
-      max-width: 700px;
-      margin-bottom: 35px;
-    }
-
-    .section-title small {
-      color: var(--primary);
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-    }
-
-    .section-title h2 {
-      font-size: clamp(2rem, 4vw, 3rem);
-      margin-top: 7px;
-    }
-
-    .section-title p {
-      color: var(--muted);
-      margin-top: 10px;
-    }
-
-    .services {
-      display: grid;
-      grid-template-columns: repeat(3,1fr);
-      gap: 18px;
-    }
-
-    .service {
-      border: 1px solid var(--line);
-      background: var(--card);
-      border-radius: 18px;
-      padding: 27px;
-      transition: .2s ease;
-    }
-
-    .service:hover {
-      transform: translateY(-5px);
-      border-color: rgba(24,184,255,.65);
-    }
-
-    .icon {
-      font-size: 2rem;
-      margin-bottom: 16px;
-    }
-
-    .service h3 {
-      margin-bottom: 9px;
-    }
-
-    .service p {
-      color: var(--muted);
-      font-size: .94rem;
-    }
-
-    .about {
-      background: var(--bg2);
-      border-top: 1px solid var(--line);
-      border-bottom: 1px solid var(--line);
-    }
-
-    .about-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 45px;
-      align-items: center;
-    }
-
-    .checklist {
-      display: grid;
-      gap: 13px;
-      margin-top: 25px;
-    }
-
-    .check {
-      display: flex;
-      gap: 11px;
-      align-items: flex-start;
-      color: var(--muted);
-    }
-
-    .check span:first-child {
-      color: var(--green);
-      font-weight: 900;
-    }
-
-    .process {
-      display: grid;
-      grid-template-columns: repeat(4,1fr);
-      gap: 16px;
-    }
-
-    .step {
-      padding: 22px;
-      border: 1px solid var(--line);
-      border-radius: 16px;
-    }
-
-    .step-number {
-      color: var(--primary);
-      font-size: 1.7rem;
-      font-weight: 900;
-      margin-bottom: 7px;
-    }
-
-    .step p {
-      color: var(--muted);
-      font-size: .92rem;
-    }
-
-    .contact-box {
-      padding: 42px;
-      background:
-        linear-gradient(135deg, rgba(24,184,255,.12), rgba(37,99,235,.08)),
-        var(--card);
-      border: 1px solid rgba(24,184,255,.28);
-      border-radius: 24px;
-      text-align: center;
-    }
-
-    .contact-box h2 {
-      font-size: clamp(2rem, 4vw, 3rem);
-      margin-bottom: 12px;
-    }
-
-    .contact-box p {
-      color: var(--muted);
-      max-width: 700px;
-      margin: 0 auto 25px;
-    }
-
-    footer {
-      padding: 30px 0;
-      border-top: 1px solid var(--line);
-      color: var(--muted);
-      font-size: .9rem;
-    }
-
-    .footer-row {
-      display: flex;
-      justify-content: space-between;
-      gap: 15px;
-      flex-wrap: wrap;
-    }
-
-    @media (max-width: 900px) {
-      .nav-links {
-        display: none;
-      }
-
-      .hero-grid,
-      .about-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .services {
-        grid-template-columns: repeat(2,1fr);
-      }
-
-      .process {
-        grid-template-columns: repeat(2,1fr);
-      }
-
-      .hero {
-        padding-top: 65px;
-      }
-    }
-
-    @media (max-width: 600px) {
-      nav {
-        min-height: 66px;
-      }
-
-      .brand {
-        font-size: 1.05rem;
-      }
-
-      .logo {
-        width: 37px;
-        height: 37px;
-      }
-
-      .hero {
-        padding: 55px 0;
-      }
-
-      .services,
-      .process,
-      .mini-grid {
-        grid-template-columns: 1fr;
-      }
-
-      section {
-        padding: 58px 0;
-      }
-
-      .camera-art {
-        height: 190px;
-        font-size: 5rem;
-      }
-
-      .contact-box {
-        padding: 30px 20px;
-      }
-
-      .buttons .btn {
-        width: 100%;
-      }
+    @media(max-width:640px){
+      nav{min-height:68px}
+      .brand-mark{width:42px;height:42px;border-radius:13px}
+      .brand-copy span{display:none}
+      .hero{padding-top:42px}
+      .hero-grid{gap:28px}
+      .trust-row,.why-grid,.contact-actions{grid-template-columns:1fr}
+      .trust-card{min-height:auto}
+      .device-stage{min-height:390px;padding-left:0;padding-right:0}
+      .laptop{width:100%;padding:8px 8px 14px}
+      .screen{grid-template-columns:68px 1fr;min-height:280px}
+      .side{padding:13px 6px}.side-item{font-size:.52rem}.side-logo{font-size:.65rem}
+      .app-main{padding:12px}
+      .status-grid{grid-template-columns:repeat(2,1fr)}
+      .phone{width:128px;right:-4px;bottom:4px}.phone-screen{min-height:250px}
+      .product-wrap{padding:20px}
+      .preview-panel{grid-template-columns:1fr}
+      .product-copy h3{font-size:2rem}
+      section{padding:50px 0}
+      .about-box,.contact{padding:22px}
+      .footer-row{align-items:flex-start;flex-direction:column}
     }
   </style>
 </head>
-
 <body>
-
-<header>
+<header class="topbar">
   <div class="container">
     <nav>
-      <a class="brand" href="#">
-        <div class="logo">SK</div>
-        <span>SK Secure Tech</span>
+      <a class="brand" href="#home" aria-label="SK Secure Tech home">
+        <div class="brand-mark">SK</div>
+        <div class="brand-copy">
+          <strong>SK Secure Tech</strong>
+          <span>Simple Digital Tools</span>
+        </div>
       </a>
-
       <div class="nav-links">
-        <a href="#services" data-en="Services" data-ms="Perkhidmatan">Services</a>
-        <a href="#about" data-en="About" data-ms="Tentang Kami">About</a>
-        <a href="#process" data-en="How We Work" data-ms="Cara Kami Bekerja">How We Work</a>
-        <a href="#contact" data-en="Contact" data-ms="Hubungi">Contact</a>
+        <a href="#home">Home</a>
+        <a href="#our-app">Our App</a>
+        <a href="#why">Why Us</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
       </div>
-
-      <div class="language">
-        <button id="enBtn" class="active" onclick="setLanguage('en')">EN</button>
-        <button id="msBtn" onclick="setLanguage('ms')">BM</button>
+      <a class="wa-btn nav-wa" href="https://wa.me/60162100305?text=Hello%20SK%20Secure%20Tech" target="_blank" rel="noopener">💬 WhatsApp Us</a>
+      <button class="menu-btn" id="menuBtn" aria-label="Open menu">☰</button>
+      <div class="mobile-menu" id="mobileMenu">
+        <a href="#home">Home</a>
+        <a href="#our-app">Our App</a>
+        <a href="#why">Why Us</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+        <a href="https://wa.me/60162100305?text=Hello%20SK%20Secure%20Tech" target="_blank" rel="noopener">WhatsApp Us</a>
       </div>
     </nav>
   </div>
 </header>
 
 <main>
+<section class="hero" id="home">
+  <div class="container hero-grid">
+    <div class="hero-copy">
+      <div class="badge">● Practical software, built step by step</div>
+      <h1>Simple Digital Tools for <span class="accent">Real Business Workflows</span></h1>
+      <p>SK Secure Tech is focused on practical browser-based tools that make everyday business work easier. We build only what is useful, keep the interface simple and improve each product as the real workflow grows.</p>
+      <div class="hero-actions">
+        <a class="primary-btn" href="#our-app">Explore SK Tailoring →</a>
+        <a class="secondary-btn" href="#contact">Contact Us</a>
+      </div>
 
-  <section class="hero">
-    <div class="container hero-grid">
+      <div class="trust-row">
+        <div class="trust-card">
+          <div class="trust-icon">📱</div>
+          <strong>Mobile Friendly</strong>
+          <span>Designed to work comfortably on phone, tablet and computer.</span>
+        </div>
+        <div class="trust-card">
+          <div class="trust-icon">📶</div>
+          <strong>Offline Friendly</strong>
+          <span>Core tailoring workflow is designed to remain useful when connectivity is limited.</span>
+        </div>
+        <div class="trust-card">
+          <div class="trust-icon">⚙️</div>
+          <strong>Simple & Easy</strong>
+          <span>Clear screens and practical actions without unnecessary complexity.</span>
+        </div>
+        <div class="trust-card">
+          <div class="trust-icon">📈</div>
+          <strong>Real Business Focus</strong>
+          <span>Features are shaped around actual day-to-day shop work.</span>
+        </div>
+      </div>
+    </div>
 
+    <div class="device-stage" aria-label="SK Tailoring app preview">
+      <div class="glow"></div>
+      <div class="laptop">
+        <div class="screen">
+          <aside class="side">
+            <div class="side-logo">SK Tailoring</div>
+            <div class="side-item">⌂ Dashboard</div>
+            <div class="side-item">＋ New Order</div>
+            <div class="side-item">▣ Work Queue</div>
+            <div class="side-item">◉ Customers</div>
+            <div class="side-item">₹ Payments</div>
+            <div class="side-item">↗ Expenses</div>
+            <div class="side-item">▥ Reports</div>
+            <div class="side-item">⟳ Backup</div>
+          </aside>
+          <div class="app-main">
+            <div class="app-title">
+              <div><strong>SK Tailoring</strong><br><span>Tailoring Shop Management</span></div>
+              <span>Dashboard</span>
+            </div>
+            <div class="status-grid">
+              <div class="status-card"><b>New Order</b><em>＋</em></div>
+              <div class="status-card"><b>Open Orders</b><em>12</em></div>
+              <div class="status-card"><b>Work Queue</b><em>8</em></div>
+              <div class="status-card"><b>Ready</b><em>5</em></div>
+              <div class="status-card"><b>Due Today</b><em>3</em></div>
+              <div class="status-card"><b>Overdue</b><em>2</em></div>
+              <div class="status-card"><b>Delivery</b><em>1</em></div>
+              <div class="status-card"><b>Customers</b><em>◉</em></div>
+            </div>
+            <div class="app-strip">
+              <strong>Today's Summary</strong>
+              <div class="mini-row">
+                <div class="mini-stat"><b>12</b>Open</div>
+                <div class="mini-stat"><b>3</b>Due</div>
+                <div class="mini-stat"><b>2</b>Overdue</div>
+                <div class="mini-stat"><b>5</b>Ready</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="phone">
+        <div class="phone-screen">
+          <div class="phone-head">SK Tailoring</div>
+          <div class="phone-body">
+            <div class="phone-item"><span>New Order</span><span>＋</span></div>
+            <div class="phone-item"><span>Open Orders</span><span>12</span></div>
+            <div class="phone-item"><span>Work Queue</span><span>8</span></div>
+            <div class="phone-item"><span>Ready</span><span>5</span></div>
+            <div class="phone-item"><span>Due Today</span><span>3</span></div>
+            <div class="phone-item"><span>Overdue</span><span>2</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="our-app">
+  <div class="container">
+    <div class="product-wrap">
+      <div class="product-grid">
+        <div class="product-copy">
+          <div class="eyebrow">Our Current Product</div>
+          <h3>✂️ SK Tailoring</h3>
+          <div class="product-note">● Currently in active development</div>
+          <p>A practical tailoring shop management web app for handling customer orders, garment details, measurements, work status, payments, expenses and delivery workflow in one place.</p>
+          <div class="feature-chips">
+            <span>New Orders</span>
+            <span>Customer History</span>
+            <span>Measurements</span>
+            <span>Work Queue</span>
+            <span>Ready / Due / Overdue</span>
+            <span>Payments</span>
+            <span>Expenses</span>
+            <span>Backup & Restore</span>
+          </div>
+          <div class="hero-actions">
+            <a class="primary-btn" href="https://tailoring.sksecuretech.my" target="_blank" rel="noopener">Open SK Tailoring ↗</a>
+            <a class="secondary-btn" href="#about">Learn More</a>
+          </div>
+        </div>
+
+        <div class="preview-panel">
+          <div class="preview-card">
+            <h4>New Order</h4>
+            <div class="garments">
+              <div class="garment">👚</div>
+              <div class="garment">👗</div>
+              <div class="garment">👕</div>
+              <div class="garment">👖</div>
+            </div>
+          </div>
+          <div class="preview-card">
+            <h4>Measurements</h4>
+            <div class="measure-lines">
+              <div class="measure-line"><span>Shoulder</span><b>cm</b></div>
+              <div class="measure-line"><span>Chest / Bust</span><b>cm</b></div>
+              <div class="measure-line"><span>Waist</span><b>cm</b></div>
+              <div class="measure-line"><span>Length</span><b>cm</b></div>
+            </div>
+          </div>
+          <div class="preview-card">
+            <h4>Order Management</h4>
+            <div class="status-list">
+              <div class="status-line"><span>Open Orders</span><b>12</b></div>
+              <div class="status-line"><span>Work Queue</span><b>8</b></div>
+              <div class="status-line"><span>Ready</span><b>5</b></div>
+              <div class="status-line"><span>Due Today</span><b>3</b></div>
+              <div class="status-line"><span>Overdue</span><b>2</b></div>
+            </div>
+          </div>
+          <div class="preview-card">
+            <h4>Business Records</h4>
+            <div class="status-list">
+              <div class="status-line"><span>Customers</span><b>✓</b></div>
+              <div class="status-line"><span>Payments</span><b>✓</b></div>
+              <div class="status-line"><span>Expenses</span><b>✓</b></div>
+              <div class="status-line"><span>Backup / Restore</span><b>✓</b></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="why">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">Why SK Secure Tech</div>
+      <h2>Build what is useful. Keep it simple. Improve it with the real workflow.</h2>
+      <p>We are not filling the website with services we do not currently provide. The focus stays on the products and features that actually exist today.</p>
+    </div>
+    <div class="why-grid">
+      <article class="why-card">
+        <div class="icon">🧩</div>
+        <h3>Practical Solutions</h3>
+        <p>Features are added because they solve a real business need, not just to make the app look bigger.</p>
+      </article>
+      <article class="why-card">
+        <div class="icon">📱</div>
+        <h3>Easy to Use</h3>
+        <p>Simple navigation and clear actions are prioritised for everyday use.</p>
+      </article>
+      <article class="why-card">
+        <div class="icon">🗂️</div>
+        <h3>Organised Workflow</h3>
+        <p>Orders, measurements, customers and business records are kept together in one workflow.</p>
+      </article>
+      <article class="why-card">
+        <div class="icon">🔁</div>
+        <h3>Continuous Improvement</h3>
+        <p>We build in stages, test each part and add the next capability only when it is useful.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="container">
+    <div class="about-box">
       <div>
-        <div
-          class="eyebrow"
-          data-en="Security • CCTV • Networking"
-          data-ms="Keselamatan • CCTV • Rangkaian"
-        >
-          Security • CCTV • Networking
+        <div class="eyebrow">About SK Secure Tech</div>
+        <div class="section-head" style="margin-bottom:0">
+          <h2>Focused on practical business web apps.</h2>
         </div>
-
-        <h1
-          data-en="Professional <span class='highlight'>Security & CCTV</span> Solutions"
-          data-ms="Penyelesaian <span class='highlight'>Keselamatan & CCTV</span> Profesional"
-        >
-          Professional <span class="highlight">Security & CCTV</span> Solutions
-        </h1>
-
-        <p
-          data-en="Installation, troubleshooting and technical support for CCTV, access control, intercom, networking, ANPR and other security systems."
-          data-ms="Pemasangan, penyelesaian masalah dan sokongan teknikal untuk CCTV, kawalan akses, interkom, rangkaian, ANPR dan sistem keselamatan lain."
-        >
-          Installation, troubleshooting and technical support for CCTV,
-          access control, intercom, networking, ANPR and other security systems.
-        </p>
-
-        <div class="buttons">
-          <a
-            href="#contact"
-            class="btn btn-primary"
-            data-en="Request a Quotation"
-            data-ms="Minta Sebut Harga"
-          >
-            Request a Quotation
-          </a>
-
-          <a
-            href="#services"
-            class="btn btn-secondary"
-            data-en="View Services"
-            data-ms="Lihat Perkhidmatan"
-          >
-            View Services
-          </a>
-        </div>
+        <p>SK Secure Tech is currently focused on developing simple digital tools for business workflows. Our active product is SK Tailoring, a tailoring shop management web app that is being developed step by step around real shop requirements.</p>
+        <p>As new products or genuine services are developed in the future, they can be added here. Until then, this website will show only what is actually available.</p>
       </div>
-
-      <div class="hero-panel">
-        <div class="camera-art">📹</div>
-
-        <div class="mini-grid">
-          <div class="mini-card">
-            <strong>CCTV</strong>
-            <span data-en="IP & Analog Systems" data-ms="Sistem IP & Analog">
-              IP & Analog Systems
-            </span>
-          </div>
-
-          <div class="mini-card">
-            <strong>Network</strong>
-            <span data-en="LAN • Wi-Fi • Cabling" data-ms="LAN • Wi-Fi • Pendawaian">
-              LAN • Wi-Fi • Cabling
-            </span>
-          </div>
-
-          <div class="mini-card">
-            <strong>Access</strong>
-            <span data-en="Door & Entry Systems" data-ms="Sistem Pintu & Akses">
-              Door & Entry Systems
-            </span>
-          </div>
-
-          <div class="mini-card">
-            <strong>ANPR</strong>
-            <span data-en="Vehicle Access Solutions" data-ms="Penyelesaian Akses Kenderaan">
-              Vehicle Access Solutions
-            </span>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-
-  <section id="services">
-    <div class="container">
-
-      <div class="section-title">
-        <small data-en="Our Services" data-ms="Perkhidmatan Kami">
-          Our Services
-        </small>
-
-        <h2
-          data-en="Complete security & technical solutions"
-          data-ms="Penyelesaian keselamatan & teknikal lengkap"
-        >
-          Complete security & technical solutions
-        </h2>
-
-        <p
-          data-en="Solutions for homes, shops, offices and commercial properties."
-          data-ms="Penyelesaian untuk rumah, kedai, pejabat dan premis komersial."
-        >
-          Solutions for homes, shops, offices and commercial properties.
-        </p>
-      </div>
-
-
-      <div class="services">
-
-        <article class="service">
-          <div class="icon">📹</div>
-          <h3 data-en="CCTV Installation" data-ms="Pemasangan CCTV">
-            CCTV Installation
-          </h3>
-          <p
-            data-en="IP and analog camera installation, DVR/NVR setup, remote viewing and system configuration."
-            data-ms="Pemasangan kamera IP dan analog, tetapan DVR/NVR, paparan jarak jauh dan konfigurasi sistem."
-          >
-            IP and analog camera installation, DVR/NVR setup,
-            remote viewing and system configuration.
-          </p>
-        </article>
-
-
-        <article class="service">
-          <div class="icon">🛠️</div>
-          <h3 data-en="CCTV Troubleshooting" data-ms="Baik Pulih CCTV">
-            CCTV Troubleshooting
-          </h3>
-          <p
-            data-en="Camera offline, no video, network issues, recording problems and system diagnostics."
-            data-ms="Kamera offline, tiada video, masalah rangkaian, rakaman dan diagnostik sistem."
-          >
-            Camera offline, no video, network issues,
-            recording problems and system diagnostics.
-          </p>
-        </article>
-
-
-        <article class="service">
-          <div class="icon">🔐</div>
-          <h3 data-en="Access Control" data-ms="Kawalan Akses">
-            Access Control
-          </h3>
-          <p
-            data-en="Door access, electromagnetic locks, readers, exit buttons and entry management systems."
-            data-ms="Kawalan pintu, kunci elektromagnet, pembaca, butang keluar dan sistem pengurusan akses."
-          >
-            Door access, electromagnetic locks, readers,
-            exit buttons and entry management systems.
-          </p>
-        </article>
-
-
-        <article class="service">
-          <div class="icon">📡</div>
-          <h3 data-en="Networking & Wi-Fi" data-ms="Rangkaian & Wi-Fi">
-            Networking & Wi-Fi
-          </h3>
-          <p
-            data-en="Network cabling, switches, routers, Wi-Fi access points and connectivity troubleshooting."
-            data-ms="Pendawaian rangkaian, switch, router, access point Wi-Fi dan penyelesaian masalah sambungan."
-          >
-            Network cabling, switches, routers,
-            Wi-Fi access points and connectivity troubleshooting.
-          </p>
-        </article>
-
-
-        <article class="service">
-          <div class="icon">☎️</div>
-          <h3 data-en="Intercom Systems" data-ms="Sistem Interkom">
-            Intercom Systems
-          </h3>
-          <p
-            data-en="Video intercom, door communication and visitor entry solutions."
-            data-ms="Interkom video, komunikasi pintu dan penyelesaian kemasukan pelawat."
-          >
-            Video intercom, door communication and visitor entry solutions.
-          </p>
-        </article>
-
-
-        <article class="service">
-          <div class="icon">🚘</div>
-          <h3 data-en="ANPR & Barrier Gate" data-ms="ANPR & Palang Automatik">
-            ANPR & Barrier Gate
-          </h3>
-          <p
-            data-en="Automatic number plate recognition, vehicle access and barrier integration solutions."
-            data-ms="Pengecaman nombor plat automatik, akses kenderaan dan integrasi palang."
-          >
-            Automatic number plate recognition,
-            vehicle access and barrier integration solutions.
-          </p>
-        </article>
-
+      <div class="principles">
+        <div class="principle"><b>01</b><div><strong>Start with the real problem</strong><br><span style="color:var(--muted);font-size:.84rem">Understand the day-to-day workflow before adding features.</span></div></div>
+        <div class="principle"><b>02</b><div><strong>Build one clear stage at a time</strong><br><span style="color:var(--muted);font-size:.84rem">Keep development controlled instead of adding unnecessary modules.</span></div></div>
+        <div class="principle"><b>03</b><div><strong>Test on the devices people use</strong><br><span style="color:var(--muted);font-size:.84rem">Prioritise practical use on phone, tablet and desktop.</span></div></div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-
-  <section id="about" class="about">
-    <div class="container about-grid">
-
+<section id="contact">
+  <div class="container">
+    <div class="contact">
       <div>
-        <div class="section-title">
-          <small data-en="Why SK Secure Tech" data-ms="Mengapa SK Secure Tech">
-            Why SK Secure Tech
-          </small>
-
-          <h2
-            data-en="Practical technical support you can depend on"
-            data-ms="Sokongan teknikal praktikal yang boleh dipercayai"
-          >
-            Practical technical support you can depend on
-          </h2>
-
-          <p
-            data-en="We focus on proper installation, clear troubleshooting and solutions that are practical for each site."
-            data-ms="Kami memberi tumpuan kepada pemasangan yang betul, penyelesaian masalah yang jelas dan penyelesaian praktikal untuk setiap lokasi."
-          >
-            We focus on proper installation, clear troubleshooting
-            and solutions that are practical for each site.
-          </p>
-        </div>
+        <div class="eyebrow">Get in Touch</div>
+        <h2 style="font-size:2rem;margin-top:8px">Have a question about SK Tailoring?</h2>
+        <p>Contact SK Secure Tech for information about the current app and its development.</p>
       </div>
-
-
-      <div class="checklist">
-
-        <div class="check">
-          <span>✓</span>
-          <div data-en="Professional installation and testing"
-               data-ms="Pemasangan dan ujian profesional">
-            Professional installation and testing
-          </div>
-        </div>
-
-        <div class="check">
-          <span>✓</span>
-          <div data-en="Clear troubleshooting and fault diagnosis"
-               data-ms="Penyelesaian masalah dan diagnosis kerosakan yang jelas">
-            Clear troubleshooting and fault diagnosis
-          </div>
-        </div>
-
-        <div class="check">
-          <span>✓</span>
-          <div data-en="Residential and commercial solutions"
-               data-ms="Penyelesaian kediaman dan komersial">
-            Residential and commercial solutions
-          </div>
-        </div>
-
-        <div class="check">
-          <span>✓</span>
-          <div data-en="Modern IP camera and network systems"
-               data-ms="Sistem kamera IP dan rangkaian moden">
-            Modern IP camera and network systems
-          </div>
-        </div>
-
-        <div class="check">
-          <span>✓</span>
-          <div data-en="Support before and after installation"
-               data-ms="Sokongan sebelum dan selepas pemasangan">
-            Support before and after installation
-          </div>
-        </div>
-
+      <div class="contact-actions">
+        <a class="contact-card" href="mailto:info@sksecuretech.my">
+          <div style="font-size:1.4rem">✉️</div>
+          <div><strong>Email</strong><span>info@sksecuretech.my</span></div>
+        </a>
+        <a class="contact-card" href="https://wa.me/60162100305?text=Hello%20SK%20Secure%20Tech%2C%20I%20would%20like%20to%20know%20more%20about%20SK%20Tailoring." target="_blank" rel="noopener">
+          <div style="font-size:1.4rem">💬</div>
+          <div><strong>WhatsApp</strong><span>016-210 0305</span></div>
+        </a>
       </div>
-
     </div>
-  </section>
-
-
-  <section id="process">
-    <div class="container">
-
-      <div class="section-title">
-        <small data-en="How We Work" data-ms="Cara Kami Bekerja">
-          How We Work
-        </small>
-
-        <h2
-          data-en="Simple process from enquiry to completion"
-          data-ms="Proses mudah dari pertanyaan hingga siap"
-        >
-          Simple process from enquiry to completion
-        </h2>
-      </div>
-
-
-      <div class="process">
-
-        <div class="step">
-          <div class="step-number">01</div>
-          <h3 data-en="Contact" data-ms="Hubungi">Contact</h3>
-          <p
-            data-en="Tell us what system or problem you need help with."
-            data-ms="Beritahu kami sistem atau masalah yang memerlukan bantuan."
-          >
-            Tell us what system or problem you need help with.
-          </p>
-        </div>
-
-        <div class="step">
-          <div class="step-number">02</div>
-          <h3 data-en="Assessment" data-ms="Penilaian">Assessment</h3>
-          <p
-            data-en="We review your requirements and recommend a practical solution."
-            data-ms="Kami menilai keperluan dan mencadangkan penyelesaian praktikal."
-          >
-            We review your requirements and recommend a practical solution.
-          </p>
-        </div>
-
-        <div class="step">
-          <div class="step-number">03</div>
-          <h3 data-en="Quotation" data-ms="Sebut Harga">Quotation</h3>
-          <p
-            data-en="Receive a clear quotation before work begins."
-            data-ms="Terima sebut harga yang jelas sebelum kerja bermula."
-          >
-            Receive a clear quotation before work begins.
-          </p>
-        </div>
-
-        <div class="step">
-          <div class="step-number">04</div>
-          <h3 data-en="Installation" data-ms="Pemasangan">Installation</h3>
-          <p
-            data-en="Installation, testing and final system handover."
-            data-ms="Pemasangan, ujian dan penyerahan sistem."
-          >
-            Installation, testing and final system handover.
-          </p>
-        </div>
-
-      </div>
-
-    </div>
-  </section>
-
-
-  <section id="contact">
-    <div class="container">
-
-      <div class="contact-box">
-        <h2
-          data-en="Need CCTV or security system assistance?"
-          data-ms="Perlukan bantuan CCTV atau sistem keselamatan?"
-        >
-          Need CCTV or security system assistance?
-        </h2>
-
-        <p
-          data-en="Contact SK Secure Tech for installation, troubleshooting or a quotation."
-          data-ms="Hubungi SK Secure Tech untuk pemasangan, penyelesaian masalah atau sebut harga."
-        >
-          Contact SK Secure Tech for installation,
-          troubleshooting or a quotation.
-        </p>
-
-        <div class="buttons" style="justify-content:center;">
-          <a
-            class="btn btn-primary"
-            href="mailto:info@sksecuretech.my"
-            data-en="Email Us"
-            data-ms="E-mel Kami"
-          >
-            Email Us
-          </a>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
+  </div>
+</section>
 </main>
-
 
 <footer>
   <div class="container footer-row">
-    <div>© <span id="year"></span> SK Secure Tech</div>
-    <div>sksecuretech.my</div>
+    <div class="brand">
+      <div class="brand-mark" style="width:38px;height:38px;border-radius:11px;font-size:1rem">SK</div>
+      <div class="brand-copy">
+        <strong>SK Secure Tech</strong>
+        <span>Simple Digital Tools</span>
+      </div>
+    </div>
+    <div class="footer-links">
+      <a href="#home">Home</a>
+      <a href="#our-app">Our App</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <div>© <span id="year"></span> SK Secure Tech. All rights reserved.</div>
   </div>
 </footer>
 
-
 <script>
-  document.getElementById("year").textContent =
-    new Date().getFullYear();
-
-  function setLanguage(lang) {
-    document.querySelectorAll("[data-en]").forEach(element => {
-      element.innerHTML =
-        lang === "ms"
-          ? element.getAttribute("data-ms")
-          : element.getAttribute("data-en");
-    });
-
-    document.getElementById("enBtn")
-      .classList.toggle("active", lang === "en");
-
-    document.getElementById("msBtn")
-      .classList.toggle("active", lang === "ms");
-
-    document.documentElement.lang =
-      lang === "ms" ? "ms" : "en";
-  }
+  document.getElementById('year').textContent = new Date().getFullYear();
+  const menuBtn = document.getElementById('menuBtn');
+  const mobileMenu = document.getElementById('mobileMenu');
+  menuBtn.addEventListener('click', () => mobileMenu.classList.toggle('open'));
+  mobileMenu.querySelectorAll('a').forEach(link => link.addEventListener('click', () => mobileMenu.classList.remove('open')));
 </script>
-
 </body>
 </html>
