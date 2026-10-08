@@ -395,6 +395,22 @@
       .worker-row{grid-template-columns:1.4fr .8fr}.worker-row .worker-cell:nth-child(3),.worker-row .worker-cell:nth-child(4){display:none}
     }
 
+  
+    .master-flow{padding:76px 0}.flow10{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:24px}
+    .flow10-card{position:relative;padding:18px 14px 16px;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.86);box-shadow:0 12px 34px rgba(35,74,105,.06);transition:.25s}
+    .flow10-card:hover{transform:translateY(-5px);border-color:#9ddfd2;box-shadow:0 18px 40px rgba(35,74,105,.10)}
+    .flow10-card b{display:grid;place-items:center;width:34px;height:34px;border-radius:11px;background:linear-gradient(135deg,#0f9f89,#2d7eea);color:#fff;margin-bottom:12px}
+    .flow10-card strong{font-size:.82rem;display:block}.flow10-card span{font-size:.68rem;color:var(--muted);display:block;margin-top:5px;line-height:1.45}
+    .module-zone{padding:76px 0;background:linear-gradient(180deg,#f7fbff,#fff)}
+    .module-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:26px}
+    .module-card{padding:21px;border:1px solid var(--line);border-radius:20px;background:#fff;box-shadow:0 12px 36px rgba(35,74,105,.055);transition:.25s}
+    .module-card:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
+    .module-card .mi{font-size:1.35rem}.module-card h3{font-size:1rem;margin:10px 0 8px}.module-card p{font-size:.74rem;color:var(--muted);line-height:1.65}
+    .module-card.worker-feature{grid-column:span 2;background:linear-gradient(135deg,#effcf7,#eef7ff);border-color:#ccebe2}
+    .dev-status{display:inline-flex;align-items:center;gap:8px;padding:7px 11px;border-radius:999px;background:#fff3d7;color:#8a5a00;font-size:.7rem;font-weight:850;border:1px solid #f4ddb0;margin-top:12px}
+    @media(max-width:900px){.flow10{grid-template-columns:repeat(2,1fr)}.module-grid{grid-template-columns:1fr 1fr}.module-card.worker-feature{grid-column:span 2}}
+    @media(max-width:560px){.flow10,.module-grid{grid-template-columns:1fr}.module-card.worker-feature{grid-column:auto}.master-flow,.module-zone{padding:54px 0}}
+
   </style>
 </head>
 <body>
@@ -434,14 +450,12 @@
   <div class="container hero-grid">
     <div class="hero-copy">
       <div class="badge">● Practical software, built step by step</div>
-      <h1>Simple Digital Tools for <span class="accent">Real Business Workflows</span></h1>
-      <p>SK Secure Tech is focused on practical browser-based tools that make everyday business work easier. We build only what is useful, keep the interface simple and improve each product as the real workflow grows.</p>
+      <h1>A Smarter Way to Run Your <span class="accent">Tailoring Business</span></h1>
+      <p>SK Tailoring is a practical tailoring shop management system designed to help manage customers, orders, measurements, workers, attendance, salary calculations, payments, expenses and delivery workflows in one place.</p>
       <div class="hero-actions">
-        <a class="primary-btn" href="#our-app">Explore SK Tailoring →</a>
-        <button class="demo-btn" id="openLiveDemo"><span class="play-orb">▶</span> Open Live App Demo</button>
-        <a class="secondary-btn" href="#contact">Contact Us</a>
+        <a class="primary-btn" href="https://tailoring.sksecuretech.my" target="_blank" rel="noopener">Open SK Tailoring →</a>
+        <a class="secondary-btn" href="https://wa.me/60162100305" target="_blank" rel="noopener">💬 WhatsApp Us</a>
       </div>
-
       <div class="trust-row">
         <div class="trust-card">
           <div class="trust-icon">📱</div>
@@ -528,6 +542,52 @@
   </div>
 </section>
 
+
+
+<section class="module-zone reveal" id="modules">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">SK Tailoring • Active Product</div>
+      <h2>One practical system for the full tailoring-shop workflow.</h2>
+      <p>Only current and actively developed SK Tailoring capabilities are shown here.</p>
+      <span class="dev-status">● Currently in active development</span>
+    </div>
+    <div class="module-grid">
+      <article class="module-card"><div class="mi">📋</div><h3>Order Management</h3><p>New Order • Open Orders • Work Queue • Ready • Due Today • Overdue • Delivery</p></article>
+      <article class="module-card"><div class="mi">👤</div><h3>Customer Management</h3><p>Customer details • previous order history • previous measurements • search by name or phone</p></article>
+      <article class="module-card"><div class="mi">👗</div><h3>Garment & Design</h3><p>Men • Women • Girls • Boys • garment selection • style options • design reference images</p></article>
+      <article class="module-card"><div class="mi">📏</div><h3>Measurements</h3><p>Garment-specific measurements • live preview concept • Front / Back / Side preview • visual guidance</p></article>
+      <article class="module-card"><div class="mi">🎙️</div><h3>Reference Photos & Instructions</h3><p>Upload reference photos • special instructions • voice instructions • voice-to-text concept</p></article>
+      <article class="module-card worker-feature"><div class="mi">👥</div><h3>Worker Management</h3><p>Worker profiles • attendance • daily check-in / check-out • work assignment • worker-wise production tracking • completed garments/items • piece-rate calculation • worker earnings • monthly salary calculation • salary summary • productivity overview</p></article>
+      <article class="module-card"><div class="mi">💳</div><h3>Payments</h3><p>Total order amount • advance • balance • payment tracking</p></article>
+      <article class="module-card"><div class="mi">🧾</div><h3>Expenses</h3><p>Daily materials • thread • lining • cloth • other shop expenses • rent • salary • monthly expenses</p></article>
+      <article class="module-card"><div class="mi">📊</div><h3>Reports</h3><p>Order • worker • attendance • salary • payment • expense reports</p></article>
+      <article class="module-card"><div class="mi">💾</div><h3>Backup & Restore</h3><p>Local backup • restore data</p></article>
+    </div>
+  </div>
+</section>
+
+<section class="master-flow reveal" id="how-it-works">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">How SK Tailoring Works</div>
+      <h2>From customer to completed delivery — one clear flow.</h2>
+      <p>A simple 10-step workflow designed around real tailoring-shop work.</p>
+    </div>
+    <div class="flow10">
+      <div class="flow10-card"><b>1</b><strong>Choose Customer</strong><span>Search existing customer or create a new profile.</span></div>
+      <div class="flow10-card"><b>2</b><strong>Choose Garment</strong><span>Select Men, Women, Girls or Boys garment.</span></div>
+      <div class="flow10-card"><b>3</b><strong>Select Style</strong><span>Choose style and design options.</span></div>
+      <div class="flow10-card"><b>4</b><strong>Enter Measurements</strong><span>Garment-specific measurements with visual guidance.</span></div>
+      <div class="flow10-card"><b>5</b><strong>Add References</strong><span>Photos, special notes and voice instructions.</span></div>
+      <div class="flow10-card"><b>6</b><strong>Charges & Delivery</strong><span>Set price, advance and promised delivery.</span></div>
+      <div class="flow10-card"><b>7</b><strong>Assign Worker</strong><span>Allocate the tailoring job to a worker.</span></div>
+      <div class="flow10-card"><b>8</b><strong>Track Progress</strong><span>Follow work queue and production status.</span></div>
+      <div class="flow10-card"><b>9</b><strong>Record Payment</strong><span>Track total, advance and remaining balance.</span></div>
+      <div class="flow10-card"><b>10</b><strong>Ready / Delivery / Complete</strong><span>Finish the order and delivery workflow.</span></div>
+    </div>
+  </div>
+</section>
 
 <section class="demo-section reveal" id="app-flow">
   <div class="container">
@@ -753,16 +813,9 @@
     <div class="about-box">
       <div>
         <div class="eyebrow">About SK Secure Tech</div>
-        <div class="section-head" style="margin-bottom:0">
-          <h2>Focused on practical business web apps.</h2>
-        </div>
-        <p>SK Secure Tech is currently focused on developing simple digital tools for business workflows. Our active product is SK Tailoring, a tailoring shop management web app that is being developed step by step around real shop requirements — including customer orders, measurements, worker attendance, worker-wise production, piece-rate calculations and monthly salary summaries.</p>
-        <p>As new products or genuine services are developed in the future, they can be added here. Until then, this website will show only what is actually available.</p>
-      </div>
-      <div class="principles">
-        <div class="principle"><b>01</b><div><strong>Start with the real problem</strong><br><span style="color:var(--muted);font-size:.84rem">Understand the day-to-day workflow before adding features.</span></div></div>
-        <div class="principle"><b>02</b><div><strong>Build one clear stage at a time</strong><br><span style="color:var(--muted);font-size:.84rem">Keep development controlled instead of adding unnecessary modules.</span></div></div>
-        <div class="principle"><b>03</b><div><strong>Test on the devices people use</strong><br><span style="color:var(--muted);font-size:.84rem">Prioritise practical use on phone, tablet and desktop.</span></div></div>
+        <h2>Practical digital tools for real business workflows.</h2>
+        <p>SK Secure Tech is currently focused on building practical digital tools for real business workflows. Our active product, SK Tailoring, is being developed step by step around real tailoring shop requirements.</p>
+        <p style="margin-top:10px">We add features based on actual workflow needs rather than adding unnecessary modules.</p>
       </div>
     </div>
   </div>
@@ -890,7 +943,7 @@
   const liveModal=document.getElementById('liveModal');
   const liveFrame=document.getElementById('liveFrame');
   function openLive(){
-    if(!liveFrame.src) liveFrame.src='https://sk-tailoring-v20.vercel.app/';
+    if(!liveFrame.src) liveFrame.src='https://tailoring.sksecuretech.my';
     liveModal.classList.add('open');
     liveModal.setAttribute('aria-hidden','false');
     document.body.style.overflow='hidden';
